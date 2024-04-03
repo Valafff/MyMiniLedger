@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34723.18
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyMiniLedger.DAL", "MyMiniLedger.DAL\MyMiniLedger.DAL.csproj", "{1C6D2E36-7A81-4949-B4D1-A0BDF80DA70C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyMiniLedger.DAL", "MyMiniLedger.DAL\MyMiniLedger.DAL.csproj", "{1C6D2E36-7A81-4949-B4D1-A0BDF80DA70C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyMiniLedger.DAL.Test", "MyMiniLedger.DAL.Test\MyMiniLedger.DAL.Test.csproj", "{C16F1105-A038-4DEB-9ECD-11E3926C9EE1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyMiniLedger.DAL.Test", "MyMiniLedger.DAL.Test\MyMiniLedger.DAL.Test.csproj", "{C16F1105-A038-4DEB-9ECD-11E3926C9EE1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyMiniLedger.TestConsoleApp", "MyMiniLedger.TestConsoleApp\MyMiniLedger.TestConsoleApp.csproj", "{91B7986E-34D3-4F69-BF46-06E4FCAF4F8E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyMiniLedger.TestConsoleApp", "MyMiniLedger.TestConsoleApp\MyMiniLedger.TestConsoleApp.csproj", "{91B7986E-34D3-4F69-BF46-06E4FCAF4F8E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
