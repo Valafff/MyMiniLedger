@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace MyMiniLedger.DAL.Models
 {
-	public class Kind
+	public class CoinModel
 	{
         public int Id { get; set; }
-        public Category Category { get; set; }
-        public string Kind { get; set; }
+        public string ShortName { get; set; }
+        public string FullName { get; set; }
+        public string?  CoinNotes { get; set; }
     }
 }

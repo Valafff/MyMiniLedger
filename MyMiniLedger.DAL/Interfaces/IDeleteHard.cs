@@ -2,6 +2,6 @@
 {
 	internal interface IDeleteHard<T>
 	{
-		void DeleteHard(T entity);
+		Task DeleteHardAsync(T entity);
 	}
 }

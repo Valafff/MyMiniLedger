@@ -1,1 +1,1 @@
-﻿{"ServerName" : "(localdb)\\DB", "DBname" : "TestLedger", "AuthenticationMethod": "Integrated Security=SSPI"}
+﻿{"ServerName" : "(localdb)\\MSSQLLocalDB", "DBname" : "TestLedger", "AuthenticationMethod": "Integrated Security=SSPI"}

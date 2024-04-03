@@ -2,6 +2,6 @@
 {
 	internal interface IReadAll<T>
 	{
-		public IEnumerable<T> GetAll();
+		Task <IEnumerable<T>> GetAllAsync();
 	}
 }

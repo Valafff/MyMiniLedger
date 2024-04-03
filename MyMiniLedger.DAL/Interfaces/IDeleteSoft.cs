@@ -2,6 +2,6 @@
 {
 	internal interface IDeleteSoft<T>
 	{
-		void DeleteSoft(T entity);
+		Task DeleteSoftAsync(T entity);
 	}
 }

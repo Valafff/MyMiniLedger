@@ -2,6 +2,6 @@
 {
 	internal interface IUpdate<T>
 	{
-		void Update(T entity);
+		Task UpdateAsync(T entity);
 	}
 }

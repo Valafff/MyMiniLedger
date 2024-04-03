@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MyMiniLedger.DAL.Models
 {
-	public class Status
+	public class StatusModel
 	{
         public int Id { get; set; }
 		public string StatusName { get; set; }

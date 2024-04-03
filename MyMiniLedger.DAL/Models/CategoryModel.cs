@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MyMiniLedger.DAL.Models
 {
-	public class Category
+	public class CategoryModel
 	{
         public int Id { get; set; }
         public string  Category { get; set; }

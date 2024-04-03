@@ -2,6 +2,6 @@
 {
 	internal interface ICreate<T>
 	{
-        public void Insert(T entity);
+       Task InsertAsync(T entity);
     }
 }
