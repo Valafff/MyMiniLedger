@@ -1,5 +1,6 @@
 ﻿using MyMiniLedger.DAL.Interfaces;
 using MyMiniLedger.DAL.Models;
+using MyMiniLedger.DAL.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,44 +11,30 @@ namespace MyMiniLedger.DAL.SQL
 {
 	public class TablePositions : ICreate<PositionModel>, IUpdate<PositionModel>, IReadAll<PositionModel>, IReadById<PositionModel>
 	{
-		public IEnumerable<PositionModel> GetAll()
+		public async Task<IEnumerable<PositionModel>> GetAllAsync()
 		{
-			throw new NotImplementedException();
+			return await SQLService<PositionModel>.GetAllAsync("Positions");
 		}
 
-		public Task<IEnumerable<PositionModel>> GetAllAsync()
+		public async Task<PositionModel> GetByIdAsync(int id, string t = "Id")
 		{
-			throw new NotImplementedException();
+			return await SQLService<PositionModel>.GetByNumber("Positions", t, id);
 		}
 
-		public PositionModel GetById(int id)
+		public async Task InsertAsync(PositionModel entity)
 		{
-			throw new NotImplementedException();
+			string sql = $"insert into Positions (PositionKey, OpenDate, CloseDate, KindId, Income, Expense, Saldo, CoinId, StatusId, Tag, Notes)" +
+				$" values ({entity.PositionKey}, N'{entity.OpenDate}', N'{entity.CloseDate}', {entity.KindId}, {entity.Income}, {entity.Expense}, {entity.Saldo}," +
+				$" {entity.CoinId}, {entity.StatusId}, N'{entity.Tag}', N'{entity.Notes}') ";
+			await SQLService<KindModel>.UpdateAndInsertAsync(sql);
 		}
 
-		public Task<PositionModel> GetByIdAsync(int id, string tablename = "Id")
+		public async Task UpdateAsync(PositionModel entity)
 		{
-			throw new NotImplementedException();
-		}
-
-		public void Insert(PositionModel entity)
-		{
-			throw new NotImplementedException();
-		}
-
-		public Task InsertAsync(PositionModel entity)
-		{
-			throw new NotImplementedException();
-		}
-
-		public void Update(PositionModel entity)
-		{
-			throw new NotImplementedException();
-		}
-
-		public Task UpdateAsync(PositionModel entity)
-		{
-			throw new NotImplementedException();
+			string sql = $"update Positions set PositionKey = {entity.PositionKey}, OpenDate = N'{entity.OpenDate}', CloseDate = N'{entity.CloseDate}', KindId = {entity.KindId}," +
+				$" Income = {entity.Income}, Expense = {entity.Expense}, Saldo = {entity.Saldo}, CoinId = {entity.CoinId}, StatusId = {entity.StatusId}," +
+				$" Tag = N'{entity.Tag}', Notes = N'{entity.Notes}' where  id = {entity.Id}";
+			await SQLService<PositionModel>.UpdateAndInsertAsync(sql);
 		}
 	}
 }

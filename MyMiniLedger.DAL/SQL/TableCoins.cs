@@ -30,7 +30,7 @@ namespace MyMiniLedger.DAL.SQL
 		public async Task UpdateAsync(CoinModel entity)
 		{
 			string sql = $"update Coins set ShortName = N'{entity.ShortName}', FullName = N'{entity.FullName}', CoinNotes = N'{entity.CoinNotes}' where  id = {entity.Id}";
-			await SQLService<CategoryModel>.UpdateAndInsertAsync(sql);
+			await SQLService<CoinModel>.UpdateAndInsertAsync(sql);
 		}
 	}
 }

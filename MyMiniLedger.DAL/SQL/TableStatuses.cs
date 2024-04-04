@@ -1,5 +1,6 @@
 ﻿using MyMiniLedger.DAL.Interfaces;
 using MyMiniLedger.DAL.Models;
+using MyMiniLedger.DAL.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,24 +11,26 @@ namespace MyMiniLedger.DAL.SQL
 {
 	internal class TableStatuses : ICreate<StatusModel>, IUpdate<StatusModel>, IReadAll<StatusModel>, IReadById<StatusModel>
 	{
-		public Task<IEnumerable<StatusModel>> GetAllAsync()
+		public async Task<IEnumerable<StatusModel>> GetAllAsync()
 		{
-			throw new NotImplementedException();
+			return await SQLService<StatusModel>.GetAllAsync("Statuses");
 		}
 
-		public Task<StatusModel> GetByIdAsync(int id, string tablename = "Id")
+		public async Task<StatusModel> GetByIdAsync(int id, string t = "Id")
 		{
-			throw new NotImplementedException();
+			return await SQLService<StatusModel>.GetByNumber("Statuses", t, id);
 		}
 
-		public Task InsertAsync(StatusModel entity)
+		public async Task InsertAsync(StatusModel entity)
 		{
-			throw new NotImplementedException();
+			string sql = $"insert into Statuses (StatusName, StatusNotes) values (N'{entity.StatusName}', N'{entity.StatusNotes}') ";
+			await SQLService<StatusModel>.UpdateAndInsertAsync(sql);
 		}
 
-		public Task UpdateAsync(StatusModel entity)
+		public async Task UpdateAsync(StatusModel entity)
 		{
-			throw new NotImplementedException();
+			string sql = $"update Statuses set StatusName = N'{entity.StatusName}', StatusNotes = N'{entity.StatusNotes}' where  id = {entity.Id}";
+			await SQLService<StatusModel>.UpdateAndInsertAsync(sql);
 		}
 	}
 }

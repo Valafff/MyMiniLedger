@@ -30,7 +30,7 @@ namespace MyMiniLedger.DAL.SQL
 		public async Task UpdateAsync(KindModel entity)
 		{
 			string sql = $"update Kinds set CategoryId = {entity.CategoryId}, Kind = N'{entity.Kind}' where  id = {entity.Id}";
-			await SQLService<CategoryModel>.UpdateAndInsertAsync(sql);
+			await SQLService<KindModel>.UpdateAndInsertAsync(sql);
 		}
 	}
 }
