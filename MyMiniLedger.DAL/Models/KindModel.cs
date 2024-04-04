@@ -9,7 +9,7 @@ namespace MyMiniLedger.DAL.Models
 	public class KindModel
 	{
         public int Id { get; set; }
-        public CategoryModel Category { get; set; }
+        public int CategoryId { get; set; }
         public string Kind { get; set; }
     }
 }

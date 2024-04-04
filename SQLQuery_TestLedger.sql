@@ -2,6 +2,15 @@
 
 --use MyBook
 
+exec sp_dropdevice 'NameBCDisk'
+exec sp_addumpdevice 'disk', 'NameBCDisk', 'C:\Users\Vetal\source\repos\ADO.NET\MyMiniLedger\TestLedger.bak'
+backup database TestLedger to NameBCDisk
+
+restore database TestLedger
+from NameBCDisk
+with replace
+
+
 CREATE TABLE Categories (
 	Id	int not null primary key identity(1,1),
 	Category	nvarchar(100) COLLATE Cyrillic_General_CI_AS unique,
@@ -57,13 +66,19 @@ values ('RUB', N'Рубль', N'Дрова берёзовые'),
 ('BTC', N'Bitcoin', N'Цифровое золото, вроде как')
 
 
-
-
-
 select PositionKey, OpenDate, CloseDate, Kind, Income, Expense, Saldo, ShortName, StatusName Tag, Notes 
 from Positions P
 join Kinds K on k.Id = p.KindId
 join Coins C on c.Id = p.CoinId
 join Statuses S on s.Id = p.StatusId
+
+update Categories set Category = N'новый тест' where  id = 17
+
+select *
+from Categories
+
+select * from Coins
+
+select * from Kinds
 
 

@@ -1,5 +1,6 @@
 ﻿using MyMiniLedger.DAL.Interfaces;
 using MyMiniLedger.DAL.Models;
+using MyMiniLedger.DAL.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,24 +11,26 @@ namespace MyMiniLedger.DAL.SQL
 {
 	public class TableCoins : ICreate<CoinModel>, IUpdate<CoinModel>, IReadAll<CoinModel>, IReadById<CoinModel>
 	{
-		public Task<IEnumerable<CoinModel>> GetAllAsync()
+		public async Task<IEnumerable<CoinModel>> GetAllAsync()
 		{
-			throw new NotImplementedException();
+			return await SQLService<CoinModel>.GetAllAsync("Coins");
 		}
 
-		public Task<CoinModel> GetByIdAsync(int id, string tablename = "Id")
+		public async Task<CoinModel> GetByIdAsync(int id, string t = "Id")
 		{
-			throw new NotImplementedException();
+			return await SQLService<CoinModel>.GetByNumber("Coins", t, id);
 		}
 
-		public Task InsertAsync(CoinModel entity)
+		public async Task InsertAsync(CoinModel entity)
 		{
-			throw new NotImplementedException();
+			string sql = $"insert into Coins (ShortName, FullName, CoinNotes) values (N'{entity.ShortName}', N'{entity.FullName}', N'{entity.CoinNotes}') ";
+			await SQLService<CoinModel>.UpdateAndInsertAsync(sql);
 		}
 
-		public Task UpdateAsync(CoinModel entity)
+		public async Task UpdateAsync(CoinModel entity)
 		{
-			throw new NotImplementedException();
+			string sql = $"update Coins set ShortName = N'{entity.ShortName}', FullName = N'{entity.FullName}', CoinNotes = N'{entity.CoinNotes}' where  id = {entity.Id}";
+			await SQLService<CategoryModel>.UpdateAndInsertAsync(sql);
 		}
 	}
 }
