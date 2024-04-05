@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyMiniLedger.DAL.Test", "My
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyMiniLedger.TestConsoleApp", "MyMiniLedger.TestConsoleApp\MyMiniLedger.TestConsoleApp.csproj", "{91B7986E-34D3-4F69-BF46-06E4FCAF4F8E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyMiniLedger.BLL", "MyMiniLedger.BLL\MyMiniLedger.BLL.csproj", "{B2D88455-8FB3-4380-B969-0DE777CC75BF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{91B7986E-34D3-4F69-BF46-06E4FCAF4F8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{91B7986E-34D3-4F69-BF46-06E4FCAF4F8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{91B7986E-34D3-4F69-BF46-06E4FCAF4F8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2D88455-8FB3-4380-B969-0DE777CC75BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2D88455-8FB3-4380-B969-0DE777CC75BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2D88455-8FB3-4380-B969-0DE777CC75BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2D88455-8FB3-4380-B969-0DE777CC75BF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

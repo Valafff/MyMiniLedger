@@ -46,9 +46,9 @@ CREATE TABLE Positions (
 	OpenDate	datetime,
 	CloseDate	datetime,
 	KindId	int foreign key references Kinds(Id),
-	Income	money,
-	Expense	money,
-	Saldo	money,
+	Income	Decimal(22,8),
+	Expense	Decimal(22,8),
+	Saldo	Decimal(22,8),
 	CoinId	int foreign key references Coins(Id),
 	StatusId int foreign key references Statuses(Id),
 	Tag	nvarchar (1000) COLLATE Cyrillic_General_CI_AS,
@@ -81,4 +81,4 @@ select * from Coins
 
 select * from Kinds
 
-
+drop table Positions

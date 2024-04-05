@@ -1,7 +1,7 @@
 ﻿//#define ConnectionStringTest
 //#define ServicesTestReadAll
 //#define ServicesTestReadById
-#define ServicesTestInsert
+//#define ServicesTestInsert
 //#define ServicesTestUpdate
 
 using Azure;
@@ -51,11 +51,11 @@ Console.WriteLine(res);
 //	Console.WriteLine(kind.CategoryId + " " + kind.Kind + " " + kind.Id);
 //}
 
-//var data4 = tpos.GetAllAsync().Result;
-//foreach (var pos in data4)
-//{
-//	Console.WriteLine($"{pos.Id}   {pos.PositionKey}	{pos.OpenDate}	{pos.CloseDate}   {pos.KindId}	{pos.Income}   {pos.Expense}   {pos.Saldo}   {pos.CoinId}  {pos.StatusId}   {pos.Tag}	{pos.Notes}");
-//}
+var data4 = tpos.GetAllAsync().Result;
+foreach (var pos in data4)
+{
+	Console.WriteLine($"{pos.Id}   {pos.PositionKey}	{pos.OpenDate}	{pos.CloseDate}   {pos.KindId}	{pos.Income}   {pos.Expense}   {pos.Saldo}   {pos.CoinId}  {pos.StatusId}   {pos.Tag}	{pos.Notes}");
+}
 
 #endif
 #if ServicesTestReadById
@@ -102,7 +102,7 @@ Console.WriteLine($"{data4.Id}   {data4.PositionKey}	{data4.OpenDate}	{data4.Clo
 //	Console.WriteLine(category.CategoryId + " " + category.Kind);
 //}
 
-var testpos = new PositionModel() { PositionKey = 100, OpenDate = DateTime.Now, CloseDate = DateTime.Now, KindId = 1, Income = 201.5 , Expense = 0, Saldo = 200, CoinId = 2, StatusId = 4, Tag = "Тест", Notes = "Тест" };
+var testpos = new PositionModel() { PositionKey = 100, OpenDate = DateTime.Now, CloseDate = DateTime.Now, KindId = 1, Income = 555.321M , Expense = 5.00001M, Saldo = 555.9874655555M, CoinId = 2, StatusId = 4, Tag = "Тест", Notes = "Тест" };
 await tpos.InsertAsync(testpos);
 
 #endif
