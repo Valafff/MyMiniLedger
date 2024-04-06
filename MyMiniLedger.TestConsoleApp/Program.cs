@@ -177,8 +177,7 @@ foreach (var pos in LPOSBLL)
 using MyMiniLedger.BLL;
 using MyMiniLedger.BLL.Context;
 using MyMiniLedger.BLL.Models;
-using MyMiniLedger.DAL.Services;
-using MyMiniLedger.DAL.SQL;
+
 
 
 
@@ -204,9 +203,25 @@ var init = new InitConfigBLL();
 ////Монеты
 //await foreach (var item in new Context().CoinsTableBL.GetAllAsync())
 //{
-//    Console.WriteLine($"{item.Id}  {item.ShortName}  {item.FullName}  {item.CoinNotes}");
+//	Console.WriteLine($"{item.Id}  {item.ShortName}  {item.FullName}  {item.CoinNotes}");
 //}
 
+////Виды
+//await foreach (var item in new Context().KindsTableBL.GetAllAsync())
+//{
+//	Console.WriteLine($"{item.Id}  {item.Category.Category}  {item.Kind}");
+//}
 
+////Статусы
+//await foreach (var item in new Context().StatusesTableBL.GetAllAsync())
+//{
+//	Console.WriteLine($"{item.Id}  {item.StatusName}  {item.StatusNotes}");
+//}
+
+//Позиции
+await foreach (var item in new Context().PositionsTableBL.GetAllAsync())
+{
+	Console.WriteLine($"{item.Id}  {item.PositionKey}  {item.OpenDate}  {item.CloseDate}  {item.Kind.Kind}  {item.Income}  {item.Expense} {item.Saldo}  {item.Coin.ShortName}  {item.Status.StatusName}  {item.Tag}  {item.Notes}");
+}
 
 #endif

@@ -12,13 +12,18 @@ namespace MyMiniLedger.BLL.Context
 	{
         public ListOfCategories CategoriesTableBL { get; }
 		public ListOfCoins CoinsTableBL { get; }
+		public ListOfStatuses StatusesTableBL { get; }
+		public ListOfKinds KindsTableBL { get; }
+		public ListOfPositions PositionsTableBL { get; }
 
 
         public Context()
         {
 			CategoriesTableBL = new ListOfCategories();
 			CoinsTableBL = new ListOfCoins();
-
+			StatusesTableBL = new ListOfStatuses();
+			KindsTableBL = new ListOfKinds();
+			PositionsTableBL = new ListOfPositions();
 		}
     }
 
