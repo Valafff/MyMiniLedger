@@ -3,8 +3,16 @@
 //#define ServicesTestReadById
 //#define ServicesTestInsert
 //#define ServicesTestUpdate
+//#define TestBLLModel
+//#define OnOffDAL
+#define TestBLLContext
 
+#if OnOffDAL
 using Azure;
+using Dapper;
+using MyMiniLedger.BLL.Context;
+using MyMiniLedger.BLL.Mappers;
+using MyMiniLedger.BLL.Models;
 using MyMiniLedger.DAL.Config;
 using MyMiniLedger.DAL.Models;
 using MyMiniLedger.DAL.Services;
@@ -18,6 +26,9 @@ TableCategories tc = new TableCategories();
 TableCoins tcoins = new TableCoins();
 TableKinds tkinds = new TableKinds();
 TablePositions tpos = new TablePositions();
+TableStatuses tst = new TableStatuses();
+
+
 
 
 
@@ -61,7 +72,7 @@ foreach (var pos in data4)
 #if ServicesTestReadById
 //var data = tc.GetByIdAsync(1).Result;
 ////var tableCategories = await SQLService<CategoryModel>.GetAllAsync("Categories");
-//    Console.WriteLine(data.Category);
+//Console.WriteLine(data.Category);
 
 //var data2 = tcoins.GetByIdAsync(1).Result;
 //Console.WriteLine(data2.CoinNotes);
@@ -116,5 +127,86 @@ await tpos.InsertAsync(testpos);
 
 var testKIND = new KindModel() { CategoryId = 9, Kind = "Тест", Id = 1020 };
 await tkinds.UpdateAsync(testKIND);
+
+#endif
+
+#if TestBLLModel
+
+//var data = tc.GetByIdAsync(1).Result;
+
+//CategoryBLLModel categoryModelBLL = MapperBL.MapCategoryDALToCategoryBLL(data);
+
+//Console.WriteLine(categoryModelBLL.Id + "\t" + categoryModelBLL.Category);
+
+var data = tpos.GetAllAsync().Result;
+var kindsDAL = tkinds.GetAllAsync().Result;
+var coinsDAL = tcoins.GetAllAsync().Result;
+var statusesDAL = tst.GetAllAsync().Result;
+var categoriesDAL = tc.GetAllAsync().Result;
+
+//foreach (var item in categoriesDAL)
+//{
+//	Console.WriteLine(item.Id + " " + item.Category);
+//}
+
+//var singleKind = tkinds.GetByIdAsync(1).Result;
+//Console.WriteLine("\n"+singleKind.Id +" "+singleKind.CategoryId +" "+ singleKind.Kind);
+
+//var kindBLL = MapperBL.MapKindDALToKindBLL(singleKind, categoriesDAL);
+
+//Console.WriteLine("\n" + kindBLL.Id +"  "+ (kindBLL.Category).Category + "  " + kindBLL.Kind);
+
+List<PositionBLLModel> LPOSBLL = new List<PositionBLLModel>();
+foreach (var model in data)
+{
+	var temp = MapperBL.MapPositionDALToPositionBLL(model, kindsDAL, coinsDAL, statusesDAL, categoriesDAL);
+	LPOSBLL.Add(temp);
+}
+
+foreach (var pos in LPOSBLL)
+{
+	Console.WriteLine($"{pos.Id}   {pos.PositionKey}	{pos.OpenDate}	{pos.CloseDate}   {pos.Kind.Kind}	{pos.Income}   {pos.Expense}   {pos.Saldo}   {pos.Coin.ShortName}  {pos.Status.StatusName}   {pos.Tag}	{pos.Notes}");
+}
+
+#endif
+
+#endif
+
+#if TestBLLContext
+
+using MyMiniLedger.BLL;
+using MyMiniLedger.BLL.Context;
+using MyMiniLedger.BLL.Models;
+using MyMiniLedger.DAL.Services;
+using MyMiniLedger.DAL.SQL;
+
+
+
+var init = new InitConfigBLL();
+
+//Категории
+//var context = new Context().CategoriesTableBL.GetAllAsync();
+
+//var insertCategory = new CategoryBLLModel() { Category = $"Тест BLL abc {DateTime.Now}" };
+//await new Context().CategoriesTableBL.InsertAsync(insertCategory);
+
+//var updateCategory = new CategoryBLLModel() { Id = 15, Category = $"Исправленная категория 15 {DateTime.Now}" };
+//await new Context().CategoriesTableBL.UpdateAsync(updateCategory);
+
+//await foreach (var item in context)
+//{
+//	Console.WriteLine($"{item.Id}  {item.Category}");
+//}
+
+//var contextById = new Context().CategoriesTableBL.GetByIdAsync(15).Result;
+//Console.WriteLine($"\n{contextById.Id}  {contextById.Category}");
+
+////Монеты
+//await foreach (var item in new Context().CoinsTableBL.GetAllAsync())
+//{
+//    Console.WriteLine($"{item.Id}  {item.ShortName}  {item.FullName}  {item.CoinNotes}");
+//}
+
+
 
 #endif

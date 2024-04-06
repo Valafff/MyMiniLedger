@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MyMiniLedger.BLL\MyMiniLedger.BLL.csproj" />
     <ProjectReference Include="..\MyMiniLedger.DAL\MyMiniLedger.DAL.csproj" />
   </ItemGroup>
 

@@ -1,6 +1,6 @@
 ﻿namespace MyMiniLedger.DAL.Interfaces
 {
-	internal interface IUpdate<T>
+	public interface IUpdate<T>
 	{
 		Task UpdateAsync(T entity);
 	}

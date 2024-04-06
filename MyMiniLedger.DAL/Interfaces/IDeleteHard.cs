@@ -1,6 +1,6 @@
 ﻿namespace MyMiniLedger.DAL.Interfaces
 {
-	internal interface IDeleteHard<T>
+	public interface IDeleteHard<T>
 	{
 		Task DeleteHardAsync(T entity);
 	}

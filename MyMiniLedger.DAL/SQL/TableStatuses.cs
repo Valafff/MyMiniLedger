@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MyMiniLedger.DAL.SQL
 {
-	internal class TableStatuses : ICreate<StatusModel>, IUpdate<StatusModel>, IReadAll<StatusModel>, IReadById<StatusModel>
+	public class TableStatuses : ICreate<StatusModel>, IUpdate<StatusModel>, IReadAll<StatusModel>, IReadById<StatusModel>
 	{
 		public async Task<IEnumerable<StatusModel>> GetAllAsync()
 		{
