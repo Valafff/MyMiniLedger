@@ -18,9 +18,13 @@ namespace MyMiniLedger.DAL.Config
 			}
 			else if(AuthenticationMethod != null && AuthenticationMethod != "" && ServerName != null && DBname != null)
 			{
-				return $"Data Source={ServerName}; Initial Catalog={DBname}; {AuthenticationMethod};";
+				//return $"Data Source={ServerName}; Initial Catalog={DBname}; {AuthenticationMethod};";
+				//return $"Server=(localdb)\\DB;Database=TestLedger;Integrated Security=True; Asynchronous Processing=True;";
+				//return $"Server=(localdb)\\DB;Database=TestLedger;Integrated Security=True;";
+
+				return @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=TestLedger;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False";
 			}
-            else
+			else
             {
 				return "";
 			}

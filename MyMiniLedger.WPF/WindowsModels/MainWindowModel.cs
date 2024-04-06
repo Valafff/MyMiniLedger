@@ -1,4 +1,6 @@
-﻿using MyMiniLedger.WPF.Models;
+﻿using MyMiniLedger.BLL.Context;
+using MyMiniLedger.BLL.Models;
+using MyMiniLedger.WPF.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,29 +12,19 @@ namespace MyMiniLedger.WPF.WindowsModels
 {
 	public class MainWindowModel : BaseNotify
 	{
-		private readonly BLL.Context.Context _context;
+		private readonly Context _context;
 
 		public ObservableCollection<PositionUIModel> Positions { get; set; }
 
 		public MainWindowModel()
 		{
+			var cf = new BLL.InitConfigBLL("config.json");
+
 			_context = new BLL.Context.Context();
 			BLL.Context.ListOfPositions tempPos = new BLL.Context.ListOfPositions();
-
-
-			//IAsyncEnumerable<BLL.Models.PositionBLLModel> tempPositions = tempPos.GetAllAsync();
-			 var tempPositions = tempPos.GetAllAsync();
-
-
-			//.Net 6.0 не поддерживает .ToBlockingEnumerable() -> foreach
-			foreach (var position in tempPositions)
-			{
-				PositionUIModel temp = Mappers.UIMapper.MapPositionBLLToPositionUI(position);
-				Positions.Add(temp);
-			}
-
-
-
+			////.Net 6.0 не поддерживает .ToBlockingEnumerable()
+			IEnumerable<PositionUIModel> tempPositionsAsync = tempPos.GetAllAsync().Result.Select(pos => Mappers.UIMapper.MapPositionBLLToPositionUI(pos));
+			Positions = new ObservableCollection<PositionUIModel>(tempPositionsAsync);
 
 		}
 

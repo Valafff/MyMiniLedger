@@ -9,7 +9,7 @@ namespace MyMiniLedger.BLL
     //Из BLL передает данные для конфига в DAL
 	public class InitConfigBLL
 	{
-        public InitConfigBLL(string path = "config.json")
+        public  InitConfigBLL(string path = "config.json")
         {
             DAL.Services.DataConfig.Init(path);
         }

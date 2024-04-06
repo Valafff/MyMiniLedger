@@ -1,11 +1,11 @@
 ﻿//#define ConnectionStringTest
-//#define ServicesTestReadAll
+#define ServicesTestReadAll
 //#define ServicesTestReadById
 //#define ServicesTestInsert
 //#define ServicesTestUpdate
 //#define TestBLLModel
-//#define OnOffDAL
-#define TestBLLContext
+#define OnOffDAL
+//#define TestBLLContext
 
 #if OnOffDAL
 using Azure;
@@ -35,7 +35,7 @@ TableStatuses tst = new TableStatuses();
 
 #if ConnectionStringTest
 
-string res = Config.GetFromConfig(@"Resources\config.json").ToString();
+string res = Config.GetFromConfig(@"config.json").ToString();
 Console.WriteLine(res);
 
 #endif
@@ -219,9 +219,12 @@ var init = new InitConfigBLL();
 //}
 
 //Позиции
-await foreach (var item in new Context().PositionsTableBL.GetAllAsync())
+//Для IAsyncEnumerable
+var con = new Context().PositionsTableBL.GetAllAsync().Result;
+foreach (var item in con)
 {
 	Console.WriteLine($"{item.Id}  {item.PositionKey}  {item.OpenDate}  {item.CloseDate}  {item.Kind.Kind}  {item.Income}  {item.Expense} {item.Saldo}  {item.Coin.ShortName}  {item.Status.StatusName}  {item.Tag}  {item.Notes}");
 }
+
 
 #endif

@@ -18,10 +18,12 @@ namespace MyMiniLedger.BLL.Context
 		private readonly ICreate<DAL.Models.PositionModel> _sourceForInsert;
 		private readonly IUpdate<DAL.Models.PositionModel> _sourceForUpdate;
 
+
 		TableCategories tempCatTable = new TableCategories();
 		TableKinds tempKindsTable = new TableKinds();
 		TableStatuses tempStatusesTable = new TableStatuses();
 		TableCoins tempCoinsTable = new TableCoins();
+
 
 		public ListOfPositions()
 		{
@@ -29,10 +31,11 @@ namespace MyMiniLedger.BLL.Context
 			_sourceForReadById = new TablePositions();
 			_sourceForInsert = new TablePositions();
 			_sourceForUpdate = new TablePositions();
+
 		}
 
 		//Получение всех данных
-		public async IAsyncEnumerable<PositionBLLModel> GetAllAsync()
+		public async Task<IEnumerable<PositionBLLModel>> GetAllAsync()
 		{
 			IEnumerable<CategoryModel> tempCategories = await tempCatTable.GetAllAsync();
 			IEnumerable<KindModel> tempKinds = await tempKindsTable.GetAllAsync();
@@ -41,11 +44,32 @@ namespace MyMiniLedger.BLL.Context
 
 			IEnumerable<PositionModel> result = await _sourceForRead.GetAllAsync();
 
+			List<PositionBLLModel> enumerable = new List<PositionBLLModel>();
+
 			foreach (var item in result)
 			{
-				yield return Mappers.MapperBL.MapPositionDALToPositionBLL(item, tempKinds, tempCoins, tempStatuses, tempCategories);
+				enumerable.Add(Mappers.MapperBL.MapPositionDALToPositionBLL(item, tempKinds, tempCoins, tempStatuses, tempCategories));
 			}
+			return enumerable.AsEnumerable();
 		}
+
+		////Рабочий вариант, но с нюансом IAsyncEnumerable .Net 6.0 не поддерживает .ToBlockingEnumerable()
+		//public async IAsyncEnumerable<PositionBLLModel> GetAllAsync()
+		//{
+		//	IEnumerable<CategoryModel> tempCategories = await tempCatTable.GetAllAsync();
+		//	IEnumerable<KindModel> tempKinds = await tempKindsTable.GetAllAsync();
+		//	IEnumerable<StatusModel> tempStatuses = await tempStatusesTable.GetAllAsync();
+		//	IEnumerable<CoinModel> tempCoins = await tempCoinsTable.GetAllAsync();
+
+		//	IEnumerable<PositionModel> result = await _sourceForRead.GetAllAsync();
+
+		//	foreach (var item in result)
+		//	{
+		//		yield return Mappers.MapperBL.MapPositionDALToPositionBLL(item, tempKinds, tempCoins, tempStatuses, tempCategories);
+		//	}
+		//}
+
+
 
 		//Получение данных по Id
 		public async Task<PositionBLLModel> GetByIdAsync(int id, string t = "Id")
