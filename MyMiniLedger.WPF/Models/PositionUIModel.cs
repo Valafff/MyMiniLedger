@@ -2,7 +2,7 @@
 namespace MyMiniLedger.WPF.Models
 {
 	// BaseNotify реализует интерфейс INotifyPropertyChanged
-	public class PositionsUIModel: BaseNotify
+	public class PositionUIModel: BaseNotify
     {
 		private int _id;
 		public int Id 
