@@ -20,6 +20,5 @@ namespace MyMiniLedger.BLL.Models
         public StatusBLLModel Status { get; set; }
         public string? Tag { get; set; }
         public string? Notes { get; set; }
-
     }
 }
