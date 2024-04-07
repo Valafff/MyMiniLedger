@@ -12,17 +12,19 @@ namespace MyMiniLedger.DAL.Config
 
         public override string ToString()
 		{
-			if (UserId != null && UserId != "" && Password != null && Password != "")
+			if (UserId != null  && Password != null )
 			{
-				return $"Data Source={ServerName}; Initial Catalog={DBname}; User ID={UserId}; Password={Password};";
+				return $"Data Source={ServerName}; Initial Catalog={DBname}; {AuthenticationMethod}; User ID={UserId}; Password={Password};";
+				////Работает
+				//return @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=TestLedger;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False";
+				////Работает
+				//return @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=TestLedger;";
+				////Работает
+				//return @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=TestLedger; Trusted_Connection=True";		
 			}
 			else if(AuthenticationMethod != null && AuthenticationMethod != "" && ServerName != null && DBname != null)
 			{
-				//return $"Data Source={ServerName}; Initial Catalog={DBname}; {AuthenticationMethod};";
-				//return $"Server=(localdb)\\DB;Database=TestLedger;Integrated Security=True; Asynchronous Processing=True;";
-				//return $"Server=(localdb)\\DB;Database=TestLedger;Integrated Security=True;";
-
-				return @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=TestLedger;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False";
+				return $"Data Source={ServerName}; Initial Catalog={DBname}; {AuthenticationMethod};";			
 			}
 			else
             {
@@ -30,7 +32,6 @@ namespace MyMiniLedger.DAL.Config
 			}
 
         }
-		//string connectionString = @"Data Source=(localdb)\DB; Initial Catalog=Library; Integrated Security=SSPI;";
 
 		public static  Config? GetFromConfig(string path = "config.json")
 		{

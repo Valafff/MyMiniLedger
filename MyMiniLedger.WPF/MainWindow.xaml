@@ -12,7 +12,24 @@
     </Window.DataContext>
 
     <Grid>
-        <DataGrid ItemsSource="{Binding Path=Positions}"/>
+        <!--<DataGrid ItemsSource="{Binding Path=Positions}"/>-->
+        <DataGrid ItemsSource="{Binding Path=Positions}" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <!--<DataGridTextColumn Header="Id" Binding="{Binding Path=Id}" IsReadOnly="True"/>-->
+                <DataGridTextColumn Header="Номер поз." Binding="{Binding Path=PositionKey}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Дата откр. поз." Binding="{Binding Path=OpenDate}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Дата закр. поз." Binding="{Binding Path=CloseDate}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Категория" Binding="{Binding Path=Kind.Category.Category}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Вид" Binding="{Binding Path=Kind.Kind}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Приход" Binding="{Binding Path=Income}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Расход" Binding="{Binding Path=Expense}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Сальдо" Binding="{Binding Path=Saldo}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Валюта" Binding="{Binding Path=Coin.ShortName}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Татус" Binding="{Binding Path=Status.StatusName}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Тэг" Binding="{Binding Path=Tag}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Примечания" Binding="{Binding Path=Notes}" IsReadOnly="True"/>
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
     
 </Window>

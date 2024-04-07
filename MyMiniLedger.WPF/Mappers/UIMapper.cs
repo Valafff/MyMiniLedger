@@ -49,19 +49,19 @@ namespace MyMiniLedger.WPF.Mappers
             return new BLL.Models.KindBLLModel() { Id = _kind.Id, Category = MapCategoryUIToCategoryBLL(_kind.Category), Kind = _kind.Kind };
         }
 
-
+        //Перевод даты в string, перевод income expense saldo в string
         public static PositionUIModel MapPositionBLLToPositionUI (BLL.Models.PositionBLLModel _pos)
         {
             return new PositionUIModel()
             {
                 Id = _pos.Id,
                 PositionKey = _pos.PositionKey,
-                OpenDate = _pos.OpenDate,
-                CloseDate = _pos.CloseDate,
+                OpenDate = _pos.OpenDate.ToString(),
+                CloseDate = _pos.CloseDate.ToString(),
                 Kind = MapKindBLLToKindUI(_pos.Kind),
-                Income = _pos.Income,
-                Expense = _pos.Expense,
-                Saldo = _pos.Saldo,
+                Income = _pos.Income.ToString(),
+                Expense = _pos.Expense.ToString(),
+                Saldo = _pos.Saldo.ToString(),
                 Coin = MapCoinBLLToCoinUI(_pos.Coin),
                 Status = MapStatusBLLToStatusUI(_pos.Status),
                 Tag = _pos.Tag,
@@ -69,18 +69,19 @@ namespace MyMiniLedger.WPF.Mappers
             };
         }
 
-        public static BLL.Models.PositionBLLModel MapPositionUIToPositionBLL (PositionUIModel _pos)
+		//Перевод даты в Datetime,  перевод income expense saldo в decemal
+		public static BLL.Models.PositionBLLModel MapPositionUIToPositionBLL (PositionUIModel _pos)
         {
             return new BLL.Models.PositionBLLModel()
             {
                 Id = _pos.Id,
                 PositionKey = _pos.PositionKey,
-                OpenDate = _pos.OpenDate,
-                CloseDate = _pos.CloseDate,
+                OpenDate = Convert.ToDateTime(_pos.OpenDate),
+                CloseDate = Convert.ToDateTime(_pos.CloseDate),
                 Kind = MapKindUIToKindBLL(_pos.Kind),
-                Income = _pos.Income,
-                Expense = _pos.Expense,
-                Saldo = _pos.Saldo,
+                Income = Convert.ToDecimal(_pos.Income),
+                Expense = Convert.ToDecimal(_pos.Expense),
+                Saldo = Convert.ToDecimal(_pos.Saldo),
                 Coin = MapCoinUIToCoinBLL(_pos.Coin),
                 Status = MapStatusUIToStatusBLL(_pos.Status),
                 Tag = _pos.Tag,

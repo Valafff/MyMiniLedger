@@ -1,1 +1,7 @@
-﻿{"ServerName" : "(localdb)\\DB", "DBname" : "TestLedger", "AuthenticationMethod": "Integrated Security=SSPI; Asynchronous Processing=True;", "UserId": "", "Password": ""}
+﻿{
+  "ServerName": "(localdb)\\MSSQLLocalDB",
+  "DBname": "TestLedger",
+  "AuthenticationMethod": "Integrated Security=SSPI",
+  "UserId": "",
+  "Password": ""
+}

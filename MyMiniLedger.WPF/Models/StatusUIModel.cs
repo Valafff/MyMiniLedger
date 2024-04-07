@@ -2,7 +2,7 @@
 namespace MyMiniLedger.WPF.Models
 {
 	// BaseNotify реализует интерфейс INotifyPropertyChanged
-	public class StatusUIModel: BaseNotify
+	public class StatusUIModel: BaseNotify, ICloneable
     {
 		private int _id;
 		public int Id 
@@ -24,5 +24,7 @@ namespace MyMiniLedger.WPF.Models
 			get => _statusNotes;
 			set => SetField(ref _statusNotes, value);
 		}
+
+		public object Clone() => MemberwiseClone();
 	}
 }

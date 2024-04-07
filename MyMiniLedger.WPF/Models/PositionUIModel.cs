@@ -2,10 +2,28 @@
 namespace MyMiniLedger.WPF.Models
 {
 	// BaseNotify реализует интерфейс INotifyPropertyChanged
-	public class PositionUIModel: BaseNotify
-    {
+	public class PositionUIModel : BaseNotify, ICloneable
+	{
+		public PositionUIModel() { }
+
+		public PositionUIModel(int id, int poskey, string opdate, string cldate, KindUIModel kind, string income, string expense, string saldo, CoinUIModel coin, StatusUIModel status, string tag, string note)
+		{
+			Id = id;
+			PositionKey = poskey;
+			OpenDate = opdate;
+			CloseDate = cldate;
+			Kind = kind;
+			Income = income;
+			Expense = expense;
+			Saldo = saldo;
+			Coin = coin;
+			Status = status;
+			Tag = tag;
+			Notes = note;
+		}
+
 		private int _id;
-		public int Id 
+		public int Id
 		{
 			get => _id;
 			set => SetField(ref _id, value);
@@ -13,20 +31,20 @@ namespace MyMiniLedger.WPF.Models
 
 		private int _positionKey;
 		public int PositionKey
-		{ 
+		{
 			get => _positionKey;
 			set => SetField(ref _positionKey, value);
 		}
 
-		private DateTime _openDate;
-		public DateTime OpenDate 
+		private string _openDate;
+		public string OpenDate
 		{
 			get => _openDate;
 			set => SetField(ref _openDate, value);
 		}
 
-		private DateTime _closeDate;
-		public DateTime CloseDate
+		private string _closeDate;
+		public string CloseDate
 		{
 			get => _closeDate;
 			set => SetField(ref _closeDate, value);
@@ -36,25 +54,25 @@ namespace MyMiniLedger.WPF.Models
 		public KindUIModel Kind
 		{
 			get => _kind;
-			set => SetField( ref _kind, value);
+			set => SetField(ref _kind, value);
 		}
 
-		private decimal _income;
-		public decimal Income
+		private string _income;
+		public string Income
 		{
 			get => _income;
 			set => SetField(ref _income, value);
 		}
 
-		private decimal _expense;
-		public decimal Expense
+		private string _expense;
+		public string Expense
 		{
-			get =>_expense;
+			get => _expense;
 			set => SetField(ref _expense, value);
 		}
 
-		private decimal _saldo;
-		public decimal Saldo
+		private string _saldo;
+		public string Saldo
 		{
 			get => _saldo;
 			set => SetField(ref _saldo, value);
@@ -86,6 +104,14 @@ namespace MyMiniLedger.WPF.Models
 		{
 			get => _notes;
 			set => SetField(ref _notes, value);
+		}
+
+		public object Clone()
+		{
+			var cloneKind = new KindUIModel(_id, Kind.Kind, new CategoryUIModel() { Id = Kind.Category.Id, Category = Kind.Category.Category });
+			var cloneCoin = new CoinUIModel() { Id = Coin.Id, ShortName = Coin.ShortName, FullName = Coin.FullName, CoinNotes = Coin.CoinNotes };
+			var cloneStatus = new StatusUIModel() { Id = Status.Id, StatusName = Status.StatusName, StatusNotes = Status.StatusNotes };	
+			return new PositionUIModel(_id, _positionKey, _openDate, _closeDate, cloneKind, _income, _expense, _saldo, cloneCoin, cloneStatus, _tag, _notes);
 		}
 	}
 }

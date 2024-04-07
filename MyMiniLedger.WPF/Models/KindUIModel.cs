@@ -2,9 +2,18 @@
 namespace MyMiniLedger.WPF.Models
 {
 	// BaseNotify реализует интерфейс INotifyPropertyChanged
-	public class KindUIModel: BaseNotify
+	public class KindUIModel: BaseNotify, ICloneable
     {
-		private int _id;
+		public KindUIModel() { }
+
+        public KindUIModel(int id, string kind, CategoryUIModel cat)
+        {
+            Id = id;
+			Kind = kind;
+			Category = cat;
+        }
+
+        private int _id;
 		public int Id 
 		{
 			get => _id;
@@ -24,5 +33,12 @@ namespace MyMiniLedger.WPF.Models
 			get => _kind;
 			set => SetField(ref _kind, value);
 		}
+
+		//Глубокое копирование
+		public object Clone() => new KindUIModel(this._id, this._kind, new CategoryUIModel() { Id = this._category.Id, Category = this._category.Category });
+
+
+
+
 	}
 }
