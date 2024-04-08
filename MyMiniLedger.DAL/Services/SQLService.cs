@@ -8,6 +8,19 @@ namespace MyMiniLedger.DAL.Services
 		private static SqlConnection _DBconnection = DataConfig._DBconnection;
 
 		//Асинхронность
+
+		////Получить всё из таблицы
+		//public static async Task<IEnumerable<T>> GetAllAsync(string tableName)
+		//{
+		//	await _DBconnection.OpenAsync();
+		//	string sql = $"select * from {tableName}";
+		//	IEnumerable<T> result = await _DBconnection.QueryAsync<T>(sql);
+		//	await _DBconnection.CloseAsync();
+		//	return result;
+		//}
+
+
+		//Рабочий вариант
 		//Получить всё из таблицы
 		public static async Task<IEnumerable<T>> GetAllAsync(string tableName)
 		{

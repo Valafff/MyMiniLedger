@@ -28,17 +28,32 @@ namespace MyMiniLedger.BLL.Context
 			_sourceForUpdate = new TableKinds();
 		}
 
+		////Получение всех данных
+		//public async IAsyncEnumerable<KindBLLModel> GetAllAsync()
+		//{
+
+		//	IEnumerable<CategoryModel> temp = await tempCatTable.GetAllAsync();
+		//	IEnumerable<KindModel> result = await _sourceForRead.GetAllAsync();
+
+		//	foreach (var item in result)
+		//	{
+		//		yield return Mappers.MapperBL.MapKindDALToKindBLL(item, temp);
+		//	}
+		//}
+
 		//Получение всех данных
-		public async IAsyncEnumerable<KindBLLModel> GetAllAsync()
+		public async Task <IEnumerable<KindBLLModel>> GetAllAsync()
 		{
 
 			IEnumerable<CategoryModel> temp = await tempCatTable.GetAllAsync();
 			IEnumerable<KindModel> result = await _sourceForRead.GetAllAsync();
 
+			List<KindBLLModel> tempResult = new List<KindBLLModel>();
 			foreach (var item in result)
 			{
-				yield return Mappers.MapperBL.MapKindDALToKindBLL(item, temp);
+				tempResult.Add( Mappers.MapperBL.MapKindDALToKindBLL(item, temp));
 			}
+			return tempResult;
 		}
 
 		//Получение данных по Id

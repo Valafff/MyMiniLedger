@@ -17,23 +17,38 @@ namespace MyMiniLedger.BLL.Context
 		private readonly ICreate<DAL.Models.CoinModel> _sourceForInsert;
 		private readonly IUpdate<DAL.Models.CoinModel> _sourceForUpdate;
 
-        public ListOfCoins()
-        {
+		public ListOfCoins()
+		{
 			_sourceForRead = new TableCoins();
 			_sourceForReadById = new TableCoins();
 			_sourceForInsert = new TableCoins();
 			_sourceForUpdate = new TableCoins();
-        }
+		}
+
+		////Получение всех данных
+		//public async IAsyncEnumerable<CoinBLLModel> GetAllAsync()
+		//{
+		//	var result = await _sourceForRead.GetAllAsync();
+		//	foreach (var item in result)
+		//	{
+		//		yield return Mappers.MapperBL.MapCoinDALToCoinBLL(item);
+		//	}
+		//}
 
 		//Получение всех данных
-		public async IAsyncEnumerable<CoinBLLModel> GetAllAsync()
+		public async Task<IEnumerable<CoinBLLModel>> GetAllAsync()
 		{
 			var result = await _sourceForRead.GetAllAsync();
+			var temp = new List<CoinBLLModel>();
 			foreach (var item in result)
 			{
-				yield return Mappers.MapperBL.MapCoinDALToCoinBLL(item);
+				temp.Add(Mappers.MapperBL.MapCoinDALToCoinBLL(item));
 			}
+			return temp;
 		}
+
+
+
 		//Получение данных по Id
 		public async Task<CoinBLLModel> GetByIdAsync(int id, string t = "Id")
 		{

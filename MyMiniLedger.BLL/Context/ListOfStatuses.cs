@@ -25,14 +25,26 @@ namespace MyMiniLedger.BLL.Context
 			_sourceForUpdate = new TableStatuses();
 		}
 
+		////Получение всех данных
+		//public async IAsyncEnumerable<StatusBLLModel> GetAllAsync()
+		//{
+		//	var result = await _sourceForRead.GetAllAsync();
+		//	foreach (var item in result)
+		//	{
+		//		yield return Mappers.MapperBL.MapStatusDALToStatusBLL(item);
+		//	}
+		//}
+
 		//Получение всех данных
-		public async IAsyncEnumerable<StatusBLLModel> GetAllAsync()
+		public async Task<IEnumerable<StatusBLLModel>> GetAllAsync()
 		{
 			var result = await _sourceForRead.GetAllAsync();
+			List<StatusBLLModel> tempResult = new List<StatusBLLModel>();
 			foreach (var item in result)
 			{
-				yield return Mappers.MapperBL.MapStatusDALToStatusBLL(item);
+				tempResult.Add(Mappers.MapperBL.MapStatusDALToStatusBLL(item));
 			}
+			return tempResult;
 		}
 
 		//Получение данных по Id

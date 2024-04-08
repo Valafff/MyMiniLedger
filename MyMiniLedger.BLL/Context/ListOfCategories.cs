@@ -26,15 +26,30 @@ namespace MyMiniLedger.BLL.Context
 			_sourceForUpdate = new TableCategories();
 		}
 
+		////Получение всех данных
+		//public async IAsyncEnumerable<CategoryBLLModel> GetAllAsync()
+		//{
+		//	var result = await _sourceForRead.GetAllAsync();
+		//	foreach (var item in result)
+		//	{
+		//		yield return Mappers.MapperBL.MapCategoryDALToCategoryBLL(item);
+		//	}
+		//}
+
+
 		//Получение всех данных
-		public async IAsyncEnumerable<CategoryBLLModel> GetAllAsync()
+		public async Task<IEnumerable<CategoryBLLModel>> GetAllAsync()
 		{
 			var result = await _sourceForRead.GetAllAsync();
+			List<CategoryBLLModel> enumerable = new List<CategoryBLLModel>();
+
 			foreach (var item in result)
 			{
-				yield return Mappers.MapperBL.MapCategoryDALToCategoryBLL(item);
+				enumerable.Add( Mappers.MapperBL.MapCategoryDALToCategoryBLL(item));
 			}
+			return enumerable.AsEnumerable();
 		}
+
 		//Получение данных по Id
 		public async Task <CategoryBLLModel> GetByIdAsync(int id, string t = "Id")
 		{
