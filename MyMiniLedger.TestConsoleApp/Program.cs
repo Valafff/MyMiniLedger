@@ -62,7 +62,9 @@ Console.WriteLine(res);
 //	Console.WriteLine(kind.CategoryId + " " + kind.Kind + " " + kind.Id);
 //}
 
-var data4 = tpos.GetAllAsync().Result;
+var data4 = await tpos.GetAllAsync();
+
+
 foreach (var pos in data4)
 {
 	Console.WriteLine($"{pos.Id}   {pos.PositionKey}	{pos.OpenDate}	{pos.CloseDate}   {pos.KindId}	{pos.Income}   {pos.Expense}   {pos.Saldo}   {pos.CoinId}  {pos.StatusId}   {pos.Tag}	{pos.Notes}");

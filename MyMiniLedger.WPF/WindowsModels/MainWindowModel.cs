@@ -13,7 +13,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 	public class MainWindowModel : BaseNotify
 	{
 		private readonly Context _context;
-		private string _title = "Минибухгалтерия";
+		private string _title = "МиниДомашняяБухгалтерия";
         public string Title 
 		{
 			get => _title;
@@ -26,18 +26,25 @@ namespace MyMiniLedger.WPF.WindowsModels
 		public ObservableCollection<KindUIModel> Kinds { get; set; }
 		public ObservableCollection<StatusUIModel> Statuses { get; set; }
 
+		public LambdaCommand MyTestCommand { get; set; }
+
+		//Так не привязывается
+		public List<string> searchTypes { get; set; } = new List<string> { "Номер позиции", "Категория", "Вид", "Валюта", "Тег", "Статус" };
 
 		public MainWindowModel()
 		{
 			//ToDo В файле сделать базовые настройки строк, дат, пользователя 
 			var cf = new BLL.InitConfigBLL("config.json");
 
-			_context = new BLL.Context.Context();
+			//searchTypes = new string[] { "Номер позиции", "Категория", "Вид", "Валюта", "Тег", "Статус" };
 
+			_context = new BLL.Context.Context();
 			//Инициализация позиций
 			BLL.Context.ListOfPositions tempPos = new BLL.Context.ListOfPositions();
-			////.Net 6.0 не поддерживает .ToBlockingEnumerable()
+
+			//.Net 6.0 не поддерживает .ToBlockingEnumerable()
 			List<PositionUIModel> tempPositionsAsync = tempPos.GetAllAsync().Result.Select(pos => Mappers.UIMapper.MapPositionBLLToPositionUI(pos)).ToList();
+
 			//Удаление Deleted позиций
 			tempPositionsAsync = ViewTools.FormatterPositions.ErasePosFromTableByStatus(tempPositionsAsync, "Deleted");
 			//Удаление нулевой даты
@@ -69,7 +76,24 @@ namespace MyMiniLedger.WPF.WindowsModels
 			BLL.Context.ListOfStatuses tempStat = new BLL.Context.ListOfStatuses();
 			List<StatusUIModel> tempStatuses = tempStat.GetAllAsync().Result.Select(stat => Mappers.UIMapper.MapStatusBLLToStatusUI(stat)).ToList();
 			Statuses = new ObservableCollection<StatusUIModel>(tempStatuses);
+
 		}
+
+
+
+		//public class testClass
+		//{
+		//	public IEnumerable<PositionBLLModel> _asyncClass { get; set; }
+
+		//	public async Task AssignAsyncClass(Task<IEnumerable<PositionBLLModel>> inputClass)
+		//	{
+		//		// Ожидаем выполнение асинхронного метода
+		//		IEnumerable<PositionBLLModel> result = await inputClass;
+
+		//		// Теперь можно использовать результат в основном потоке
+		//		_asyncClass = result;
+		//	}
+		//}
 
 	}
 }

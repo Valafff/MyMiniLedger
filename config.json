@@ -1,0 +1,7 @@
+﻿{
+  "ServerName": "(localdb)\\MSSQLLocalDB",
+  "DBname": "TestLedger",
+  "AuthenticationMethod": "Integrated Security=SSPI",
+  "UserId": "",
+  "Password": ""
+}

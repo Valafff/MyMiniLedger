@@ -15,7 +15,7 @@ namespace MyMiniLedger.WPF.ViewTools
         public static List<PositionUIModel> ErasePosFromTableByStatus(List<PositionUIModel> _ps, string _status = "Deleted")
         {
             List<PositionUIModel> ResultPositionsList = new List<PositionUIModel>();
-            foreach (var item in _ps)
+             foreach (var item in _ps)
             {
                 if (item.Status.StatusName != _status)
                 {
