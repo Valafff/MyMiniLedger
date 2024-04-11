@@ -1,12 +1,63 @@
 ﻿<Window x:Class="MyMiniLedger.WPF.Windows.CategoryWindow.CategoryWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:wm="clr-namespace:MyMiniLedger.WPF.WindowsModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MyMiniLedger.WPF.Windows.CategoryWindow"
+        
+
+        
         mc:Ignorable="d"
-        Title="CategoryWindow" Height="450" Width="800">
+        Title="{Binding Path=Title}" Height="300" Width="450">
+
+    <Window.DataContext>
+        <wm:CategoryWindowModel/>
+    </Window.DataContext>
+
+
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="2*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <TextBox x:Name="tb_EditCategory" Grid.Row="0" Text="{Binding Path=SelectedCategory.Category, UpdateSourceTrigger=PropertyChanged}"/>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Margin="2,2,2,2" Command="{Binding Path=AddToCategory}"  >
+                    <TextBlock TextAlignment="Center">Добавить/Редактировать<LineBreak/>категорию</TextBlock >
+                </Button>
+                <Button Grid.Column="1" Content="Удалить категорию" Margin="2,2,2,2"/>
+                <Button Grid.Column="2" Content="Выход" Margin="2,2,2,2" Click ="ButtonExit_Click"/>
+            </Grid>
+        </Grid>
+       
+        <DockPanel Grid.Row="1" >
+            <DataGrid x:Name="CategoriesList" ItemsSource="{Binding Categories, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False" CanUserAddRows="False" MouseDoubleClick="CategoriesList_MouseDoubleClick" >
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Номер поз." Binding="{Binding Path=Category, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="*"/>
+                </DataGrid.Columns>
+            </DataGrid>
+            
+            <!--<ListView x:Name="CategoriesList" ItemsSource="{Binding Categories}" >
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Path=Category}"/>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>-->
+            
+            <!--<TextBox x:Name="TestTB" Text="{Binding Path=SelectedCategory.Category, UpdateSourceTrigger=PropertyChanged}"/>-->
+        </DockPanel>
         
     </Grid>
 </Window>

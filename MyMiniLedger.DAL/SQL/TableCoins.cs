@@ -24,13 +24,13 @@ namespace MyMiniLedger.DAL.SQL
 		public async Task InsertAsync(CoinModel entity)
 		{
 			string sql = $"insert into Coins (ShortName, FullName, CoinNotes) values (N'{entity.ShortName}', N'{entity.FullName}', N'{entity.CoinNotes}') ";
-			await SQLService<CoinModel>.UpdateAndInsertAsync(sql);
+			await SQLService<CoinModel>.UpdateInsertDeleteAsync(sql);
 		}
 
 		public async Task UpdateAsync(CoinModel entity)
 		{
 			string sql = $"update Coins set ShortName = N'{entity.ShortName}', FullName = N'{entity.FullName}', CoinNotes = N'{entity.CoinNotes}' where  id = {entity.Id}";
-			await SQLService<CoinModel>.UpdateAndInsertAsync(sql);
+			await SQLService<CoinModel>.UpdateInsertDeleteAsync(sql);
 		}
 	}
 }

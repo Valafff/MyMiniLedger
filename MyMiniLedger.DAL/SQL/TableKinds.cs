@@ -24,13 +24,13 @@ namespace MyMiniLedger.DAL.SQL
 		public async Task InsertAsync(KindModel entity)
 		{
 			string sql = $"insert into Kinds (CategoryId, Kind) values ({entity.CategoryId}, N'{entity.Kind}') ";
-			await SQLService<KindModel>.UpdateAndInsertAsync(sql);
+			await SQLService<KindModel>.UpdateInsertDeleteAsync(sql);
 		}
 
 		public async Task UpdateAsync(KindModel entity)
 		{
 			string sql = $"update Kinds set CategoryId = {entity.CategoryId}, Kind = N'{entity.Kind}' where  id = {entity.Id}";
-			await SQLService<KindModel>.UpdateAndInsertAsync(sql);
+			await SQLService<KindModel>.UpdateInsertDeleteAsync(sql);
 		}
 	}
 }

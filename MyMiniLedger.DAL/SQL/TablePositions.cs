@@ -29,7 +29,7 @@ namespace MyMiniLedger.DAL.SQL
 			string sql = $"insert into Positions (PositionKey, OpenDate, CloseDate, KindId, Income, Expense, Saldo, CoinId, StatusId, Tag, Notes)" +
 				$" values ({entity.PositionKey}, N'{entity.OpenDate}', N'{entity.CloseDate}', {entity.KindId}, {entity.Income}, {entity.Expense}, {entity.Saldo}," +
 				$" {entity.CoinId}, {entity.StatusId}, N'{entity.Tag}', N'{entity.Notes}') ";
-			await SQLService<KindModel>.UpdateAndInsertAsync(sql);
+			await SQLService<KindModel>.UpdateInsertDeleteAsync(sql);
 		}
 
 		public async Task UpdateAsync(PositionModel entity)
@@ -39,7 +39,7 @@ namespace MyMiniLedger.DAL.SQL
 			string sql = $"update Positions set PositionKey = {entity.PositionKey}, OpenDate = N'{entity.OpenDate}', CloseDate = N'{entity.CloseDate}', KindId = {entity.KindId}," +
 				$" Income = {entity.Income}, Expense = {entity.Expense}, Saldo = {entity.Saldo}, CoinId = {entity.CoinId}, StatusId = {entity.StatusId}," +
 				$" Tag = N'{entity.Tag}', Notes = N'{entity.Notes}' where  id = {entity.Id}";
-			await SQLService<PositionModel>.UpdateAndInsertAsync(sql);
+			await SQLService<PositionModel>.UpdateInsertDeleteAsync(sql);
 		}
 	}
 }

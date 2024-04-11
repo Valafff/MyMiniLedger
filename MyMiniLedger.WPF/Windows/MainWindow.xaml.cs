@@ -1,16 +1,5 @@
-﻿using System.Text;
+﻿using MyMiniLedger.WPF.WindowsModels;
 using System.Windows;
-using MyMiniLedger.BLL.Models;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using MyMiniLedger.WPF.Models;
-using System.Collections.ObjectModel;
 
 namespace MyMiniLedger.WPF
 {
@@ -23,7 +12,6 @@ namespace MyMiniLedger.WPF
 		public MainWindow()
 		{
 			InitializeComponent();
-
 			// Не получилось забиндить через VM
 			datePiker_Start.SelectedDate = new DateTime(DateTime.Now.Year, 1, 1);
 			datePiker_End.SelectedDate = DateTime.Now;
@@ -32,11 +20,21 @@ namespace MyMiniLedger.WPF
 			//List<string> searchTypes = new List<string> { "Номер позиции", "Категория", "Вид", "Валюта", "Тег", "Статус" };
 			//cb_Search_MenuItem.ItemsSource = searchTypes;
 			//cb_Search_MenuItem.SelectedIndex = 0;
+			//(this.DataContext as MainWindowModel).cf.
 		}
 
 		private void MenuItem_Click(object sender, RoutedEventArgs e)
 		{
 			this.Close();
+		}
+
+		//Закрытие всех окон через событие
+		private void Window_Closed(object sender, EventArgs e)
+		{
+			foreach (Window windows in App.Current.Windows)
+			{
+				windows.Close();
+			}
 		}
 	}
 

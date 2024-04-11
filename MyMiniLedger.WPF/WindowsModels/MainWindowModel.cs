@@ -1,6 +1,8 @@
-﻿using MyMiniLedger.BLL.Context;
+﻿using MyMiniLedger.BLL;
+using MyMiniLedger.BLL.Context;
 using MyMiniLedger.BLL.Models;
 using MyMiniLedger.WPF.Models;
+using MyMiniLedger.WPF.Windows.CategoryWindow;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,31 +14,35 @@ namespace MyMiniLedger.WPF.WindowsModels
 {
 	public class MainWindowModel : BaseNotify
 	{
+		public InitConfigBLL cf { get; set; }
 		private readonly Context _context;
 		private string _title = "МиниДомашняяБухгалтерия";
-        public string Title 
+		public string Title
 		{
 			get => _title;
 			set => SetField(ref _title, value);
 		}
 
-        public ObservableCollection<PositionUIModel> Positions { get; set; }
+		public ObservableCollection<PositionUIModel> Positions { get; set; }
 		public ObservableCollection<CategoryUIModel> Categories { get; set; }
 		public ObservableCollection<CoinUIModel> Coins { get; set; }
 		public ObservableCollection<KindUIModel> Kinds { get; set; }
 		public ObservableCollection<StatusUIModel> Statuses { get; set; }
 
-		public LambdaCommand MyTestCommand { get; set; }
+		public LambdaCommand OpenCategoryWindow { get; set; }
 
-		//Так не привязывается
-		public List<string> searchTypes { get; set; } = new List<string> { "Номер позиции", "Категория", "Вид", "Валюта", "Тег", "Статус" };
+		//Для привязки поле должно быть пропой {get; set;}
+		//public List<string> searchTypes { get; set; } = new List<string> { "Номер позиции", "Категория", "Вид", "Валюта", "Тег", "Статус" };
+		public string[] searchTypes { get; set; } = new string[] { "Номер позиции", "Категория", "Вид", "Валюта", "Тег", "Статус" };
+
 
 		public MainWindowModel()
 		{
 			//ToDo В файле сделать базовые настройки строк, дат, пользователя 
-			var cf = new BLL.InitConfigBLL("config.json");
+			cf = new BLL.InitConfigBLL("config.json");
 
-			//searchTypes = new string[] { "Номер позиции", "Категория", "Вид", "Валюта", "Тег", "Статус" };
+			////Тестовое открытие формы при запуске приложения
+			//new CategoryWindow().Show();
 
 			_context = new BLL.Context.Context();
 			//Инициализация позиций
@@ -77,7 +83,10 @@ namespace MyMiniLedger.WPF.WindowsModels
 			List<StatusUIModel> tempStatuses = tempStat.GetAllAsync().Result.Select(stat => Mappers.UIMapper.MapStatusBLLToStatusUI(stat)).ToList();
 			Statuses = new ObservableCollection<StatusUIModel>(tempStatuses);
 
+			OpenCategoryWindow = new LambdaCommand( execute => { new CategoryWindow().Show(); });
 		}
+
+	
 
 
 

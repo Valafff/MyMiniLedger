@@ -63,11 +63,12 @@ namespace MyMiniLedger.DAL.Services
 		//}
 
 		// Обновление и добавление данных
-		public static async Task UpdateAndInsertAsync(string sql)
+		public static async Task UpdateInsertDeleteAsync(string sql)
 		{
 			 _DBconnection.OpenAsync().Wait();
 			 _DBconnection.ExecuteAsync(sql).Wait();
 			 _DBconnection.CloseAsync().Wait();
 		}
+
 	}
 }

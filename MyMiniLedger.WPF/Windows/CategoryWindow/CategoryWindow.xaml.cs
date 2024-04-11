@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MyMiniLedger.WPF.Models;
+using MyMiniLedger.WPF.WindowsModels;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+
 
 namespace MyMiniLedger.WPF.Windows.CategoryWindow
 {
@@ -22,6 +15,25 @@ namespace MyMiniLedger.WPF.Windows.CategoryWindow
 		public CategoryWindow()
 		{
 			InitializeComponent();
+
+			//(DataContext as CategoryWindowModel).
 		}
+
+		private void CategoriesList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+		{
+			tb_EditCategory.Text = ((CategoryUIModel)CategoriesList.SelectedItem).Category.ToString();
+		}
+
+		private void ButtonExit_Click(object sender, RoutedEventArgs e)
+		{
+			this.Close();
+		}
+
+		private void tb_EditCategory_TextChanged(object sender, TextChangedEventArgs e)
+		{
+		
+		}
+
+	
 	}
 }

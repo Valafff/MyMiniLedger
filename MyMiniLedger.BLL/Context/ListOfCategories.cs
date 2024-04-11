@@ -17,6 +17,7 @@ namespace MyMiniLedger.BLL.Context
 		private readonly IReadById<DAL.Models.CategoryModel> _sourceForReadById;
 		private readonly ICreate<DAL.Models.CategoryModel> _sourceForInsert;
 		private readonly IUpdate<DAL.Models.CategoryModel> _sourceForUpdate;
+		private readonly IDeleteHard<DAL.Models.CategoryModel> _sourceForDelete;
 
 		public ListOfCategories()
 		{
@@ -71,7 +72,11 @@ namespace MyMiniLedger.BLL.Context
 
 		//Реализовать удаление с записью Deleted
 
-		//Реализовать полное удаление
 
+		//Реализовать полное удаление
+		public async Task DeleteAsync(CategoryBLLModel entity)
+		{
+			await _sourceForDelete.DeleteHardAsync(Mappers.MapperBL.MapCategoryBLLToCategoryDAL(entity));
+		}
 	}
 }
