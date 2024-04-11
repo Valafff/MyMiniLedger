@@ -25,6 +25,7 @@ namespace MyMiniLedger.BLL.Context
 			_sourceForReadById = new TableCategories();
 			_sourceForInsert = new TableCategories();
 			_sourceForUpdate = new TableCategories();
+			_sourceForDelete = new TableCategories();
 		}
 
 		////Получение всех данных
@@ -71,7 +72,6 @@ namespace MyMiniLedger.BLL.Context
 		}
 
 		//Реализовать удаление с записью Deleted
-
 
 		//Реализовать полное удаление
 		public async Task DeleteAsync(CategoryBLLModel entity)

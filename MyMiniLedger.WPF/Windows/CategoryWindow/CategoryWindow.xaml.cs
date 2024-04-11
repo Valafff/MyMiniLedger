@@ -16,12 +16,16 @@ namespace MyMiniLedger.WPF.Windows.CategoryWindow
 		{
 			InitializeComponent();
 
+			//Достучаться до полей WindowModel
 			//(DataContext as CategoryWindowModel).
 		}
 
 		private void CategoriesList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
 		{
 			tb_EditCategory.Text = ((CategoryUIModel)CategoriesList.SelectedItem).Category.ToString();
+			(DataContext as CategoryWindowModel).SelectedCategory.Id = ((CategoryUIModel)CategoriesList.SelectedItem).Id;
+			(DataContext as CategoryWindowModel).SelectedCategory.RefNumber = ((CategoryUIModel)CategoriesList.SelectedItem).RefNumber;
+
 		}
 
 		private void ButtonExit_Click(object sender, RoutedEventArgs e)
@@ -29,10 +33,6 @@ namespace MyMiniLedger.WPF.Windows.CategoryWindow
 			this.Close();
 		}
 
-		private void tb_EditCategory_TextChanged(object sender, TextChangedEventArgs e)
-		{
-		
-		}
 
 	
 	}
