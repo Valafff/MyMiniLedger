@@ -73,7 +73,7 @@ namespace MyMiniLedger.BLL.Context
 
 		//Реализовать удаление с записью Deleted
 
-		//Реализовать полное удаление
+		//Полное удаление
 		public async Task DeleteAsync(CategoryBLLModel entity)
 		{
 			await _sourceForDelete.DeleteHardAsync(Mappers.MapperBL.MapCategoryBLLToCategoryDAL(entity));

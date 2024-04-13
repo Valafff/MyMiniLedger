@@ -18,12 +18,12 @@ namespace MyMiniLedger.WPF.Models
 			set => SetField(ref _category, value);
 		}
 
-		//Для определения наличия связей к привязанной таблицк
-		private int _categoryid;
+		//Для определения наличия связей к привязанной таблице виды
+		private int _refumber;
 		public int RefNumber
 		{
-			get => _categoryid;
-			set => SetField(ref _categoryid, value);
+			get => _refumber;
+			set => SetField(ref _refumber, value);
 		}
 
 		public object Clone() => MemberwiseClone();

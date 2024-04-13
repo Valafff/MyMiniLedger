@@ -16,7 +16,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 	{
 		private readonly Context _context;
 
-		private string _title = "Окно редактированиея категорий";
+		private string _title = "Окно редактирования категорий";
 		public string Title
 		{
 			get => _title;

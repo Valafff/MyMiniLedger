@@ -34,6 +34,14 @@ namespace MyMiniLedger.WPF.Models
 			set => SetField(ref _kind, value);
 		}
 
+		//Для определения наличия связей к привязанной таблице позиции
+		private int _refumber;
+		public int RefNumber
+		{
+			get => _refumber;
+			set => SetField(ref _refumber, value);
+		}
+
 		//Глубокое копирование
 		public object Clone() => new KindUIModel(this._id, this._kind, new CategoryUIModel() { Id = this._category.Id, Category = this._category.Category });
 

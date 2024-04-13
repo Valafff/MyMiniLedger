@@ -17,6 +17,7 @@ namespace MyMiniLedger.BLL.Context
 		private readonly IReadById<DAL.Models.KindModel> _sourceForReadById;
 		private readonly ICreate<DAL.Models.KindModel> _sourceForInsert;
 		private readonly IUpdate<DAL.Models.KindModel> _sourceForUpdate;
+		private readonly IDeleteHard<DAL.Models.KindModel> _sourceForDelete;
 
 		TableCategories tempCatTable = new TableCategories();
 
@@ -26,6 +27,7 @@ namespace MyMiniLedger.BLL.Context
 			_sourceForReadById = new TableKinds();
 			_sourceForInsert = new TableKinds();
 			_sourceForUpdate = new TableKinds();
+			_sourceForDelete = new TableKinds();
 		}
 
 		////Получение всех данных
@@ -79,5 +81,9 @@ namespace MyMiniLedger.BLL.Context
 		//Реализовать удаление с записью Deleted
 
 		//Реализовать полное удаление
+		public async Task DeleteAsync(KindBLLModel entity)
+		{
+			await _sourceForDelete.DeleteHardAsync(Mappers.MapperBL.MapKindBLLToKindDAL(entity));
+		}
 	}
 }

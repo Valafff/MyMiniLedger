@@ -46,7 +46,12 @@ namespace MyMiniLedger.WPF.Mappers
 
         public static BLL.Models.KindBLLModel MapKindUIToKindBLL(KindUIModel _kind)
         {
-            return new BLL.Models.KindBLLModel() { Id = _kind.Id, Category = MapCategoryUIToCategoryBLL(_kind.Category), Kind = _kind.Kind };
+            return new BLL.Models.KindBLLModel() 
+            {
+                Id = _kind.Id, 
+                Category = MapCategoryUIToCategoryBLL(_kind.Category), 
+                Kind = _kind.Kind
+            };
         }
 
         //Перевод даты в string, перевод income expense saldo в string

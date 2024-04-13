@@ -8,12 +8,17 @@
         mc:Ignorable="d"
         Title="{Binding Path=Title}"
         d:DesignHeight="450" d:DesignWidth="750"
-        Closed="Window_Closed">
-    
+        Closed="Window_Closed"
+        >
+
 
     <Window.DataContext>
         <wm:MainWindowModel/>
     </Window.DataContext>
+
+
+
+
 
     <DockPanel>
         <Menu DockPanel.Dock="Top">
@@ -21,7 +26,7 @@
                 <MenuItem Header="Записать новую позицию"/>
                 <MenuItem Header="Редактировать/добавить валюту"/>
                 <MenuItem Header="Редактировать/добавить категорию" Command="{Binding Path=OpenCategoryWindow}"/>
-                <MenuItem Header="Редактировать/добавить вид"/>
+                <MenuItem Header="Редактировать/добавить вид" Command="{Binding Path=OpenKindWindow}"/>
                 <MenuItem Header="Создать резервную копию БД"/>
                 <MenuItem Header="Выход" Click="MenuItem_Click"/>
             </MenuItem>
@@ -49,7 +54,7 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                
+
                 <StatusBarItem Grid.Column="0">
                     <TextBlock Text="Баланс:"/>
                 </StatusBarItem>
@@ -81,18 +86,18 @@
             <DataGrid Grid.Row="0" ItemsSource="{Binding Path=Positions}" AutoGenerateColumns="False" CanUserAddRows="False" >
                 <DataGrid.Columns>
                     <!--<DataGridTextColumn Header="Id" Binding="{Binding Path=Id}" IsReadOnly="True"/>-->
-                    <DataGridTextColumn Header="Номер поз." Binding="{Binding Path=PositionKey}" IsReadOnly="True" Width="*"/>
-                    <DataGridTextColumn Header="Дата откр. поз." Binding="{Binding Path=OpenDate}" IsReadOnly="True" Width="*"/>
-                    <DataGridTextColumn Header="Дата закр. поз." Binding="{Binding Path=CloseDate}" IsReadOnly="True" Width="*"/>
-                    <DataGridTextColumn Header="Категория" Binding="{Binding Path=Kind.Category.Category}" IsReadOnly="True" Width="*"/>
-                    <DataGridTextColumn Header="Вид" Binding="{Binding Path=Kind.Kind}" IsReadOnly="True" Width="*"/>
-                    <DataGridTextColumn Header="Приход" Binding="{Binding Path=Income}" IsReadOnly="True" Width="*"/>
-                    <DataGridTextColumn Header="Расход" Binding="{Binding Path=Expense}" IsReadOnly="True" Width="*"/>
-                    <DataGridTextColumn Header="Сальдо" Binding="{Binding Path=Saldo}" IsReadOnly="True" Width="*"/>
-                    <DataGridTextColumn Header="Валюта" Binding="{Binding Path=Coin.ShortName}" IsReadOnly="True" Width="*"/>
-                    <DataGridTextColumn Header="Татус" Binding="{Binding Path=Status.StatusName}" IsReadOnly="True" Width="*"/>
-                    <DataGridTextColumn Header="Тэг" Binding="{Binding Path=Tag}" IsReadOnly="True" Width="*"/>
-                    <DataGridTextColumn Header="Примечания" Binding="{Binding Path=Notes}" IsReadOnly="True" Width="*"/>
+                    <DataGridTextColumn Header="Номер поз." Binding="{Binding Path=PositionKey, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="*"/>
+                    <DataGridTextColumn Header="Дата откр. поз." Binding="{Binding Path=OpenDate, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="*"/>
+                    <DataGridTextColumn Header="Дата закр. поз." Binding="{Binding Path=CloseDate, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="*"/>
+                    <DataGridTextColumn Header="Категория" Binding="{Binding Path=Kind.Category.Category, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="*"/>
+                    <DataGridTextColumn Header="Вид" Binding="{Binding Path=Kind.Kind, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="*"/>
+                    <DataGridTextColumn Header="Приход" Binding="{Binding Path=Income, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="*"/>
+                    <DataGridTextColumn Header="Расход" Binding="{Binding Path=Expense, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="*"/>
+                    <DataGridTextColumn Header="Сальдо" Binding="{Binding Path=Saldo, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="*"/>
+                    <DataGridTextColumn Header="Валюта" Binding="{Binding Path=Coin.ShortName, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="*"/>
+                    <DataGridTextColumn Header="Татус" Binding="{Binding Path=Status.StatusName, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="*"/>
+                    <DataGridTextColumn Header="Тэг" Binding="{Binding Path=Tag, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="*"/>
+                    <DataGridTextColumn Header="Примечания" Binding="{Binding Path=Notes, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="*"/>
                 </DataGrid.Columns>
             </DataGrid>
             <Grid Grid.Row="1">

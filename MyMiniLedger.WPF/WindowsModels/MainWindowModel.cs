@@ -3,6 +3,7 @@ using MyMiniLedger.BLL.Context;
 using MyMiniLedger.BLL.Models;
 using MyMiniLedger.WPF.Models;
 using MyMiniLedger.WPF.Windows.CategoryWindow;
+using MyMiniLedger.WPF.Windows.KindWindow;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -30,6 +31,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 		public ObservableCollection<StatusUIModel> Statuses { get; set; }
 
 		public LambdaCommand OpenCategoryWindow { get; set; }
+		public LambdaCommand OpenKindWindow { get; set; }
 
 		//Для привязки поле должно быть пропой {get; set;}
 		//public List<string> searchTypes { get; set; } = new List<string> { "Номер позиции", "Категория", "Вид", "Валюта", "Тег", "Статус" };
@@ -84,6 +86,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 			Statuses = new ObservableCollection<StatusUIModel>(tempStatuses);
 
 			OpenCategoryWindow = new LambdaCommand( execute => { new CategoryWindow().Show(); });
+			OpenKindWindow = new LambdaCommand(execute => { new KindWindow().Show(); });
 		}
 
 	

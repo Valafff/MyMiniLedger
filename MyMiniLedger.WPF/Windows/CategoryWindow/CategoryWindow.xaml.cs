@@ -32,8 +32,5 @@ namespace MyMiniLedger.WPF.Windows.CategoryWindow
 		{
 			this.Close();
 		}
-
-
-	
 	}
 }
