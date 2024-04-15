@@ -1,7 +1,7 @@
 ﻿//#define ConnectionStringTest
-#define ServicesTestReadAll
+//#define ServicesTestReadAll
 //#define ServicesTestReadById
-//#define ServicesTestInsert
+#define ServicesTestInsert
 //#define ServicesTestUpdate
 //#define TestBLLModel
 #define OnOffDAL
@@ -115,7 +115,7 @@ Console.WriteLine($"{data4.Id}   {data4.PositionKey}	{data4.OpenDate}	{data4.Clo
 //	Console.WriteLine(category.CategoryId + " " + category.Kind);
 //}
 
-var testpos = new PositionModel() { PositionKey = 100, OpenDate = DateTime.Now, CloseDate = DateTime.Now, KindId = 1, Income = 555.321M , Expense = 5.00001M, Saldo = 555.9874655555M, CoinId = 2, StatusId = 4, Tag = "Тест", Notes = "Тест" };
+var testpos = new PositionModel() { PositionKey = 100, OpenDate = DateTime.Now, CloseDate = DateTime.Now, KindId = 1, Income = 555.321M , Expense = 5.00001M, Saldo = 555.9874655555M, CoinId = 2, StatusId = 4, Tag = "Тест15", Notes = "Тест15" };
 await tpos.InsertAsync(testpos);
 
 #endif

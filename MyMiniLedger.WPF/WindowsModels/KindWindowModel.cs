@@ -91,6 +91,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 					//Добавление
 					_selectedKind.Category = SelectedCategory;
 					await _context.KindsTableBL.InsertAsync(Mappers.UIMapper.MapKindUIToKindBLL(_selectedKind));
+
 					//Обновление списка UI
 					var updatedKind = (tempKind.GetAllAsync().Result.Select(k => Mappers.UIMapper.MapKindBLLToKindUI(k)).ToList()).Where(t => t.Kind == _selectedKind.Kind);
 					var temp = _selectedKind.Clone();

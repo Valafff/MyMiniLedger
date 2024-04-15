@@ -81,7 +81,7 @@ namespace MyMiniLedger.WPF.Mappers
             {
                 Id = _pos.Id,
                 PositionKey = _pos.PositionKey,
-                OpenDate = Convert.ToDateTime(_pos.OpenDate),
+                OpenDate = Convert.ToDateTime(_pos.OpenDate),            
                 CloseDate = Convert.ToDateTime(_pos.CloseDate),
                 Kind = MapKindUIToKindBLL(_pos.Kind),
                 Income = Convert.ToDecimal(_pos.Income),

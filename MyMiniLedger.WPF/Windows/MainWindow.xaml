@@ -79,21 +79,21 @@
                 <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
 
-            <DataGrid Grid.Row="0" ItemsSource="{Binding Path=Positions}" AutoGenerateColumns="False" CanUserAddRows="False" >
+            <DataGrid Grid.Row="0" ItemsSource="{Binding Path=Positions, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" AutoGenerateColumns="False" CanUserAddRows="False" >
                 <DataGrid.Columns>
                     <!--<DataGridTextColumn Header="Id" Binding="{Binding Path=Id}" IsReadOnly="True"/>-->
-                    <DataGridTextColumn Header="Номер поз." Binding="{Binding Path=PositionKey, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="*"/>
-                    <DataGridTextColumn Header="Дата откр. поз." Binding="{Binding Path=OpenDate, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="*"/>
-                    <DataGridTextColumn Header="Дата закр. поз." Binding="{Binding Path=CloseDate, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="*"/>
-                    <DataGridTextColumn Header="Категория" Binding="{Binding Path=Kind.Category.Category, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="*"/>
-                    <DataGridTextColumn Header="Вид" Binding="{Binding Path=Kind.Kind, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="*"/>
-                    <DataGridTextColumn Header="Приход" Binding="{Binding Path=Income, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="*"/>
-                    <DataGridTextColumn Header="Расход" Binding="{Binding Path=Expense, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="*"/>
-                    <DataGridTextColumn Header="Сальдо" Binding="{Binding Path=Saldo, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="*"/>
-                    <DataGridTextColumn Header="Валюта" Binding="{Binding Path=Coin.ShortName, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="*"/>
-                    <DataGridTextColumn Header="Татус" Binding="{Binding Path=Status.StatusName, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="*"/>
-                    <DataGridTextColumn Header="Тэг" Binding="{Binding Path=Tag, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="*"/>
-                    <DataGridTextColumn Header="Примечания" Binding="{Binding Path=Notes, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="*"/>
+                    <DataGridTextColumn Header="Номер поз." Binding="{Binding Path=PositionKey, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsReadOnly="True" Width="*"/>
+                    <DataGridTextColumn Header="Дата откр. поз." Binding="{Binding Path=OpenDate, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsReadOnly="True" Width="*"/>
+                    <DataGridTextColumn Header="Дата закр. поз." Binding="{Binding Path=CloseDate, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsReadOnly="True" Width="*"/>
+                    <DataGridTextColumn Header="Категория" Binding="{Binding Path=Kind.Category.Category, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsReadOnly="True" Width="*"/>
+                    <DataGridTextColumn Header="Вид" Binding="{Binding Path=Kind.Kind, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsReadOnly="True" Width="*"/>
+                    <DataGridTextColumn Header="Приход" Binding="{Binding Path=Income, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsReadOnly="True" Width="*"/>
+                    <DataGridTextColumn Header="Расход" Binding="{Binding Path=Expense, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsReadOnly="True" Width="*"/>
+                    <DataGridTextColumn Header="Сальдо" Binding="{Binding Path=Saldo, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsReadOnly="True" Width="*"/>
+                    <DataGridTextColumn Header="Валюта" Binding="{Binding Path=Coin.ShortName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsReadOnly="True" Width="*"/>
+                    <DataGridTextColumn Header="Татус" Binding="{Binding Path=Status.StatusName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsReadOnly="True" Width="*"/>
+                    <DataGridTextColumn Header="Тэг" Binding="{Binding Path=Tag, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsReadOnly="True" Width="*"/>
+                    <DataGridTextColumn Header="Примечания" Binding="{Binding Path=Notes, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsReadOnly="True" Width="*"/>
                 </DataGrid.Columns>
             </DataGrid>
             <Grid Grid.Row="1">
@@ -105,7 +105,7 @@
                     <Button Content="Создать/продолжить позицию" Margin="5,10,5,5" Height="30"/>
                     <Button Content="Изменить позицию"  Margin="5,5,5,5" Height="30"/>
                     <Button Content="Удалить позицию"  Margin="5,5,5,5" Height="30"/>
-                    <Button Content="Принудительно обновить данные"  Margin="5,5,5,5" Height="30"/>
+                    <Button Content="Принудительно обновить данные"  Margin="5,5,5,5" Height="30" Command="{Binding Path=RefreshPositions}"/>
                     <Button Content="Завершить работу" Margin="5,5,5,10" Height="30"/>
                 </StackPanel>
             </Grid>

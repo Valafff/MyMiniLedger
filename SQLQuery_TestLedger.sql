@@ -61,9 +61,9 @@ values ('Closed',N'Позиция закрыта'),
 ('Deleted', N'Позиция позиция удалена')
 
 insert into Coins(ShortName, FullName, CoinNotes)
-values ('RUB', N'Рубль', N'Дрова берёзовые'),
-('USD', N'Доллар США', N'Грязная зелёная бумажка'),
-('BTC', N'Bitcoin', N'Цифровое золото, вроде как')
+values ('RUB', N'Рубль', N'fiat'),
+('USD', N'Доллар США', N'fiat'),
+('BTC', N'Bitcoin', N'crypto')
 
 
 select PositionKey, OpenDate, CloseDate, Kind, Income, Expense, Saldo, ShortName, StatusName Tag, Notes 
@@ -82,3 +82,11 @@ select * from Coins
 select * from Kinds
 
 drop table Positions
+
+insert into Positions (PositionKey, OpenDate, CloseDate, KindId, Income, Expense, Saldo, CoinId, StatusId, Tag, Notes)
+values (100500, '04.15.2024 00:00:00', '04.15.2024 00:00:00', 7, 123, 0, 0, 1, 4, '123', '123') 
+
+insert into Positions (PositionKey, OpenDate, CloseDate, KindId, Income, Expense, Saldo, CoinId, StatusId, Tag, Notes)
+values (100500, N'04/15/2024 00:00:00',  N'04/15/2024 00:00:00', 7, 123, 0, 0, 1, 4, N'123', N'123') 
+
+

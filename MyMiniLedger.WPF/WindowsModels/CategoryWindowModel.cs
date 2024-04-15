@@ -75,6 +75,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 				{
 					await _context.CategoriesTableBL.InsertAsync(Mappers.UIMapper.MapCategoryUIToCategoryBLL(_selectedCategory));
 					var updatedCat = (tempCat.GetAllAsync().Result.Select(cat => Mappers.UIMapper.MapCategoryBLLToCategoryUI(cat)).ToList()).Where(t => t.Category == _selectedCategory.Category);
+					
 					var temp = _selectedCategory.Clone();
 					((CategoryUIModel)temp).Id = updatedCat.First().Id;
 					Categories.Add((CategoryUIModel)temp);

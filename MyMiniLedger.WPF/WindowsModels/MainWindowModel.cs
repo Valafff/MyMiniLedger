@@ -54,6 +54,10 @@ namespace MyMiniLedger.WPF.WindowsModels
 		public LambdaCommand OpenNewPositionWindow { get; set; }
 		public LambdaCommand InsertNewPosition { get; set; }
 
+
+		public LambdaCommand RefreshPositions { get; set; }
+
+
 		//Для привязки поле должно быть пропой {get; set;}
 		//public List<string> searchTypes { get; set; } = new List<string> { "Номер позиции", "Категория", "Вид", "Валюта", "Тег", "Статус" };
 		public string[] searchTypes { get; set; } = new string[] { "Номер позиции", "Категория", "Вид", "Валюта", "Тег", "Статус" };
@@ -109,19 +113,66 @@ namespace MyMiniLedger.WPF.WindowsModels
 			StatusesForUser = new ObservableCollection<StatusUIModel>();
 			setStatusesForUser(StatusesForService);
 
-			PositionConstruct = new PositionUIModel() { Kind = new KindUIModel() { Category = new CategoryUIModel()}, Coin = new CoinUIModel(), Status = new StatusUIModel() };
+			PositionConstruct = new PositionUIModel() { Kind = new KindUIModel() { Category = new CategoryUIModel() }, Coin = new CoinUIModel(), Status = new StatusUIModel() };
 
-			OpenCategoryWindow = new LambdaCommand( execute => { new CategoryWindow().Show(); });
+			OpenCategoryWindow = new LambdaCommand(execute => { new CategoryWindow().Show(); });
 			OpenKindWindow = new LambdaCommand(execute => { new KindWindow().Show(); });
 			OpenCoinWindow = new LambdaCommand(execute => { new CoinWindow().Show(); });
 			//OpenNewPositionWindow = new LambdaCommand(execute => { new NewPositionWindow().Show();  });
-			OpenNewPositionWindow = new LambdaCommand(execute => 
-			{ 
+			OpenNewPositionWindow = new LambdaCommand(execute =>
+			{
 				NewPositionWindow np = new NewPositionWindow();
 				np.Owner = Application.Current.MainWindow;
 				np.Show();
 			}
 			);
+
+			//Вставка новой позиции
+			InsertNewPosition = new LambdaCommand(
+				async execute =>
+				{
+					//Добавление
+					if ( PositionConstruct.CloseDate == null ) { PositionConstruct.CloseDate =   DateTime.MinValue.ToString(); }
+					//DateTime t = DateTime.ParseExact( PositionConstruct.OpenDate, "MM/dd/yyyy hh:mm:ss tt", null);
+					PositionConstruct.OpenDate = "15.04.2024 00:00:00";
+					PositionConstruct.CloseDate = "15.04.2024 00:00:00";
+					PositionConstruct.PositionKey = 100500;
+					await _context.PositionsTableBL.InsertAsync(Mappers.UIMapper.MapPositionUIToPositionBLL(PositionConstruct));
+					//Обновление списка UI
+					var maxId = (tempPos.GetAllAsync().Result.Select(p => Mappers.UIMapper.MapPositionBLLToPositionUI(p)).ToList()).Max(p => p.Id);
+					var updatedPos = (tempPos.GetAllAsync().Result.Select(p => Mappers.UIMapper.MapPositionBLLToPositionUI(p)).ToList()).Where(p => p.Id == maxId);
+					PositionUIModel temp = new PositionUIModel();
+					temp = updatedPos.First(t => t.Id == maxId);
+					Positions.Add(temp);
+
+					//var updatedPos = (tempPos.GetAllAsync().Result.Select(p => Mappers.UIMapper.MapPositionBLLToPositionUI(p)).ToList());
+					//Positions.Clear();
+					//foreach ( var item in updatedPos )
+					//{
+					//	Positions.Add(item);
+					//}
+				}
+			//canExecute => SelectedKind is not null &&
+			//SelectedKind.Kind != null &&
+			//Kinds.Any(k => k.Kind == _selectedKind.Kind) == false
+			);
+
+			RefreshPositions = new LambdaCommand(
+				execute =>
+				{
+					//var updatedPos = (tempPos.GetAllAsync().Result.Select(p => Mappers.UIMapper.MapPositionBLLToPositionUI(p)).ToList());
+					//Positions.Clear();
+					//foreach (var item in updatedPos)
+					//{
+					//	Positions.Add(item);
+					//}
+					var maxId = (tempPos.GetAllAsync().Result.Select(p => Mappers.UIMapper.MapPositionBLLToPositionUI(p)).ToList()).Max(p => p.Id);
+					var updatedPos = (tempPos.GetAllAsync().Result.Select(p => Mappers.UIMapper.MapPositionBLLToPositionUI(p)).ToList()).Where(p => p.Id == maxId);
+					PositionUIModel temp = new PositionUIModel();
+					temp = updatedPos.First(t => t.Id == maxId);
+					Positions.Add(temp);
+				}
+				);
 		}
 
 		void setStatusesForUser(ObservableCollection<StatusUIModel> _input)
@@ -148,5 +199,15 @@ namespace MyMiniLedger.WPF.WindowsModels
 				}
 			}
 		}
+
+		//public void hardUpdate(BLL.Context.ListOfPositions tempPos)
+		//{
+
+		//	var maxId = (tempPos.GetAllAsync().Result.Select(p => Mappers.UIMapper.MapPositionBLLToPositionUI(p)).ToList()).Max(p => p.Id);
+		//	var updatedPos = (tempPos.GetAllAsync().Result.Select(p => Mappers.UIMapper.MapPositionBLLToPositionUI(p)).ToList()).Where(p => p.Id == maxId);
+		//	PositionUIModel temp = new PositionUIModel();
+		//	temp = updatedPos.First(t => t.Id == maxId);
+		//	Positions.Add(temp);
+		//}
 	}
 }

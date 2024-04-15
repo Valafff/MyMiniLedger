@@ -26,77 +26,131 @@ namespace MyMiniLedger.WPF.Windows.NewPositionWindow
         {
             InitializeComponent();
 
-            dp_OpenDate.SelectedDate = DateTime.Now;
-
-
+			dp_OpenDate.SelectedDate = DateTime.Now;
 
 		}
-
-		
 
 		private void ComboBox_Category_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			((MainWindowModel)DataContext).PositionConstruct.Kind.Category.Category = ((CategoryUIModel)cb_Category.SelectedItem).Category;
-        }
+			((MainWindowModel)DataContext).PositionConstruct.Kind.Category.Id = ((CategoryUIModel)cb_Category.SelectedItem).Id;
+		}
 
 		private void ComboBox_Kind_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			((MainWindowModel)DataContext).PositionConstruct.Kind.Kind = ((KindUIModel)cb_Kind.SelectedItem).Kind;
+			((MainWindowModel)DataContext).PositionConstruct.Kind.Id = ((KindUIModel)cb_Kind.SelectedItem).Id;
+			((MainWindowModel)DataContext).PositionConstruct.Kind.Category = ((KindUIModel)cb_Kind.SelectedItem).Category;
 		}
 
 		private void TextBox_Income_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
 		{
-			//Замена точки на запятую для ввода с разных раскладок
-			if (e.Key == Key.OemPeriod)
-			{
-				e.Source = Key.OemComma;
-			}
+			textBoxinsertNumber(sender, e, tb_Income);
+		}
 
-			//if (!(Char.IsDigit(e.KeyChar)) && !((e.KeyChar == '.') && (textBox_Income.Text.IndexOf(".") == -1) && (textBox_Income.Text.Length != 0)))
+		private void TextBox_Expense_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+		{
+			textBoxinsertNumber(sender, e, tb_Expense);
+		}
+
+		private void cb_Coin_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			((MainWindowModel)DataContext).PositionConstruct.Coin.Id = ((CoinUIModel)cb_Coin.SelectedItem).Id;
+			((MainWindowModel)DataContext).PositionConstruct.Coin.ShortName = ((CoinUIModel)cb_Coin.SelectedItem).ShortName;
+			((MainWindowModel)DataContext).PositionConstruct.Coin.FullName = ((CoinUIModel)cb_Coin.SelectedItem).FullName;
+			((MainWindowModel)DataContext).PositionConstruct.Coin.CoinNotes = ((CoinUIModel)cb_Coin.SelectedItem).CoinNotes;
+		}
+
+		private void tb_Status_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			((MainWindowModel)DataContext).PositionConstruct.Status.Id = ((StatusUIModel)cb_Status.SelectedItem).Id;
+			((MainWindowModel)DataContext).PositionConstruct.Status.StatusName = ((StatusUIModel)cb_Status.SelectedItem).StatusName;
+			((MainWindowModel)DataContext).PositionConstruct.Status.StatusNotes = ((StatusUIModel)cb_Status.SelectedItem).StatusNotes;
+		}
+
+		private void Button_Exit_Click(object sender, RoutedEventArgs e)
+		{
+			Close();
+		}
+		private void ButtonUp_Click(object sender, RoutedEventArgs e)
+		{
+
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+		void textBoxinsertNumber(object sender, System.Windows.Input.KeyEventArgs e, System.Windows.Controls.TextBox textBox)
+		{
+			////Замена точки на запятую для ввода с разных раскладок
+			//if (e.Key == Key.OemPeriod)
 			//{
-			//	if (e.KeyChar != (char)Keys.Back)
-			//	{
-			//		e.Handled = true;
-			//	}
+			//	e.Source = Key.OemComma;
 			//}
 
-			if (!(Char.IsDigit((char)e.Key)) && !((e.Key == (Key)',') && (tb_Income.Text.IndexOf(",") == -1) && (tb_Income.Text.Length != 0)))
+			//Перевод в digit
+			var t = (char)KeyInterop.VirtualKeyFromKey(e.Key);
+			if (e.Key == Key.NumPad0)
 			{
-				if ((char)e.Key != (char)Keys.Back)
+				t = '0';
+			}
+			if (e.Key == Key.NumPad1)
+			{
+				t = '1';
+			}
+			if (e.Key == Key.NumPad2)
+			{
+				t = '2';
+			}
+			if (e.Key == Key.NumPad3)
+			{
+				t = '3';
+			}
+			if (e.Key == Key.NumPad4)
+			{
+				t = '4';
+			}
+			if (e.Key == Key.NumPad5)
+			{
+				t = '5';
+			}
+			if (e.Key == Key.NumPad6)
+			{
+				t = '6';
+			}
+			if (e.Key == Key.NumPad7)
+			{
+				t = '7';
+			}
+			if (e.Key == Key.NumPad8)
+			{
+				t = '8';
+			}
+			if (e.Key == Key.NumPad9)
+			{
+				t = '9';
+			}
+
+
+			if (!Char.IsDigit(t) && !((e.Key == Key.OemComma) && (textBox.Text.IndexOf(",") == -1) && (textBox.Text.Length != 0)))
+			{
+				if ((char)KeyInterop.VirtualKeyFromKey(e.Key) != (char)Keys.Back)
 				{
 					e.Handled = true;
 				}
 			}
-
-
-			////Замена точки на запятую для ввода с разных раскладок
-			//KeyboardChar = e.KeyChar;
-			//if (e.KeyChar == '.')
-			//{
-			//	e.KeyChar = ',';
-			//}
-
-			////if (!(Char.IsDigit(e.KeyChar)) && !((e.KeyChar == '.') && (textBox_Income.Text.IndexOf(".") == -1) && (textBox_Income.Text.Length != 0)))
-			////{
-			////	if (e.KeyChar != (char)Keys.Back)
-			////	{
-			////		e.Handled = true;
-			////	}
-			////}
-
-			//if (!(Char.IsDigit(e.KeyChar)) && !((e.KeyChar == ',') && (textBox_Income.Text.IndexOf(",") == -1) && (textBox_Income.Text.Length != 0)))
-			//{
-			//	if (e.KeyChar != (char)Keys.Back)
-			//	{
-			//		e.Handled = true;
-			//	}
-			//}
-
-		}
-
-		private void tb_Income_SizeChanged(object sender, SizeChangedEventArgs e)
-		{
-
+			else if (textBox.Text.IndexOf('0') == 0 && textBox.Text.IndexOf(',') != 1 && t == '0')
+			{
+				e.Handled = true;
+			}
 		}
 	}
 }
