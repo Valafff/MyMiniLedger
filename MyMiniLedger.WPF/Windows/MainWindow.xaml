@@ -9,22 +9,18 @@
         Title="{Binding Path=Title}"
         d:DesignHeight="450" d:DesignWidth="750"
         Closed="Window_Closed"
-        >
+        WindowStartupLocation="CenterScreen">
 
 
     <Window.DataContext>
         <wm:MainWindowModel/>
     </Window.DataContext>
 
-
-
-
-
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="Файл">
-                <MenuItem Header="Записать новую позицию"/>
-                <MenuItem Header="Редактировать/добавить валюту"/>
+                <MenuItem Header="Записать новую позицию" Command="{Binding Path=OpenNewPositionWindow}"/>
+                <MenuItem Header="Редактировать/добавить валюту" Command="{Binding Path=OpenCoinWindow}"/>
                 <MenuItem Header="Редактировать/добавить категорию" Command="{Binding Path=OpenCategoryWindow}"/>
                 <MenuItem Header="Редактировать/добавить вид" Command="{Binding Path=OpenKindWindow}"/>
                 <MenuItem Header="Создать резервную копию БД"/>

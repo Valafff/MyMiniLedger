@@ -3,13 +3,16 @@ using MyMiniLedger.BLL.Context;
 using MyMiniLedger.BLL.Models;
 using MyMiniLedger.WPF.Models;
 using MyMiniLedger.WPF.Windows.CategoryWindow;
+using MyMiniLedger.WPF.Windows.CoinWindow;
 using MyMiniLedger.WPF.Windows.KindWindow;
+using MyMiniLedger.WPF.Windows.NewPositionWindow;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace MyMiniLedger.WPF.WindowsModels
 {
@@ -23,15 +26,33 @@ namespace MyMiniLedger.WPF.WindowsModels
 			get => _title;
 			set => SetField(ref _title, value);
 		}
+		private string _createPostitle = "Создание новой позиции";
+		public string CreatePostitle
+		{
+			get => _createPostitle;
+			set => SetField(ref _createPostitle, value);
+		}
+
+		private PositionUIModel? _positionConstruct;
+		public PositionUIModel? PositionConstruct
+		{
+			get => _positionConstruct;
+			set => SetField(ref _positionConstruct, value);
+		}
+
 
 		public ObservableCollection<PositionUIModel> Positions { get; set; }
 		public ObservableCollection<CategoryUIModel> Categories { get; set; }
 		public ObservableCollection<CoinUIModel> Coins { get; set; }
 		public ObservableCollection<KindUIModel> Kinds { get; set; }
-		public ObservableCollection<StatusUIModel> Statuses { get; set; }
+		public ObservableCollection<StatusUIModel> StatusesForService { get; set; }
+		public ObservableCollection<StatusUIModel> StatusesForUser { get; set; }
 
 		public LambdaCommand OpenCategoryWindow { get; set; }
 		public LambdaCommand OpenKindWindow { get; set; }
+		public LambdaCommand OpenCoinWindow { get; set; }
+		public LambdaCommand OpenNewPositionWindow { get; set; }
+		public LambdaCommand InsertNewPosition { get; set; }
 
 		//Для привязки поле должно быть пропой {get; set;}
 		//public List<string> searchTypes { get; set; } = new List<string> { "Номер позиции", "Категория", "Вид", "Валюта", "Тег", "Статус" };
@@ -83,29 +104,49 @@ namespace MyMiniLedger.WPF.WindowsModels
 			//Инициализация статусов
 			BLL.Context.ListOfStatuses tempStat = new BLL.Context.ListOfStatuses();
 			List<StatusUIModel> tempStatuses = tempStat.GetAllAsync().Result.Select(stat => Mappers.UIMapper.MapStatusBLLToStatusUI(stat)).ToList();
-			Statuses = new ObservableCollection<StatusUIModel>(tempStatuses);
+			StatusesForService = new ObservableCollection<StatusUIModel>(tempStatuses);
+
+			StatusesForUser = new ObservableCollection<StatusUIModel>();
+			setStatusesForUser(StatusesForService);
+
+			PositionConstruct = new PositionUIModel() { Kind = new KindUIModel() { Category = new CategoryUIModel()}, Coin = new CoinUIModel(), Status = new StatusUIModel() };
 
 			OpenCategoryWindow = new LambdaCommand( execute => { new CategoryWindow().Show(); });
 			OpenKindWindow = new LambdaCommand(execute => { new KindWindow().Show(); });
+			OpenCoinWindow = new LambdaCommand(execute => { new CoinWindow().Show(); });
+			//OpenNewPositionWindow = new LambdaCommand(execute => { new NewPositionWindow().Show();  });
+			OpenNewPositionWindow = new LambdaCommand(execute => 
+			{ 
+				NewPositionWindow np = new NewPositionWindow();
+				np.Owner = Application.Current.MainWindow;
+				np.Show();
+			}
+			);
 		}
 
-	
-
-
-
-		//public class testClass
-		//{
-		//	public IEnumerable<PositionBLLModel> _asyncClass { get; set; }
-
-		//	public async Task AssignAsyncClass(Task<IEnumerable<PositionBLLModel>> inputClass)
-		//	{
-		//		// Ожидаем выполнение асинхронного метода
-		//		IEnumerable<PositionBLLModel> result = await inputClass;
-
-		//		// Теперь можно использовать результат в основном потоке
-		//		_asyncClass = result;
-		//	}
-		//}
-
+		void setStatusesForUser(ObservableCollection<StatusUIModel> _input)
+		{
+			foreach (var stat in _input)
+			{
+				if (stat.StatusName == "Open")
+				{
+					stat.StatusName = "Открыто";
+					StatusesForUser.Add(stat);
+				}
+				else if (stat.StatusName == "Closed")
+				{
+					stat.StatusName = "Закрыто";
+					StatusesForUser.Add(stat);
+				}
+				else if (stat.StatusName == "Deleted")
+				{
+					continue;
+				}
+				else
+				{
+					StatusesForUser.Add(stat);
+				}
+			}
+		}
 	}
 }

@@ -70,9 +70,9 @@ namespace MyMiniLedger.WPF.WindowsModels
 			Categories = new ObservableCollection<CategoryUIModel>(tempCategoriesAsync);
 
 			//Определение количества ссылок по Id
-			for (int i = 0; i < tempKindsAsync.Count - 1; i++)
+			for (int i = 0; i < tempKindsAsync.Count; i++)
 			{
-				for (int j = 0; j < tempPosAsync.Count - 1; j++)
+				for (int j = 0; j < tempPosAsync.Count; j++)
 				{
 					if (tempKindsAsync[i].Id == tempPosAsync[j].Kind.Id)
 					{

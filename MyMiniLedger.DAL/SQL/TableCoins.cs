@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MyMiniLedger.DAL.SQL
 {
-	public class TableCoins : ICreate<CoinModel>, IUpdate<CoinModel>, IReadAll<CoinModel>, IReadById<CoinModel>
+	public class TableCoins : ICreate<CoinModel>, IUpdate<CoinModel>, IReadAll<CoinModel>, IReadById<CoinModel>, IDeleteHard<CoinModel>
 	{
 		public async Task<IEnumerable<CoinModel>> GetAllAsync()
 		{
@@ -30,6 +30,12 @@ namespace MyMiniLedger.DAL.SQL
 		public async Task UpdateAsync(CoinModel entity)
 		{
 			string sql = $"update Coins set ShortName = N'{entity.ShortName}', FullName = N'{entity.FullName}', CoinNotes = N'{entity.CoinNotes}' where  id = {entity.Id}";
+			await SQLService<CoinModel>.UpdateInsertDeleteAsync(sql);
+		}
+
+		public async Task DeleteHardAsync(CoinModel entity)
+		{
+			string sql = $"delete from Coins where Id = {entity.Id}";
 			await SQLService<CoinModel>.UpdateInsertDeleteAsync(sql);
 		}
 	}

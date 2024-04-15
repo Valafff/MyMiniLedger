@@ -38,6 +38,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 		public LambdaCommand DeleteCategory { get; set; }
 		public LambdaCommand UpdateCategory { get; set; }
 
+
 		public CategoryWindowModel()
 		{
 			SelectedCategory = new CategoryUIModel();
@@ -53,9 +54,9 @@ namespace MyMiniLedger.WPF.WindowsModels
 			List<CategoryUIModel> tempCategoriesAsync = tempCat.GetAllAsync().Result.Select(cat => Mappers.UIMapper.MapCategoryBLLToCategoryUI(cat)).ToList();
 
 			//Определение количества ссылок по Id
-			for (int i = 0; i < tempCategoriesAsync.Count - 1; i++)
+			for (int i = 0; i < tempCategoriesAsync.Count; i++)
 			{
-				for (int j = 0; j < tempKindsAsync.Count - 1; j++)
+				for (int j = 0; j < tempKindsAsync.Count; j++)
 				{
 					if (tempCategoriesAsync[i].Id == tempKindsAsync[j].Category.Id)
 					{

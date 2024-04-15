@@ -16,6 +16,7 @@ namespace MyMiniLedger.BLL.Context
 		private readonly IReadById<DAL.Models.CoinModel> _sourceForReadById;
 		private readonly ICreate<DAL.Models.CoinModel> _sourceForInsert;
 		private readonly IUpdate<DAL.Models.CoinModel> _sourceForUpdate;
+		private readonly IDeleteHard<DAL.Models.CoinModel> _sourceForDelete;
 
 		public ListOfCoins()
 		{
@@ -23,6 +24,7 @@ namespace MyMiniLedger.BLL.Context
 			_sourceForReadById = new TableCoins();
 			_sourceForInsert = new TableCoins();
 			_sourceForUpdate = new TableCoins();
+			_sourceForDelete = new TableCoins();
 		}
 
 		////Получение всех данных
@@ -71,6 +73,10 @@ namespace MyMiniLedger.BLL.Context
 		//Реализовать удаление с записью Deleted
 
 		//Реализовать полное удаление
+		public async Task DeleteAsync(CoinBLLModel entity)
+		{
+			await _sourceForDelete.DeleteHardAsync(Mappers.MapperBL.MapCoinBLLToCoinDAL(entity));
+		}
 
 
 	}

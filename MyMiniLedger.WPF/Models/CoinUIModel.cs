@@ -32,6 +32,14 @@ namespace MyMiniLedger.WPF.Models
 			set => SetField(ref _coinNotes, value);
 		}
 
+		//Для определения наличия связей к привязанной таблице виды
+		private int _refumber;
+		public int RefNumber
+		{
+			get => _refumber;
+			set => SetField(ref _refumber, value);
+		}
+
 		public object Clone() => MemberwiseClone();
 	}
 }
