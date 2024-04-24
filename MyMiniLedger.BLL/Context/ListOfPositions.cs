@@ -17,6 +17,7 @@ namespace MyMiniLedger.BLL.Context
 		private readonly IReadById<DAL.Models.PositionModel> _sourceForReadById;
 		private readonly ICreate<DAL.Models.PositionModel> _sourceForInsert;
 		private readonly IUpdate<DAL.Models.PositionModel> _sourceForUpdate;
+		private readonly IDeleteHard<DAL.Models.PositionModel> _sourceForDelete;
 
 
 		TableCategories tempCatTable = new TableCategories();
@@ -24,13 +25,13 @@ namespace MyMiniLedger.BLL.Context
 		TableStatuses tempStatusesTable = new TableStatuses();
 		TableCoins tempCoinsTable = new TableCoins();
 
-
 		public ListOfPositions()
 		{
 			_sourceForRead = new TablePositions();
 			_sourceForReadById = new TablePositions();
 			_sourceForInsert = new TablePositions();
 			_sourceForUpdate = new TablePositions();
+			_sourceForDelete = new TablePositions();
 
 		}
 
@@ -82,9 +83,19 @@ namespace MyMiniLedger.BLL.Context
 			return Mappers.MapperBL.MapPositionDALToPositionBLL(result, tempKinds, tempCoins, tempStatuses, tempCategories);
 		}
 
-		//Вставка данных
-		public async Task InsertAsync(PositionBLLModel entity)
+		//Вставка данных с учетом максимальной позиции. Если позиция не передается, она расчитывается автоматически
+		public async Task InsertAsync(PositionBLLModel entity, int posKey = 0)
 		{
+			var max = (GetAllAsync().Result).Max(maxPos => maxPos.PositionKey);
+			if (posKey == 0)
+			{
+				entity.PositionKey = max+1;
+			}
+			//Установка текущего времени
+			entity.OpenDate = entity.OpenDate + DateTime.Now.TimeOfDay;
+			//Расчет сальдо
+			entity.Saldo = entity.Income - entity.Expense;
+			//Запись в БД
 			await _sourceForInsert.InsertAsync(Mappers.MapperBL.MapPositionBLLToPositionDAL(entity));
 		}
 
@@ -96,6 +107,10 @@ namespace MyMiniLedger.BLL.Context
 
 		//Реализовать удаление с записью Deleted
 
-		//Реализовать полное удаление
+		//Полное удаление
+		public async Task DeleteAsync(PositionBLLModel entity)
+		{
+			await _sourceForDelete.DeleteHardAsync(Mappers.MapperBL.MapPositionBLLToPositionDAL(entity));
+		}
 	}
 }

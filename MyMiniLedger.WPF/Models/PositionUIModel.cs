@@ -1,8 +1,11 @@
 ﻿
+using Microsoft.IdentityModel.Tokens;
+using MyMiniLedger.WPF.ViewTools;
+
 namespace MyMiniLedger.WPF.Models
 {
 	// BaseNotify реализует интерфейс INotifyPropertyChanged
-	public class PositionUIModel : BaseNotify, ICloneable
+	public class PositionUIModel : BaseNotify, ICloneable, IComparable
 	{
 		public PositionUIModel() { }
 
@@ -112,6 +115,16 @@ namespace MyMiniLedger.WPF.Models
 			var cloneCoin = new CoinUIModel() { Id = Coin.Id, ShortName = Coin.ShortName, FullName = Coin.FullName, CoinNotes = Coin.CoinNotes };
 			var cloneStatus = new StatusUIModel() { Id = Status.Id, StatusName = Status.StatusName, StatusNotes = Status.StatusNotes };	
 			return new PositionUIModel(_id, _positionKey, _openDate, _closeDate, cloneKind, _income, _expense, _saldo, cloneCoin, cloneStatus, _tag, _notes);
+		}
+
+		public int CompareTo(object? obj)
+		{
+			//Сортировка от большей позиции к меньшей
+            if (obj is PositionUIModel)
+            {
+				return -1 * PositionKey.CompareTo(((PositionUIModel)obj).PositionKey);
+			}
+			else throw new ArgumentException("Некорректное значение параметра");
 		}
 	}
 }

@@ -1,5 +1,7 @@
-﻿using MyMiniLedger.WPF.WindowsModels;
+﻿using MyMiniLedger.WPF.Models;
+using MyMiniLedger.WPF.WindowsModels;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace MyMiniLedger.WPF
 {
@@ -35,6 +37,11 @@ namespace MyMiniLedger.WPF
 			{
 				windows.Close();
 			}
+		}
+
+		private void DataGrid_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+		{
+			((MainWindowModel)DataContext).SelectedPosition = (PositionUIModel)(((DataGrid)sender).CurrentItem);
 		}
 	}
 

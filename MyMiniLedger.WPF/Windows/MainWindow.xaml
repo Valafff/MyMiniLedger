@@ -79,7 +79,7 @@
                 <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
 
-            <DataGrid Grid.Row="0" ItemsSource="{Binding Path=Positions, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" AutoGenerateColumns="False" CanUserAddRows="False" >
+            <DataGrid Grid.Row="0" ItemsSource="{Binding Path=Positions, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" AutoGenerateColumns="False" CanUserAddRows="False" SelectionChanged="DataGrid_SelectionChanged" >
                 <DataGrid.Columns>
                     <!--<DataGridTextColumn Header="Id" Binding="{Binding Path=Id}" IsReadOnly="True"/>-->
                     <DataGridTextColumn Header="Номер поз." Binding="{Binding Path=PositionKey, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsReadOnly="True" Width="*"/>
@@ -104,7 +104,7 @@
                 <StackPanel Grid.Column="1">
                     <Button Content="Создать/продолжить позицию" Margin="5,10,5,5" Height="30"/>
                     <Button Content="Изменить позицию"  Margin="5,5,5,5" Height="30"/>
-                    <Button Content="Удалить позицию"  Margin="5,5,5,5" Height="30"/>
+                    <Button Content="Удалить позицию"  Margin="5,5,5,5" Height="30" Command="{Binding Path=DeletePosition}"/>
                     <Button Content="Принудительно обновить данные"  Margin="5,5,5,5" Height="30" Command="{Binding Path=RefreshPositions}"/>
                     <Button Content="Завершить работу" Margin="5,5,5,10" Height="30"/>
                 </StackPanel>

@@ -33,22 +33,26 @@ namespace MyMiniLedger.WPF.Windows.KindWindow
 
 		private void KindsList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
 		{
-			//Выбор индекса для комбобокса
-			for (int i = 0; i < (DataContext as KindWindowModel).Categories.Count - 1; i++)
+			if (((KindUIModel)KindsList.SelectedItem) != null)
 			{
-				if (((KindUIModel)KindsList.SelectedItem).Category.Category == (DataContext as KindWindowModel).Categories[i].Category)
+				//Выбор индекса для комбобокса
+				for (int i = 0; i < (DataContext as KindWindowModel).Categories.Count - 1; i++)
 				{
-					cb_CategoriesForChange.SelectedIndex = i;
+					if (((KindUIModel)KindsList.SelectedItem).Category.Category == (DataContext as KindWindowModel).Categories[i].Category)
+					{
+						cb_CategoriesForChange.SelectedIndex = i;
+					}
 				}
-			}
-			tb_EditKind.Text = ((KindUIModel)KindsList.SelectedItem).Kind;
+				tb_EditKind.Text = ((KindUIModel)KindsList.SelectedItem).Kind;
 
-			//Присваиваю id и количество ссылок выбранному виду
-			(DataContext as KindWindowModel).SelectedKind.Id = ((KindUIModel)KindsList.SelectedItem).Id;
-			(DataContext as KindWindowModel).SelectedKind.Kind = ((KindUIModel)KindsList.SelectedItem).Kind;
-			(DataContext as KindWindowModel).SelectedKind.RefNumber = ((KindUIModel)KindsList.SelectedItem).RefNumber;
-			//Передача выбранной категории
-			(DataContext as KindWindowModel).SelectedKind.Category = ((KindUIModel)KindsList.SelectedItem).Category;
+				//Присваиваю id и количество ссылок выбранному виду
+				(DataContext as KindWindowModel).SelectedKind.Id = ((KindUIModel)KindsList.SelectedItem).Id;
+				(DataContext as KindWindowModel).SelectedKind.Kind = ((KindUIModel)KindsList.SelectedItem).Kind;
+				(DataContext as KindWindowModel).SelectedKind.RefNumber = ((KindUIModel)KindsList.SelectedItem).RefNumber;
+				//Передача выбранной категории
+				(DataContext as KindWindowModel).SelectedKind.Category = ((KindUIModel)KindsList.SelectedItem).Category;
+			}
+			
 		}
 
 		private void cb_CategoriesForChange_SelectionChanged(object sender, SelectionChangedEventArgs e)

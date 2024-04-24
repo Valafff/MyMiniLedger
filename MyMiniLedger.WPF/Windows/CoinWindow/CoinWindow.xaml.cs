@@ -16,38 +16,27 @@ using System.Windows.Shapes;
 
 namespace MyMiniLedger.WPF.Windows.CoinWindow
 {
-    /// <summary>
-    /// Interaction logic for CoinWindow.xaml
-    /// </summary>
-    public partial class CoinWindow : Window
-    {
-        public CoinWindow()
-        {
-            InitializeComponent();
-			
-        }
+	/// <summary>
+	/// Interaction logic for CoinWindow.xaml
+	/// </summary>
+	public partial class CoinWindow : Window
+	{
+		public CoinWindow()
+		{
+			InitializeComponent();
+
+		}
 
 		private void CoinsList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
 		{
-            tb_EditCoinName.Text = ((CoinUIModel)CoinsList.SelectedItem).ShortName;
-			tb_EditCoinFullName.Text = ((CoinUIModel)CoinsList.SelectedItem).FullName;
-			tb_EditCoinNotes.Text = ((CoinUIModel)CoinsList.SelectedItem).CoinNotes;
-			(DataContext as CoinWindowModel).SelectedCoin.Id = ((CoinUIModel)CoinsList.SelectedItem).Id;
-			(DataContext as CoinWindowModel).SelectedCoin.RefNumber = ((CoinUIModel)CoinsList.SelectedItem).RefNumber;
-
-
-			//if (tb_EditCoinNotes.Text.Contains("crypto"))
-			//{
-			//	rb_Crypto.IsChecked = true;
-			//}
-			//if (tb_EditCoinNotes.Text.Contains("fiat"))
-			//{
-			//	rb_Fiat.IsChecked = true;
-			//}
-			//else 
-			//{
-			//	rb_Other.IsChecked = true;
-			//}
+			if (((CoinUIModel)CoinsList.SelectedItem) != null)
+			{
+				tb_EditCoinName.Text = ((CoinUIModel)CoinsList.SelectedItem).ShortName;
+				tb_EditCoinFullName.Text = ((CoinUIModel)CoinsList.SelectedItem).FullName;
+				tb_EditCoinNotes.Text = ((CoinUIModel)CoinsList.SelectedItem).CoinNotes;
+				(DataContext as CoinWindowModel).SelectedCoin.Id = ((CoinUIModel)CoinsList.SelectedItem).Id;
+				(DataContext as CoinWindowModel).SelectedCoin.RefNumber = ((CoinUIModel)CoinsList.SelectedItem).RefNumber;
+			}
 		}
 
 		private void ButtonExit_Click(object sender, RoutedEventArgs e)

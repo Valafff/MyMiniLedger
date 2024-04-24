@@ -73,6 +73,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 			AddToCategory = new LambdaCommand(
 				async execute =>
 				{
+					_selectedCategory.RefNumber = 0;
 					await _context.CategoriesTableBL.InsertAsync(Mappers.UIMapper.MapCategoryUIToCategoryBLL(_selectedCategory));
 					var updatedCat = (tempCat.GetAllAsync().Result.Select(cat => Mappers.UIMapper.MapCategoryBLLToCategoryUI(cat)).ToList()).Where(t => t.Category == _selectedCategory.Category);
 					

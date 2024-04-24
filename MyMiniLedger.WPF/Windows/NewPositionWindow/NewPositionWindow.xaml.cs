@@ -22,12 +22,11 @@ namespace MyMiniLedger.WPF.Windows.NewPositionWindow
     /// </summary>
     public partial class NewPositionWindow : Window
     {
-        public NewPositionWindow()
+        public NewPositionWindow(MainWindowModel _mainWindowModel)
         {
-            InitializeComponent();
-
+			InitializeComponent();
+			DataContext = _mainWindowModel;
 			dp_OpenDate.SelectedDate = DateTime.Now;
-
 		}
 
 		private void ComboBox_Category_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -72,19 +71,11 @@ namespace MyMiniLedger.WPF.Windows.NewPositionWindow
 		{
 			Close();
 		}
-		private void ButtonUp_Click(object sender, RoutedEventArgs e)
+
+		private void dp_OpenDate_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
 		{
-
+			((MainWindowModel)DataContext).PositionConstruct.OpenDate = dp_OpenDate.DisplayDate.ToString();
 		}
-
-
-
-
-
-
-
-
-
 
 
 
@@ -152,5 +143,7 @@ namespace MyMiniLedger.WPF.Windows.NewPositionWindow
 				e.Handled = true;
 			}
 		}
+
+
 	}
 }

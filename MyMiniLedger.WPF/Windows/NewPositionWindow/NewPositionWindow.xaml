@@ -9,10 +9,9 @@
         Title= "{Binding Path=CreatePostitle}" Height="260" Width="1200"
         WindowStartupLocation="CenterScreen">
 
-    <Window.DataContext>
+    <!--<Window.DataContext>
         <wm:MainWindowModel/>
-        <!--<wm:NewPositionWindowModel/>-->
-    </Window.DataContext>
+    </Window.DataContext>-->
 
     <Grid>
         <Grid.RowDefinitions>
@@ -43,15 +42,31 @@
             <TextBlock Grid.Row="0" Grid.Column="6" Text="Статус"  VerticalAlignment="Center"/>
             <TextBlock Grid.Row="0" Grid.Column="7" Text="Тег"  VerticalAlignment="Center"/>
 
-            <DatePicker Grid.Row="1" Grid.Column="0" x:Name="dp_OpenDate" SelectedDate="{Binding Path=PositionConstruct.OpenDate, UpdateSourceTrigger=PropertyChanged  }"  />
-            <ComboBox Grid.Row="1" Grid.Column="1" x:Name="cb_Category" ItemsSource="{Binding Path=Categories}" SelectedIndex="0" SelectionChanged="ComboBox_Category_SelectionChanged">
+            <DatePicker Grid.Row="1" Grid.Column="0" x:Name="dp_OpenDate" DataContextChanged="dp_OpenDate_DataContextChanged">
+                <!--<DatePicker.Resources>
+                    <Style TargetType="{x:Type DatePickerTextBox}">
+                        <Setter Property="Control.Template">
+                            <Setter.Value>
+                                <ControlTemplate>
+                                    <TextBox x:Name="PART_TextBox"
+                                 Width="113"
+                                 HorizontalContentAlignment="Stretch"
+                                 VerticalContentAlignment="Stretch"
+                                 Text="{Binding Path=SelectedDate, Converter={StaticResource DateTimeFormatter}, RelativeSource={RelativeSource AncestorType={x:Type DatePicker}}, ConverterParameter=dd-MMM-yyyy}"  BorderBrush="{DynamicResource BaseBorderBrush}" />
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </DatePicker.Resources>-->
+            </DatePicker>
+                <ComboBox Grid.Row="1" Grid.Column="1" x:Name="cb_Category" ItemsSource="{Binding Path=Categories}" SelectedIndex="0" SelectionChanged="ComboBox_Category_SelectionChanged">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding Path=Category}"/>
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>
-            <ComboBox Grid.Row="1" Grid.Column="2" x:Name="cb_Kind" ItemsSource="{Binding Path=Kinds, UpdateSourceTrigger=PropertyChanged}" SelectedIndex="0" SelectionChanged="ComboBox_Kind_SelectionChanged">
+            <ComboBox Grid.Row="1" Grid.Column="2" x:Name="cb_Kind" ItemsSource="{Binding Kinds}" SelectedIndex="0" SelectionChanged="ComboBox_Kind_SelectionChanged">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding Path=Kind, UpdateSourceTrigger=PropertyChanged}"/>
@@ -59,7 +74,7 @@
                 </ComboBox.ItemTemplate>
             </ComboBox>
             <TextBox Grid.Row="1" Grid.Column="3" x:Name="tb_Income" KeyDown="TextBox_Income_KeyDown" Text="{Binding Path=PositionConstruct.Income, UpdateSourceTrigger=PropertyChanged}"/>
-            <TextBox Grid.Row="1" Grid.Column="4" x:Name="tb_Expense" KeyDown="TextBox_Expense_KeyDown"/>
+            <TextBox Grid.Row="1" Grid.Column="4" x:Name="tb_Expense" KeyDown="TextBox_Expense_KeyDown" Text="{Binding Path=PositionConstruct.Expense, UpdateSourceTrigger=PropertyChanged}"/>
             <ComboBox Grid.Row="1" Grid.Column="5" x:Name="cb_Coin" ItemsSource="{Binding Path=Coins, UpdateSourceTrigger=PropertyChanged }" SelectedIndex="0" SelectionChanged ="cb_Coin_SelectionChanged">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
@@ -70,7 +85,7 @@
             <ComboBox Grid.Row="1" Grid.Column="6" x:Name="cb_Status" ItemsSource="{Binding Path=StatusesForUser, UpdateSourceTrigger=PropertyChanged}" SelectedIndex="0" SelectionChanged="tb_Status_SelectionChanged">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock Text="{Binding Path=StatusName}"/>
+                        <TextBlock Text="{Binding Path=StatusName, UpdateSourceTrigger=PropertyChanged}"/>
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>
@@ -101,11 +116,11 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
                     <Button Grid.Column="0" Content="Отменить и выйти"  Width="150" Height="50" Click="Button_Exit_Click" />
-                    <Button Grid.Column="1" Content="Добавить позицию" Width="150" Height="50" Command="{Binding Path=InsertNewPosition}" Click="ButtonUp_Click"/>
+                    <Button Grid.Column="1" Content="Добавить позицию" Width="150" Height="50" Command="{Binding Path=InsertNewPosition}"/>
                 </Grid>
 
             </Grid>
-            
+
         </Grid>
 
 

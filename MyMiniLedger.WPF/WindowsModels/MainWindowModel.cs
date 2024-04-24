@@ -1,4 +1,5 @@
-﻿using MyMiniLedger.BLL;
+﻿using Dapper;
+using MyMiniLedger.BLL;
 using MyMiniLedger.BLL.Context;
 using MyMiniLedger.BLL.Models;
 using MyMiniLedger.WPF.Models;
@@ -9,6 +10,7 @@ using MyMiniLedger.WPF.Windows.NewPositionWindow;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -40,6 +42,13 @@ namespace MyMiniLedger.WPF.WindowsModels
 			set => SetField(ref _positionConstruct, value);
 		}
 
+		private PositionUIModel? _selectedPosition;
+		public PositionUIModel? SelectedPosition
+		{
+			get => _selectedPosition;
+			set => SetField(ref _selectedPosition, value);
+		}
+
 
 		public ObservableCollection<PositionUIModel> Positions { get; set; }
 		public ObservableCollection<CategoryUIModel> Categories { get; set; }
@@ -53,10 +62,11 @@ namespace MyMiniLedger.WPF.WindowsModels
 		public LambdaCommand OpenCoinWindow { get; set; }
 		public LambdaCommand OpenNewPositionWindow { get; set; }
 		public LambdaCommand InsertNewPosition { get; set; }
+		public LambdaCommand DeletePosition {  get; set; }
 
 
 		public LambdaCommand RefreshPositions { get; set; }
-
+		public int MaxPosKey;
 
 		//Для привязки поле должно быть пропой {get; set;}
 		//public List<string> searchTypes { get; set; } = new List<string> { "Номер позиции", "Категория", "Вид", "Валюта", "Тег", "Статус" };
@@ -88,7 +98,10 @@ namespace MyMiniLedger.WPF.WindowsModels
 			//Отбрасывание 0 после разделителя в зависимости от типа валюты fiat crypto
 			tempPositionsAsync = ViewTools.FormatterPositions.EditDecemalPosFromTableByMarker(tempPositionsAsync, "fiat", "0.00");
 
+			tempPositionsAsync.Sort();
+
 			Positions = new ObservableCollection<PositionUIModel>(tempPositionsAsync);
+			//Positions = Positions.AsList().Sort();
 
 			//Инициализация категорий
 			BLL.Context.ListOfCategories tempCat = new BLL.Context.ListOfCategories();
@@ -113,7 +126,10 @@ namespace MyMiniLedger.WPF.WindowsModels
 			StatusesForUser = new ObservableCollection<StatusUIModel>();
 			setStatusesForUser(StatusesForService);
 
-			PositionConstruct = new PositionUIModel() { Kind = new KindUIModel() { Category = new CategoryUIModel() }, Coin = new CoinUIModel(), Status = new StatusUIModel() };
+			PositionConstruct = new PositionUIModel() { Kind = new KindUIModel() { Category = new CategoryUIModel() }, Coin = new CoinUIModel(), Status = new StatusUIModel(), Income = "0", Expense = "0"};
+
+			PositionConstruct.OpenDate = DateTime.Now.ToString();
+			//PositionConstruct.Status.StatusName = StatusesForUser.ElementAt(0).StatusName;
 
 			OpenCategoryWindow = new LambdaCommand(execute => { new CategoryWindow().Show(); });
 			OpenKindWindow = new LambdaCommand(execute => { new KindWindow().Show(); });
@@ -121,7 +137,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 			//OpenNewPositionWindow = new LambdaCommand(execute => { new NewPositionWindow().Show();  });
 			OpenNewPositionWindow = new LambdaCommand(execute =>
 			{
-				NewPositionWindow np = new NewPositionWindow();
+				NewPositionWindow np = new NewPositionWindow(this);
 				np.Owner = Application.Current.MainWindow;
 				np.Show();
 			}
@@ -131,26 +147,27 @@ namespace MyMiniLedger.WPF.WindowsModels
 			InsertNewPosition = new LambdaCommand(
 				async execute =>
 				{
-					//Добавление
-					if ( PositionConstruct.CloseDate == null ) { PositionConstruct.CloseDate =   DateTime.MinValue.ToString(); }
-					//DateTime t = DateTime.ParseExact( PositionConstruct.OpenDate, "MM/dd/yyyy hh:mm:ss tt", null);
-					PositionConstruct.OpenDate = "15.04.2024 00:00:00";
-					PositionConstruct.CloseDate = "15.04.2024 00:00:00";
-					PositionConstruct.PositionKey = 100500;
+					//Добавление новой позиции
+
+					PositionConstruct.CloseDate = (ViewTools.FormatterPositions.SetCloseDate(PositionConstruct.Status.StatusName)).ToString();
+					
 					await _context.PositionsTableBL.InsertAsync(Mappers.UIMapper.MapPositionUIToPositionBLL(PositionConstruct));
+					
 					//Обновление списка UI
 					var maxId = (tempPos.GetAllAsync().Result.Select(p => Mappers.UIMapper.MapPositionBLLToPositionUI(p)).ToList()).Max(p => p.Id);
 					var updatedPos = (tempPos.GetAllAsync().Result.Select(p => Mappers.UIMapper.MapPositionBLLToPositionUI(p)).ToList()).Where(p => p.Id == maxId);
+					updatedPos = ViewTools.FormatterPositions.EditPosFromTableByDate(updatedPos.AsList(), new DateTime(2000, 01, 01));
+					updatedPos = ViewTools.FormatterPositions.EditPosFromTableByStatus(updatedPos.AsList(), "Open", "Открыта");
+					updatedPos = ViewTools.FormatterPositions.EditPosFromTableByStatus(updatedPos.AsList(), "Closed", "Закрыта");
+					updatedPos = ViewTools.FormatterPositions.EditDecemalPosFromTableByMarker(updatedPos.AsList(), "fiat", "0.00");
 					PositionUIModel temp = new PositionUIModel();
 					temp = updatedPos.First(t => t.Id == maxId);
-					Positions.Add(temp);
+					Positions.Insert(0, temp);
+					PositionConstruct.Income = "0";
+					PositionConstruct.Expense = "0";
+					PositionConstruct.Tag = "";
+					PositionConstruct.Notes = "";
 
-					//var updatedPos = (tempPos.GetAllAsync().Result.Select(p => Mappers.UIMapper.MapPositionBLLToPositionUI(p)).ToList());
-					//Positions.Clear();
-					//foreach ( var item in updatedPos )
-					//{
-					//	Positions.Add(item);
-					//}
 				}
 			//canExecute => SelectedKind is not null &&
 			//SelectedKind.Kind != null &&
@@ -160,19 +177,35 @@ namespace MyMiniLedger.WPF.WindowsModels
 			RefreshPositions = new LambdaCommand(
 				execute =>
 				{
-					//var updatedPos = (tempPos.GetAllAsync().Result.Select(p => Mappers.UIMapper.MapPositionBLLToPositionUI(p)).ToList());
-					//Positions.Clear();
-					//foreach (var item in updatedPos)
-					//{
-					//	Positions.Add(item);
-					//}
-					var maxId = (tempPos.GetAllAsync().Result.Select(p => Mappers.UIMapper.MapPositionBLLToPositionUI(p)).ToList()).Max(p => p.Id);
-					var updatedPos = (tempPos.GetAllAsync().Result.Select(p => Mappers.UIMapper.MapPositionBLLToPositionUI(p)).ToList()).Where(p => p.Id == maxId);
-					PositionUIModel temp = new PositionUIModel();
-					temp = updatedPos.First(t => t.Id == maxId);
-					Positions.Add(temp);
+					var updatedPos = (tempPos.GetAllAsync().Result.Select(p => Mappers.UIMapper.MapPositionBLLToPositionUI(p)).ToList());
+					Positions.Clear();
+					foreach (var item in updatedPos)
+					{
+						if (item.Status.StatusName != "Deleted")
+						{
+							Positions.Add(item);
+						}
+					}
+
+					//var maxId = (tempPos.GetAllAsync().Result.Select(p => Mappers.UIMapper.MapPositionBLLToPositionUI(p)).ToList()).Max(p => p.Id);
+					//var updatedPos = (tempPos.GetAllAsync().Result.Select(p => Mappers.UIMapper.MapPositionBLLToPositionUI(p)).ToList()).Where(p => p.Id == maxId);
+					//PositionUIModel temp = new PositionUIModel();
+					//temp = updatedPos.First(t => t.Id == maxId);
+					//Positions.Add(temp);
 				}
 				);
+
+			//Полное удаление категории
+			DeletePosition = new LambdaCommand(async execute =>
+			{
+				await _context.PositionsTableBL.DeleteAsync(Mappers.UIMapper.MapPositionUIToPositionBLL(_selectedPosition));
+				
+				var t = Positions.Where(t => t.Id == _selectedPosition.Id);
+				Positions.Remove(t.First());
+				SelectedPosition = null;
+			},
+			canExecute => SelectedPosition is not null);
+
 		}
 
 		void setStatusesForUser(ObservableCollection<StatusUIModel> _input)
@@ -181,12 +214,12 @@ namespace MyMiniLedger.WPF.WindowsModels
 			{
 				if (stat.StatusName == "Open")
 				{
-					stat.StatusName = "Открыто";
+					stat.StatusName = "Открыта";
 					StatusesForUser.Add(stat);
 				}
 				else if (stat.StatusName == "Closed")
 				{
-					stat.StatusName = "Закрыто";
+					stat.StatusName = "Закрыта";
 					StatusesForUser.Add(stat);
 				}
 				else if (stat.StatusName == "Deleted")
@@ -209,5 +242,12 @@ namespace MyMiniLedger.WPF.WindowsModels
 		//	temp = updatedPos.First(t => t.Id == maxId);
 		//	Positions.Add(temp);
 		//}
+
+		//Добавлие даты закрытия
+
+		//DateTime TempOpenDate = DateTime.ParseExact(PositionConstruct.OpenDate, "M/dd/yyyy hh:mm:ss tt", CultureInfo.InvariantCulture);
+		////Установка текущего времени
+		//TempOpenDate = TempOpenDate + DateTime.Now.TimeOfDay;
+		//PositionConstruct.OpenDate = TempOpenDate.ToString();
 	}
 }

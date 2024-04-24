@@ -22,10 +22,12 @@ namespace MyMiniLedger.WPF.Windows.CategoryWindow
 
 		private void CategoriesList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
 		{
-			tb_EditCategory.Text = ((CategoryUIModel)CategoriesList.SelectedItem).Category.ToString();
-			(DataContext as CategoryWindowModel).SelectedCategory.Id = ((CategoryUIModel)CategoriesList.SelectedItem).Id;
-			(DataContext as CategoryWindowModel).SelectedCategory.RefNumber = ((CategoryUIModel)CategoriesList.SelectedItem).RefNumber;
-
+			if (((CategoryUIModel)CategoriesList.SelectedItem) != null)
+			{
+				tb_EditCategory.Text = ((CategoryUIModel)CategoriesList.SelectedItem).Category.ToString();
+				(DataContext as CategoryWindowModel).SelectedCategory.Id = ((CategoryUIModel)CategoriesList.SelectedItem).Id;
+				(DataContext as CategoryWindowModel).SelectedCategory.RefNumber = ((CategoryUIModel)CategoriesList.SelectedItem).RefNumber;
+			}
 		}
 
 		private void ButtonExit_Click(object sender, RoutedEventArgs e)

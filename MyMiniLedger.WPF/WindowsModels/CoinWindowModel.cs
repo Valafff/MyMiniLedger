@@ -69,6 +69,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 			AddToCoin = new LambdaCommand(
 				async execute =>
 				{
+					_selectedCoin.RefNumber = 0;
 					await _context.CoinsTableBL.InsertAsync(Mappers.UIMapper.MapCoinUIToCoinBLL(_selectedCoin));
 					
 					var updatedCoin = (tempCoin.GetAllAsync().Result.Select(c => Mappers.UIMapper.MapCoinBLLToCoinUI(c)).ToList()).Where(t => t.ShortName == _selectedCoin.ShortName);

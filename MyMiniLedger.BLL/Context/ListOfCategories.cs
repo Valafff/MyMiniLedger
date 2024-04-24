@@ -42,7 +42,7 @@ namespace MyMiniLedger.BLL.Context
 		//Получение всех данных
 		public async Task<IEnumerable<CategoryBLLModel>> GetAllAsync()
 		{
-			var result = await _sourceForRead.GetAllAsync();
+			var result = await _sourceForRead.GetAllAsync(); 
 			List<CategoryBLLModel> enumerable = new List<CategoryBLLModel>();
 
 			foreach (var item in result)

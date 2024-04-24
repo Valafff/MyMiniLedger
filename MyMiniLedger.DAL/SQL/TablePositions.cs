@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MyMiniLedger.DAL.SQL
 {
-	public class TablePositions : ICreate<PositionModel>, IUpdate<PositionModel>, IReadAll<PositionModel>, IReadById<PositionModel>
+	public class TablePositions : ICreate<PositionModel>, IUpdate<PositionModel>, IReadAll<PositionModel>, IReadById<PositionModel>, IDeleteHard<PositionModel>
 	{
 
 		public async Task<IEnumerable<PositionModel>> GetAllAsync()
@@ -39,6 +39,12 @@ namespace MyMiniLedger.DAL.SQL
 			string sql = $"update Positions set PositionKey = {entity.PositionKey}, OpenDate = N'{entity.OpenDate}', CloseDate = N'{entity.CloseDate}', KindId = {entity.KindId}," +
 				$" Income = {entity.Income}, Expense = {entity.Expense}, Saldo = {entity.Saldo}, CoinId = {entity.CoinId}, StatusId = {entity.StatusId}," +
 				$" Tag = N'{entity.Tag}', Notes = N'{entity.Notes}' where  id = {entity.Id}";
+			await SQLService<PositionModel>.UpdateInsertDeleteAsync(sql);
+		}
+
+		public async Task DeleteHardAsync(PositionModel entity)
+		{
+			string sql = $"delete from Positions where Id = {entity.Id}";
 			await SQLService<PositionModel>.UpdateInsertDeleteAsync(sql);
 		}
 	}
