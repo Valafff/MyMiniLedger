@@ -54,6 +54,8 @@ namespace MyMiniLedger.WPF.WindowsModels
 		public ObservableCollection<CategoryUIModel> Categories { get; set; }
 		public ObservableCollection<CoinUIModel> Coins { get; set; }
 		public ObservableCollection<KindUIModel> Kinds { get; set; }
+		//Для ограниченного выбора при фильтрации в комбобоксе
+		public ObservableCollection<KindUIModel> TempKinds { get; set; }
 		public ObservableCollection<StatusUIModel> StatusesForService { get; set; }
 		public ObservableCollection<StatusUIModel> StatusesForUser { get; set; }
 
@@ -69,8 +71,9 @@ namespace MyMiniLedger.WPF.WindowsModels
 		public int MaxPosKey;
 
 		//Для привязки поле должно быть пропой {get; set;}
-		//public List<string> searchTypes { get; set; } = new List<string> { "Номер позиции", "Категория", "Вид", "Валюта", "Тег", "Статус" };
 		public string[] searchTypes { get; set; } = new string[] { "Номер позиции", "Категория", "Вид", "Валюта", "Тег", "Статус" };
+		
+		public List<string> tempCategories { get; set; } = new List<string>();
 
 
 		public MainWindowModel()
@@ -115,8 +118,11 @@ namespace MyMiniLedger.WPF.WindowsModels
 
 			//Инициализация видов
 			BLL.Context.ListOfKinds tempKind = new BLL.Context.ListOfKinds();
-			List<KindUIModel> tempKinds = tempKind.GetAllAsync().Result.Select(kind => Mappers.UIMapper.MapKindBLLToKindUI(kind)).ToList();
-			Kinds = new ObservableCollection<KindUIModel>(tempKinds);
+			List<KindUIModel> _tempKinds = tempKind.GetAllAsync().Result.Select(kind => Mappers.UIMapper.MapKindBLLToKindUI(kind)).ToList();
+			Kinds = new ObservableCollection<KindUIModel>(_tempKinds);
+			TempKinds = new ObservableCollection<KindUIModel>(_tempKinds);
+
+			setTempCaregories(tempCategories, Categories);
 
 			//Инициализация статусов
 			BLL.Context.ListOfStatuses tempStat = new BLL.Context.ListOfStatuses();
@@ -186,12 +192,6 @@ namespace MyMiniLedger.WPF.WindowsModels
 							Positions.Add(item);
 						}
 					}
-
-					//var maxId = (tempPos.GetAllAsync().Result.Select(p => Mappers.UIMapper.MapPositionBLLToPositionUI(p)).ToList()).Max(p => p.Id);
-					//var updatedPos = (tempPos.GetAllAsync().Result.Select(p => Mappers.UIMapper.MapPositionBLLToPositionUI(p)).ToList()).Where(p => p.Id == maxId);
-					//PositionUIModel temp = new PositionUIModel();
-					//temp = updatedPos.First(t => t.Id == maxId);
-					//Positions.Add(temp);
 				}
 				);
 
@@ -230,6 +230,14 @@ namespace MyMiniLedger.WPF.WindowsModels
 				{
 					StatusesForUser.Add(stat);
 				}
+			}
+		}
+
+		public void setTempCaregories(List<string> t, ObservableCollection<CategoryUIModel> _cat)
+		{
+			foreach(var stat in _cat)
+			{
+				t.Add(stat.Category);
 			}
 		}
 

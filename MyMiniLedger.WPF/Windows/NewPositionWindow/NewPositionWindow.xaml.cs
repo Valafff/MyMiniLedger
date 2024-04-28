@@ -1,7 +1,9 @@
-﻿using MyMiniLedger.WPF.Models;
+﻿using Dapper;
+using MyMiniLedger.WPF.Models;
 using MyMiniLedger.WPF.WindowsModels;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,30 +19,61 @@ using System.Windows.Shapes;
 
 namespace MyMiniLedger.WPF.Windows.NewPositionWindow
 {
-    /// <summary>
-    /// Interaction logic for NewPositionWindow.xaml
-    /// </summary>
-    public partial class NewPositionWindow : Window
-    {
-        public NewPositionWindow(MainWindowModel _mainWindowModel)
-        {
+	/// <summary>
+	/// Interaction logic for NewPositionWindow.xaml
+	/// </summary>
+	public partial class NewPositionWindow : Window
+	{
+		public NewPositionWindow(MainWindowModel _mainWindowModel)
+		{
 			InitializeComponent();
 			DataContext = _mainWindowModel;
 			dp_OpenDate.SelectedDate = DateTime.Now;
 		}
 
+		//Работа с автоматизированным вводом категории и вида для интерфейса юзера (в конструкт вид передается как объект уже с категорией) начало
 		private void ComboBox_Category_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			((MainWindowModel)DataContext).PositionConstruct.Kind.Category.Category = ((CategoryUIModel)cb_Category.SelectedItem).Category;
-			((MainWindowModel)DataContext).PositionConstruct.Kind.Category.Id = ((CategoryUIModel)cb_Category.SelectedItem).Id;
+			((MainWindowModel)DataContext).TempKinds.Clear();
+			foreach (var item in ((MainWindowModel)DataContext).Kinds.AsList())
+			{
+				if (cb_Category.SelectedItem.ToString() == item.Category.Category)
+				{
+					((MainWindowModel)DataContext).TempKinds.Add(item);
+				}
+			}
+			cb_Kind.SelectedIndex = 0;
 		}
 
-		private void ComboBox_Kind_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		private void cb_Kind_TextChanged(object sender, TextChangedEventArgs e)
 		{
-			((MainWindowModel)DataContext).PositionConstruct.Kind.Kind = ((KindUIModel)cb_Kind.SelectedItem).Kind;
-			((MainWindowModel)DataContext).PositionConstruct.Kind.Id = ((KindUIModel)cb_Kind.SelectedItem).Id;
-			((MainWindowModel)DataContext).PositionConstruct.Kind.Category = ((KindUIModel)cb_Kind.SelectedItem).Category;
+			if (cb_Kind.Text != "" & cb_Kind.Text != null)
+			{
+				foreach (var item in ((MainWindowModel)DataContext).TempKinds)
+				{
+					if (item.Kind == cb_Kind.Text)
+					{
+						return;
+					}
+				}
+				((MainWindowModel)DataContext).TempKinds.Clear();
+				foreach (var item in ((MainWindowModel)DataContext).Kinds.AsList())
+				{
+					((MainWindowModel)DataContext).TempKinds.Add(item);
+
+				}
+			}
 		}
+
+		private void cb_Kind_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if (cb_Kind.SelectedIndex >=0)
+			{
+				var temp = ((MainWindowModel)DataContext).TempKinds[cb_Kind.SelectedIndex];
+				cb_Category.SelectedItem = temp.Category.Category;
+			}
+		}
+		//Работа с автоматизированным вводом категории и вида для интерфейса юзера (в конструкт вид передается как объект уже с категорией) конец
 
 		private void TextBox_Income_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
 		{
@@ -54,17 +87,24 @@ namespace MyMiniLedger.WPF.Windows.NewPositionWindow
 
 		private void cb_Coin_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			((MainWindowModel)DataContext).PositionConstruct.Coin.Id = ((CoinUIModel)cb_Coin.SelectedItem).Id;
-			((MainWindowModel)DataContext).PositionConstruct.Coin.ShortName = ((CoinUIModel)cb_Coin.SelectedItem).ShortName;
-			((MainWindowModel)DataContext).PositionConstruct.Coin.FullName = ((CoinUIModel)cb_Coin.SelectedItem).FullName;
-			((MainWindowModel)DataContext).PositionConstruct.Coin.CoinNotes = ((CoinUIModel)cb_Coin.SelectedItem).CoinNotes;
+			if (((CoinUIModel)cb_Coin.SelectedItem) != null)
+			{
+				((MainWindowModel)DataContext).PositionConstruct.Coin.Id = ((CoinUIModel)cb_Coin.SelectedItem).Id;
+				((MainWindowModel)DataContext).PositionConstruct.Coin.ShortName = ((CoinUIModel)cb_Coin.SelectedItem).ShortName;
+				((MainWindowModel)DataContext).PositionConstruct.Coin.FullName = ((CoinUIModel)cb_Coin.SelectedItem).FullName;
+				((MainWindowModel)DataContext).PositionConstruct.Coin.CoinNotes = ((CoinUIModel)cb_Coin.SelectedItem).CoinNotes;
+			}
+
 		}
 
 		private void tb_Status_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			((MainWindowModel)DataContext).PositionConstruct.Status.Id = ((StatusUIModel)cb_Status.SelectedItem).Id;
-			((MainWindowModel)DataContext).PositionConstruct.Status.StatusName = ((StatusUIModel)cb_Status.SelectedItem).StatusName;
-			((MainWindowModel)DataContext).PositionConstruct.Status.StatusNotes = ((StatusUIModel)cb_Status.SelectedItem).StatusNotes;
+			if (((StatusUIModel)cb_Status.SelectedItem) != null)
+			{
+				((MainWindowModel)DataContext).PositionConstruct.Status.Id = ((StatusUIModel)cb_Status.SelectedItem).Id;
+				((MainWindowModel)DataContext).PositionConstruct.Status.StatusName = ((StatusUIModel)cb_Status.SelectedItem).StatusName;
+				((MainWindowModel)DataContext).PositionConstruct.Status.StatusNotes = ((StatusUIModel)cb_Status.SelectedItem).StatusNotes;
+			}
 		}
 
 		private void Button_Exit_Click(object sender, RoutedEventArgs e)
@@ -143,7 +183,5 @@ namespace MyMiniLedger.WPF.Windows.NewPositionWindow
 				e.Handled = true;
 			}
 		}
-
-
 	}
 }
