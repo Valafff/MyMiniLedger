@@ -120,6 +120,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 			BLL.Context.ListOfKinds tempKind = new BLL.Context.ListOfKinds();
 			List<KindUIModel> _tempKinds = tempKind.GetAllAsync().Result.Select(kind => Mappers.UIMapper.MapKindBLLToKindUI(kind)).ToList();
 			Kinds = new ObservableCollection<KindUIModel>(_tempKinds);
+			//Виды для выбора в комбобокс
 			TempKinds = new ObservableCollection<KindUIModel>(_tempKinds);
 
 			setTempCaregories(tempCategories, Categories);
@@ -156,9 +157,9 @@ namespace MyMiniLedger.WPF.WindowsModels
 					//Добавление новой позиции
 
 					PositionConstruct.CloseDate = (ViewTools.FormatterPositions.SetCloseDate(PositionConstruct.Status.StatusName)).ToString();
-					
+
 					await _context.PositionsTableBL.InsertAsync(Mappers.UIMapper.MapPositionUIToPositionBLL(PositionConstruct));
-					
+
 					//Обновление списка UI
 					var maxId = (tempPos.GetAllAsync().Result.Select(p => Mappers.UIMapper.MapPositionBLLToPositionUI(p)).ToList()).Max(p => p.Id);
 					var updatedPos = (tempPos.GetAllAsync().Result.Select(p => Mappers.UIMapper.MapPositionBLLToPositionUI(p)).ToList()).Where(p => p.Id == maxId);
@@ -174,11 +175,11 @@ namespace MyMiniLedger.WPF.WindowsModels
 					PositionConstruct.Tag = "";
 					PositionConstruct.Notes = "";
 
-				}
-			//canExecute => SelectedKind is not null &&
-			//SelectedKind.Kind != null &&
+				},
+			canExecute => PositionConstruct.Kind is not null && PositionConstruct.Income != null && PositionConstruct.Expense != null
+			//&& SelectedKind.Kind != null &&
 			//Kinds.Any(k => k.Kind == _selectedKind.Kind) == false
-			);
+			);;
 
 			RefreshPositions = new LambdaCommand(
 				execute =>

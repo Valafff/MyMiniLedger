@@ -33,6 +33,7 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
+            
             <TextBlock Grid.Row="0" Grid.Column="0" Text="Дата открытия позиции" VerticalAlignment="Center"/>
             <TextBlock Grid.Row="0" Grid.Column="1" Text="Категория"  VerticalAlignment="Center"/>
             <TextBlock Grid.Row="0" Grid.Column="2" Text="Вид"  VerticalAlignment="Center"/>
@@ -59,18 +60,20 @@
                     </Style>
                 </DatePicker.Resources>-->
             </DatePicker>
+            
             <ComboBox Grid.Row="1" Grid.Column="1"
                       x:Name="cb_Category"
                       ItemsSource="{Binding tempCategories}"
                       SelectedIndex="0"
                       SelectionChanged="ComboBox_Category_SelectionChanged"/>
+          
             <ComboBox Grid.Row="1" Grid.Column="2"
                       x:Name="cb_Kind"
                       ItemsSource="{Binding Path=TempKinds, UpdateSourceTrigger=PropertyChanged}"
                       TextSearch.TextPath="Kind" 
                       SelectedIndex="0"
                       IsEditable="true" 
-                      SelectedItem="{Binding Path=PositionConstruct.Kind,  UpdateSourceTrigger=PropertyChanged}"
+                      SelectedItem="{Binding Path=PositionConstruct.Kind,  UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                       TextBoxBase.TextChanged="cb_Kind_TextChanged"
                       SelectionChanged="cb_Kind_SelectionChanged">
                 <ComboBox.ItemTemplate>
@@ -79,8 +82,21 @@
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>
-            <TextBox Grid.Row="1" Grid.Column="3" x:Name="tb_Income" KeyDown="TextBox_Income_KeyDown" Text="{Binding Path=PositionConstruct.Income, UpdateSourceTrigger=PropertyChanged}"/>
-            <TextBox Grid.Row="1" Grid.Column="4" x:Name="tb_Expense" KeyDown="TextBox_Expense_KeyDown" Text="{Binding Path=PositionConstruct.Expense, UpdateSourceTrigger=PropertyChanged}"/>
+           
+            <TextBox Grid.Row="1" Grid.Column="3"
+                     x:Name="tb_Income" 
+                     Text="{Binding Path=PositionConstruct.Income, UpdateSourceTrigger=PropertyChanged}"
+                     PreviewTextInput="tb_Income_PreviewTextInput"
+                     PreviewKeyDown="tb_Income_PreviewKeyDown"
+                     TextChanged="tb_Income_TextChanged"/>
+            
+            <TextBox Grid.Row="1" Grid.Column="4" 
+                     x:Name="tb_Expense"  
+                     Text="{Binding Path=PositionConstruct.Expense, UpdateSourceTrigger=PropertyChanged}"
+                     PreviewTextInput="tb_Expense_PreviewTextInput"
+                     PreviewKeyDown="tb_Expense_PreviewKeyDown"
+                     TextChanged="tb_Expense_TextChanged"/>
+            
             <ComboBox Grid.Row="1" Grid.Column="5" x:Name="cb_Coin" ItemsSource="{Binding Path=Coins, UpdateSourceTrigger=PropertyChanged }" SelectedIndex="0" SelectionChanged ="cb_Coin_SelectionChanged">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
@@ -88,6 +104,7 @@
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>
+            
             <ComboBox Grid.Row="1" Grid.Column="6" x:Name="cb_Status" ItemsSource="{Binding Path=StatusesForUser, UpdateSourceTrigger=PropertyChanged}" SelectedIndex="0" SelectionChanged="tb_Status_SelectionChanged">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
@@ -95,6 +112,7 @@
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>
+           
             <TextBox Grid.Row="1" Grid.Column="7" Text="{Binding Path=PositionConstruct.Tag, UpdateSourceTrigger=PropertyChanged}"/>
 
         </Grid>
@@ -109,7 +127,7 @@
             </Grid.ColumnDefinitions>
 
             <TextBlock Grid.Row="0" Grid.Column="0" Text="Примечание" VerticalAlignment="Center"/>
-            <TextBox Grid.Row="1" Grid.Column="0" Margin="5,5,5,5" Text="{Binding Path=PositionConstruct.Notes, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+            <TextBox Grid.Row="1" Grid.Column="0" Margin="5,5,5,5" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Text="{Binding Path=PositionConstruct.Notes, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
 
             <Grid Grid.Row="0" Grid.Column="1" Grid.RowSpan="2">
                 <Grid.RowDefinitions>
