@@ -21,6 +21,12 @@ namespace MyMiniLedger.WPF
 			datePiker_End.SelectedDate = DateTime.Now;
 			dp_OpenDate.SelectedDate = DateTime.Now;
 
+
+			(DataContext as MainWindowModel).UpdateCoinsIndexEvent += UpdateSelectedCoin;
+			(DataContext as MainWindowModel).UpdateCategoriesIndexEvent += UpdateSelectedCategory;
+			(DataContext as MainWindowModel).UpdateKindsIndexEvent += UpdateSelectedKind;
+
+
 			//// Не получилось забиндить через VM
 			//List<string> searchTypes = new List<string> { "Номер позиции", "Категория", "Вид", "Валюта", "Тег", "Статус" };
 			//cb_Search_MenuItem.ItemsSource = searchTypes;
@@ -28,7 +34,15 @@ namespace MyMiniLedger.WPF
 			//(this.DataContext as MainWindowModel).cf.
 		}
 
-		private void MenuItem_Click(object sender, RoutedEventArgs e)
+		private void DataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.Key == Key.Delete)
+			{
+				(DataContext as MainWindowModel).DeleteSelectedPosDataGrid();
+			}
+        }
+
+		private void MenuItem_Click_Close(object sender, RoutedEventArgs e)
 		{
 			this.Close();
 		}
@@ -42,24 +56,31 @@ namespace MyMiniLedger.WPF
 			}
 		}
 
-		private void DataGrid_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+		private void DataGrid_SelectionChanged_MainWindow(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
 		{
 			((MainWindowModel)DataContext).SelectedPosition = (PositionUIModel)(((DataGrid)sender).CurrentItem);
 		}
 
-		private void dp_OpenDate_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+		private void dp_OpenDate_DataContextChanged_MainWindow(object sender, DependencyPropertyChangedEventArgs e)
 		{
 			((MainWindowModel)DataContext).PositionConstruct.OpenDate = dp_OpenDate.DisplayDate.ToString();
 		}
 
-		private void ComboBox_Category_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		private void ComboBox_Category_SelectionChanged_MainWindow(object sender, SelectionChangedEventArgs e)
 		{
-			((MainWindowModel)DataContext).TempKinds.Clear();
+			((MainWindowModel)DataContext).TempKindsMain.Clear();
 			foreach (var item in ((MainWindowModel)DataContext).Kinds.AsList())
 			{
-				if (cb_Category.SelectedItem.ToString() == item.Category.Category)
+				if (cb_Category.SelectedItem != null)
 				{
-					((MainWindowModel)DataContext).TempKinds.Add(item);
+					if (((System.Windows.Controls.ComboBox)sender).SelectedItem.ToString() == item.Category.Category)
+					{
+						((MainWindowModel)DataContext).TempKindsMain.Add(item);
+					}
+					//if (cb_Category.SelectedItem.ToString() == item.Category.Category)
+					//{
+					//	((MainWindowModel)DataContext).TempKinds.Add(item);
+					//}
 				}
 			}
 
@@ -69,37 +90,37 @@ namespace MyMiniLedger.WPF
 			}
 
 			//Как-то криво, но работает требуется при первоначальной инициализации
-			if (((MainWindowModel)DataContext).TempKinds.Count > 0)
+			if (((MainWindowModel)DataContext).TempKindsMain.Count > 0)
 			{
-				((MainWindowModel)DataContext).PositionConstruct.Kind = ((MainWindowModel)DataContext).TempKinds[0];
+				((MainWindowModel)DataContext).PositionConstruct.Kind = ((MainWindowModel)DataContext).TempKindsMain[0];
 			}
 		}
 
-		private void cb_Kind_TextChanged(object sender, TextChangedEventArgs e)
+		private void cb_Kind_TextChanged_MainWindow(object sender, TextChangedEventArgs e)
 		{
 			if (cb_Kind.Text != "" & cb_Kind.Text != null)
 			{
-				foreach (var item in ((MainWindowModel)DataContext).TempKinds)
+				foreach (var item in ((MainWindowModel)DataContext).TempKindsMain)
 				{
 					if (item.Kind == cb_Kind.Text)
 					{
 						return;
 					}
 				}
-				((MainWindowModel)DataContext).TempKinds.Clear();
+				((MainWindowModel)DataContext).TempKindsMain.Clear();
 				foreach (var item in ((MainWindowModel)DataContext).Kinds.AsList())
 				{
-					((MainWindowModel)DataContext).TempKinds.Add(item);
+					((MainWindowModel)DataContext).TempKindsMain.Add(item);
 
 				}
 			}
 		}
 
-		private void cb_Kind_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		private void cb_Kind_SelectionChanged_MainWindow(object sender, SelectionChangedEventArgs e)
 		{
 			if (cb_Kind.SelectedIndex >= 0)
 			{
-				var temp = ((MainWindowModel)DataContext).TempKinds[cb_Kind.SelectedIndex];
+				var temp = ((MainWindowModel)DataContext).TempKindsMain[cb_Kind.SelectedIndex];
 				cb_Category.SelectedItem = temp.Category.Category;
 			}
 		}
@@ -107,7 +128,7 @@ namespace MyMiniLedger.WPF
 
 		//Работа с заполнением полей income
 		//Обработка ввода корректных символов и проверка на правильность написания десятичной дроби
-		private void tb_Income_PreviewTextInput(object sender, TextCompositionEventArgs e)
+		private void tb_Income_PreviewTextInput_MainWindow(object sender, TextCompositionEventArgs e)
 		{
 			if (!Char.IsDigit(e.Text, 0) && !((e.Text == ",") && (tb_Income.Text.IndexOf(',') == -1) && (tb_Income.Text.Length != 0)))
 			{
@@ -129,7 +150,7 @@ namespace MyMiniLedger.WPF
 			}
 		}
 		//Отлов space
-		private void tb_Income_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+		private void tb_Income_PreviewKeyDown_MainWindow(object sender, System.Windows.Input.KeyEventArgs e)
 		{
 			if (e.Key == Key.Space)
 			{
@@ -137,7 +158,7 @@ namespace MyMiniLedger.WPF
 			}
 		}
 		//Перевод 59,960.17 -> 59960,17
-		private void tb_Income_TextChanged(object sender, TextChangedEventArgs e)
+		private void tb_Income_TextChanged_MainWindow(object sender, TextChangedEventArgs e)
 		{
 			if (tb_Income.Text.IndexOf(',') != -1 && tb_Income.Text.IndexOf('.') != -1)
 			{
@@ -155,7 +176,7 @@ namespace MyMiniLedger.WPF
 		}
 
 		//Работа с заполнением полей expense
-		private void tb_Expense_PreviewTextInput(object sender, TextCompositionEventArgs e)
+		private void tb_Expense_PreviewTextInput_MainWindow(object sender, TextCompositionEventArgs e)
 		{
 			if (!Char.IsDigit(e.Text, 0) && !((e.Text == ",") && (tb_Expense.Text.IndexOf(',') == -1) && (tb_Expense.Text.Length != 0)))
 			{
@@ -177,7 +198,7 @@ namespace MyMiniLedger.WPF
 			}
 		}
 
-		private void tb_Expense_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+		private void tb_Expense_PreviewKeyDown_MainWindow(object sender, System.Windows.Input.KeyEventArgs e)
 		{
 			if (e.Key == Key.Space)
 			{
@@ -185,7 +206,7 @@ namespace MyMiniLedger.WPF
 			}
 		}
 
-		private void tb_Expense_TextChanged(object sender, TextChangedEventArgs e)
+		private void tb_Expense_TextChanged_MainWindow(object sender, TextChangedEventArgs e)
 		{
 			if (tb_Expense.Text.IndexOf(',') != -1 && tb_Expense.Text.IndexOf('.') != -1)
 			{
@@ -202,7 +223,7 @@ namespace MyMiniLedger.WPF
 			}
 		}
 
-		private void cb_Coin_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		private void cb_Coin_SelectionChanged_MainWindow(object sender, SelectionChangedEventArgs e)
 		{
 			if (((CoinUIModel)cb_Coin.SelectedItem) != null)
 			{
@@ -213,7 +234,7 @@ namespace MyMiniLedger.WPF
 			}
 		}
 
-		private void tb_Status_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		private void tb_Status_SelectionChanged_MainWindow(object sender, SelectionChangedEventArgs e)
 		{
 			if (((StatusUIModel)cb_Status.SelectedItem) != null)
 			{
@@ -222,6 +243,23 @@ namespace MyMiniLedger.WPF
 				((MainWindowModel)DataContext).PositionConstruct.Status.StatusNotes = ((StatusUIModel)cb_Status.SelectedItem).StatusNotes;
 			}
 		}
-	}
+
+		void UpdateSelectedCoin()
+		{
+			cb_Coin.SelectedIndex = 0;
+		}
+
+		void UpdateSelectedCategory()
+		{
+			cb_Category.SelectedIndex = 0;
+		}
+
+		void UpdateSelectedKind()
+		{
+			cb_Kind.SelectedIndex = 0;
+		}
+
+
+    }
 
 }

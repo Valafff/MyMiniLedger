@@ -10,8 +10,13 @@ using System.Threading.Tasks;
 
 namespace MyMiniLedger.WPF.WindowsModels
 {
+	public delegate void UpdateKindDelegate();
+
 	public class KindWindowModel: BaseNotify
 	{
+		//При срабатывании события происходит выполнение метода в MainWindowModel там-же какскадом срабатывает выбор 0го индекса в комбобоксе
+		public event UpdateKindDelegate UpdateKindEvent;
+
 		private readonly Context _context;
 
 		private string _title = "Окно редактирования видов позиций";
@@ -97,7 +102,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 					var temp = _selectedKind.Clone();
 					((KindUIModel)temp).Id = updatedKind.First().Id;
 					Kinds.Add((KindUIModel)temp);
-
+					UpdateKindEvent();
 				},
 				canExecute => SelectedKind is not null &&
 				SelectedKind.Kind != null &&
@@ -115,6 +120,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 				Kinds.Remove(t.First());
 				_selectedKind.Id = 0;
 				_selectedKind.Kind = null;
+				UpdateKindEvent();
 			},
 			canExecute => SelectedKind is not null && SelectedKind.Kind != null && SelectedKind.Id != 0 && _selectedKind.RefNumber == 0);
 
@@ -129,7 +135,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 				Kinds.Remove(t.First());
 				var temp = _selectedKind.Clone();
 				Kinds.Add((KindUIModel)temp);
-
+				UpdateKindEvent();
 			},
 			canExecute => DeleteKind is not null && SelectedKind.Kind != null && SelectedKind.Id != 0 && Kinds.Any(k => k.Kind == _selectedKind.Kind) == false);
 		}

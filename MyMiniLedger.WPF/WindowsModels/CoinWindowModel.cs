@@ -10,8 +10,13 @@ using System.Threading.Tasks;
 
 namespace MyMiniLedger.WPF.WindowsModels
 {
+	public delegate void UpdateCoinsDelegate();
+
 	public class CoinWindowModel : BaseNotify
 	{
+		//При срабатывании события происходит выполнение метода в MainWindowModel там-же какскадом срабатывает выбор 0го индекса в комбобоксе
+		public event UpdateCoinsDelegate UpdateCoinsEvent;
+
 		private readonly Context _context;
 
 		private string _title = "Окно редактирования валют/монет";
@@ -28,9 +33,10 @@ namespace MyMiniLedger.WPF.WindowsModels
 			set => SetField(ref _selectedCoin, value);
 		}
 
-
 		public ObservableCollection<CoinUIModel>? Coins { get; set; }
 		public ObservableCollection<PositionUIModel>? Positions { get; set; }
+
+		public CoinUIModel TempCoin { get; set; }
 
 		public LambdaCommand AddToCoin { get; set; }
 		public LambdaCommand DeleteCoin { get; set; }
@@ -76,7 +82,9 @@ namespace MyMiniLedger.WPF.WindowsModels
 					var temp = _selectedCoin.Clone();
 					((CoinUIModel)temp).Id = updatedCoin.First().Id;
 					Coins.Add((CoinUIModel)temp);
-
+					TempCoin = (CoinUIModel)temp;
+					//Выполнение события(подпись на событие в CoinWindow.xaml.cs
+					UpdateCoinsEvent();
 				},
 				canExecute => SelectedCoin is not null && SelectedCoin.ShortName != null && Coins.Any(c => c.ShortName == _selectedCoin.ShortName) == false
 				);
@@ -86,12 +94,14 @@ namespace MyMiniLedger.WPF.WindowsModels
 			{
 				await _context.CoinsTableBL.DeleteAsync(Mappers.UIMapper.MapCoinUIToCoinBLL(_selectedCoin));
 
-				var t = Coins.Where(c => c.Id == _selectedCoin.Id);
-				Coins.Remove(t.First());
+				IEnumerable<CoinUIModel>?  TempDeletedCoin = Coins.Where(c => c.Id == _selectedCoin.Id);
+
+				Coins.Remove(TempDeletedCoin.First());
 				_selectedCoin.Id = 0;
 				_selectedCoin.ShortName = null;
 				_selectedCoin.FullName = null;
 				_selectedCoin.CoinNotes = null;
+				UpdateCoinsEvent();
 			},
 			canExecute => SelectedCoin is not null && SelectedCoin.ShortName != null && _selectedCoin.Id != 0 && _selectedCoin.RefNumber == 0);
 
@@ -104,7 +114,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 				Coins.Remove(t.First());
 				var temp = _selectedCoin.Clone();
 				Coins.Add((CoinUIModel)temp);
-
+				UpdateCoinsEvent();
 			},
 			canExecute => SelectedCoin is not null && _selectedCoin.ShortName != null && SelectedCoin.Id != 0 && Coins.Any(c => c.ShortName == _selectedCoin.ShortName) == false);
 		}

@@ -12,12 +12,12 @@ namespace MyMiniLedger.WPF.Windows.CategoryWindow
 	/// </summary>
 	public partial class CategoryWindow : Window
 	{
-		public CategoryWindow()
+		MainWindowModel MainWindow;
+		public CategoryWindow(MainWindowModel _mainWindowModel)
 		{
+			MainWindow = _mainWindowModel;
 			InitializeComponent();
-
-			//Достучаться до полей WindowModel
-			//(DataContext as CategoryWindowModel).
+			(DataContext as CategoryWindowModel).UpdateCategoryEvent += MainWindow.UpdateCategories;
 		}
 
 		private void CategoriesList_MouseDoubleClick(object sender, MouseButtonEventArgs e)

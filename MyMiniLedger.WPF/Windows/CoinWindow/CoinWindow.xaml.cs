@@ -2,6 +2,7 @@
 using MyMiniLedger.WPF.WindowsModels;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,10 +22,12 @@ namespace MyMiniLedger.WPF.Windows.CoinWindow
 	/// </summary>
 	public partial class CoinWindow : Window
 	{
-		public CoinWindow()
+		MainWindowModel MainWindow;
+		public CoinWindow(MainWindowModel _mainWindowModel)
 		{
 			InitializeComponent();
-
+			MainWindow = _mainWindowModel;
+			(DataContext as CoinWindowModel).UpdateCoinsEvent += MainWindow.UpdateCoins;
 		}
 
 		private void CoinsList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -83,5 +86,27 @@ namespace MyMiniLedger.WPF.Windows.CoinWindow
 				tb_EditCoinNotes.Text = tb_EditCoinNotes.Text.Insert(0, "");
 			}
 		}
+
+
+		////Проблема - данные о новой монете добовляются до ее обновления - нет реального Id из бд 
+		//private void bt_AddNewCoin_Click(object sender, RoutedEventArgs e)
+		//{
+		//	if (((CoinWindowModel)DataContext).TempCoin != null)
+		//	{
+		//		MainWindow.Coins.Add(((CoinWindowModel)DataContext).TempCoin);
+		//	}
+		//}
+
+		//private void bt_DelCoin_Click(object sender, RoutedEventArgs e)
+		//{
+		//	if (((CoinWindowModel)DataContext).SelectedCoin != null)
+		//	{
+		//		//MainWindow.Coins.Remove(((CoinWindowModel)DataContext).SelectedCoin);
+		//		MainWindow.Coins = MainWindow.CoinsInicialization();
+		//	}
+		//}
+
+
+
 	}
 }

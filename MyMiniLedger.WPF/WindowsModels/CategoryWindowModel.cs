@@ -12,8 +12,13 @@ using System.Windows;
 
 namespace MyMiniLedger.WPF.WindowsModels
 {
+	public delegate void UpdateCategoryDelegate();
+
 	public class CategoryWindowModel : BaseNotify
 	{
+		//При срабатывании события происходит выполнение метода в MainWindowModel там-же какскадом срабатывает выбор 0го индекса в комбобоксе
+		public event UpdateCategoryDelegate UpdateCategoryEvent;
+
 		private readonly Context _context;
 
 		private string _title = "Окно редактирования категорий";
@@ -80,7 +85,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 					var temp = _selectedCategory.Clone();
 					((CategoryUIModel)temp).Id = updatedCat.First().Id;
 					Categories.Add((CategoryUIModel)temp);
-
+					UpdateCategoryEvent();
 				},
 				canExecute => SelectedCategory is not null && SelectedCategory.Category != null && Categories.Any(c => c.Category == _selectedCategory.Category) == false
 				);
@@ -93,6 +98,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 				Categories.Remove(t.First());
 				_selectedCategory.Id = 0;
 				SelectedCategory.Category = null;
+				UpdateCategoryEvent();
 			},
 			canExecute => SelectedCategory is not null && SelectedCategory.Category != null && SelectedCategory.Id != 0 && _selectedCategory.RefNumber == 0);
 
@@ -104,7 +110,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 				Categories.Remove(t.First());
 				var temp = _selectedCategory.Clone();
 				Categories.Add((CategoryUIModel)temp);
-
+				UpdateCategoryEvent();
 			},
 			canExecute => SelectedCategory is not null && SelectedCategory.Category != null && SelectedCategory.Id != 0 && Categories.Any(c => c.Category == _selectedCategory.Category) == false);
 		}

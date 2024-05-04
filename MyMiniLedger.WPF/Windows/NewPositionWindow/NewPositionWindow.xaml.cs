@@ -39,9 +39,16 @@ namespace MyMiniLedger.WPF.Windows.NewPositionWindow
 			((MainWindowModel)DataContext).TempKinds.Clear();
 			foreach (var item in ((MainWindowModel)DataContext).Kinds.AsList())
 			{
-				if (cb_Category.SelectedItem.ToString() == item.Category.Category)
+				if (((System.Windows.Controls.ComboBox)sender).SelectedItem != null)
 				{
-					((MainWindowModel)DataContext).TempKinds.Add(item);
+					if (((System.Windows.Controls.ComboBox)sender).SelectedItem.ToString() == item.Category.Category)
+					{
+						((MainWindowModel)DataContext).TempKinds.Add(item);
+					}
+					//if (cb_Category.SelectedItem.ToString() == item.Category.Category)
+					//{
+					//	((MainWindowModel)DataContext).TempKinds.Add(item);
+					//}
 				}
 			}
 

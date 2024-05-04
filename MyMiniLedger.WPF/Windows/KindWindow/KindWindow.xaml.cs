@@ -21,9 +21,12 @@ namespace MyMiniLedger.WPF.Windows.KindWindow
 	/// </summary>
 	public partial class KindWindow : Window
 	{
-		public KindWindow()
+		MainWindowModel MainWindow;
+		public KindWindow(MainWindowModel _mainWindowModel)
 		{
 			InitializeComponent();
+			MainWindow = _mainWindowModel;
+			(DataContext as KindWindowModel).UpdateKindEvent += MainWindow.UpdateKinds;
 		}
 
 		private void ButtonExit_Click(object sender, RoutedEventArgs e)

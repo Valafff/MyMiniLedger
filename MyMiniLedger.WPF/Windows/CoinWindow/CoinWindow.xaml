@@ -65,13 +65,13 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" Margin="2,2,2,2" Command="{Binding Path=AddToCoin}">
+            <Button Grid.Column="0" Margin="2,2,2,2" x:Name="bt_AddNewCoin" Command="{Binding Path=AddToCoin}">
                 <TextBlock TextAlignment="Center">Добавить<LineBreak/>новую валюту/монту</TextBlock >
             </Button>
             <Button Grid.Column="1" Margin="2,2,2,2" Command="{Binding Path=UpdateCoin}" >
                 <TextBlock TextAlignment="Center">Редактировать<LineBreak/>валюту/монту</TextBlock >
             </Button>
-            <Button Grid.Column="2" Content="Удалить валюту/монту" Margin="2,2,2,2" Command="{Binding Path=DeleteCoin}"/>
+            <Button Grid.Column="2" x:Name="bt_DelCoin" Content="Удалить валюту/монту" Margin="2,2,2,2" Command="{Binding Path=DeleteCoin}"/>
             <Button Grid.Column="3" Content="Выход" Margin="2,2,2,2" Click="ButtonExit_Click"/>
         </Grid>
         <Grid Grid.Row="2">
@@ -89,7 +89,7 @@
         </Grid>
         
         <DockPanel Grid.Row="3" >
-            <DataGrid x:Name="CoinsList" AutoGenerateColumns="False" CanUserAddRows="False" ItemsSource="{Binding Coins, UpdateSourceTrigger=PropertyChanged}" MouseDoubleClick="CoinsList_MouseDoubleClick">
+            <DataGrid x:Name="CoinsList" AutoGenerateColumns="False" CanUserAddRows="False" ItemsSource="{Binding Coins, UpdateSourceTrigger=PropertyChanged}" MouseDoubleClick="CoinsList_MouseDoubleClick" >
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Валюта/Монета" Binding="{Binding Path=ShortName, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="1*"/>
                     <DataGridTextColumn Header="Полное название" Binding="{Binding Path=FullName, UpdateSourceTrigger=PropertyChanged}"  IsReadOnly="True" Width="1*"/>

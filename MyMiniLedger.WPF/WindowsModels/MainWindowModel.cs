@@ -18,8 +18,18 @@ using System.Windows;
 
 namespace MyMiniLedger.WPF.WindowsModels
 {
+	public delegate void UpdateCoinsIndexDelegate();
+	public delegate void UpdateCategoriesIndexDelegate();
+	public delegate void UpdateKindsIndexDelegate();
+
 	public class MainWindowModel : BaseNotify
 	{
+		//При выполнении метода UpdateCoins() вызывается событие UpdateCoinsIndexEvent, анологично с другими полями
+		public event UpdateCoinsIndexDelegate UpdateCoinsIndexEvent;
+		public event UpdateCategoriesIndexDelegate UpdateCategoriesIndexEvent;
+		public event UpdateKindsIndexDelegate UpdateKindsIndexEvent;
+
+
 		public InitConfigBLL cf { get; set; }
 		private readonly Context _context;
 		private string _title = "МиниДомашняяБухгалтерия";
@@ -54,8 +64,12 @@ namespace MyMiniLedger.WPF.WindowsModels
 		public ObservableCollection<CategoryUIModel> Categories { get; set; }
 		public ObservableCollection<CoinUIModel> Coins { get; set; }
 		public ObservableCollection<KindUIModel> Kinds { get; set; }
-		//Для ограниченного выбора при фильтрации в комбобоксе
+
+		//Для ограниченного выбора при фильтрации в комбобоксе отдельного окна
 		public ObservableCollection<KindUIModel> TempKinds { get; set; }
+		//Для ограниченного выбора при фильтрации в комбобоксе главного окна
+		public ObservableCollection<KindUIModel> TempKindsMain { get; set; }
+
 		public ObservableCollection<StatusUIModel> StatusesForService { get; set; }
 		public ObservableCollection<StatusUIModel> StatusesForUser { get; set; }
 
@@ -64,7 +78,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 		public LambdaCommand OpenCoinWindow { get; set; }
 		public LambdaCommand OpenNewPositionWindow { get; set; }
 		public LambdaCommand InsertNewPosition { get; set; }
-		public LambdaCommand DeletePosition {  get; set; }
+		public LambdaCommand DeletePosition { get; set; }
 
 
 		public LambdaCommand RefreshPositions { get; set; }
@@ -72,8 +86,8 @@ namespace MyMiniLedger.WPF.WindowsModels
 
 		//Для привязки поле должно быть пропой {get; set;}
 		public string[] searchTypes { get; set; } = new string[] { "Номер позиции", "Категория", "Вид", "Валюта", "Тег", "Статус" };
-		
-		public List<string> tempCategories { get; set; } = new List<string>();
+
+		public ObservableCollection<string> tempCategories { get; set; } = new ObservableCollection<string>();
 
 
 		public MainWindowModel()
@@ -107,21 +121,15 @@ namespace MyMiniLedger.WPF.WindowsModels
 			//Positions = Positions.AsList().Sort();
 
 			//Инициализация категорий
-			BLL.Context.ListOfCategories tempCat = new BLL.Context.ListOfCategories();
-			List<CategoryUIModel> tempCategoriesAsync = tempCat.GetAllAsync().Result.Select(cat => Mappers.UIMapper.MapCategoryBLLToCategoryUI(cat)).ToList();
-			Categories = new ObservableCollection<CategoryUIModel>(tempCategoriesAsync);
+			Categories = CategoriesInicialization();
 
 			//Инициализация монет
-			BLL.Context.ListOfCoins tempCoin = new BLL.Context.ListOfCoins();
-			List<CoinUIModel> tempCoins = tempCoin.GetAllAsync().Result.Select(coin => Mappers.UIMapper.MapCoinBLLToCoinUI(coin)).ToList();
-			Coins = new ObservableCollection<CoinUIModel>(tempCoins);
+			Coins = CoinsInicialization();
 
 			//Инициализация видов
-			BLL.Context.ListOfKinds tempKind = new BLL.Context.ListOfKinds();
-			List<KindUIModel> _tempKinds = tempKind.GetAllAsync().Result.Select(kind => Mappers.UIMapper.MapKindBLLToKindUI(kind)).ToList();
-			Kinds = new ObservableCollection<KindUIModel>(_tempKinds);
-			//Виды для выбора в комбобокс
-			TempKinds = new ObservableCollection<KindUIModel>(_tempKinds);
+			Kinds = KindsInicialization();
+			TempKinds = KindsInicialization();
+			TempKindsMain = KindsInicialization();
 
 			setTempCaregories(tempCategories, Categories);
 
@@ -133,14 +141,14 @@ namespace MyMiniLedger.WPF.WindowsModels
 			StatusesForUser = new ObservableCollection<StatusUIModel>();
 			setStatusesForUser(StatusesForService);
 
-			PositionConstruct = new PositionUIModel() { Kind = new KindUIModel() { Category = new CategoryUIModel() }, Coin = new CoinUIModel(), Status = new StatusUIModel(), Income = "0", Expense = "0"};
+			PositionConstruct = new PositionUIModel() { Kind = new KindUIModel() { Category = new CategoryUIModel() }, Coin = new CoinUIModel(), Status = new StatusUIModel(), Income = "0", Expense = "0" };
 
 			PositionConstruct.OpenDate = DateTime.Now.ToString();
 			//PositionConstruct.Status.StatusName = StatusesForUser.ElementAt(0).StatusName;
 
-			OpenCategoryWindow = new LambdaCommand(execute => { new CategoryWindow().Show(); });
-			OpenKindWindow = new LambdaCommand(execute => { new KindWindow().Show(); });
-			OpenCoinWindow = new LambdaCommand(execute => { new CoinWindow().Show(); });
+			OpenCategoryWindow = new LambdaCommand(execute => { new CategoryWindow(this).Show(); });
+			OpenKindWindow = new LambdaCommand(execute => { new KindWindow(this).Show(); });
+			OpenCoinWindow = new LambdaCommand(execute => { new CoinWindow(this).Show(); });
 			//OpenNewPositionWindow = new LambdaCommand(execute => { new NewPositionWindow().Show();  });
 			OpenNewPositionWindow = new LambdaCommand(execute =>
 			{
@@ -179,7 +187,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 			canExecute => PositionConstruct.Kind is not null && PositionConstruct.Income != null && PositionConstruct.Expense != null
 			//&& SelectedKind.Kind != null &&
 			//Kinds.Any(k => k.Kind == _selectedKind.Kind) == false
-			);;
+			); ;
 
 			RefreshPositions = new LambdaCommand(
 				execute =>
@@ -200,7 +208,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 			DeletePosition = new LambdaCommand(async execute =>
 			{
 				await _context.PositionsTableBL.DeleteAsync(Mappers.UIMapper.MapPositionUIToPositionBLL(_selectedPosition));
-				
+
 				var t = Positions.Where(t => t.Id == _selectedPosition.Id);
 				Positions.Remove(t.First());
 				SelectedPosition = null;
@@ -234,17 +242,105 @@ namespace MyMiniLedger.WPF.WindowsModels
 			}
 		}
 
-		public void setTempCaregories(List<string> t, ObservableCollection<CategoryUIModel> _cat)
+		//Инициализация категорий
+		public ObservableCollection<CategoryUIModel> CategoriesInicialization()
 		{
-			foreach(var stat in _cat)
+			BLL.Context.ListOfCategories tempCat = new BLL.Context.ListOfCategories();
+			List<CategoryUIModel> tempCategoriesAsync = tempCat.GetAllAsync().Result.Select(cat => Mappers.UIMapper.MapCategoryBLLToCategoryUI(cat)).ToList();
+			return new ObservableCollection<CategoryUIModel>(tempCategoriesAsync);
+		}
+
+		//Обновление списка категорий
+		public void UpdateCategories()
+		{
+			Categories.Clear();
+			var tc = CategoriesInicialization();
+			foreach (var cat in tc) { Categories.Add(cat); }
+
+			tempCategories.Clear();
+			setTempCaregories(tempCategories, Categories);
+			UpdateCategoriesIndexEvent();
+		}
+
+		//Инициализация временных категорий для добавления новой позиции
+		public void setTempCaregories(ObservableCollection<string> t, ObservableCollection<CategoryUIModel> _cat)
+		{
+			foreach (var stat in _cat)
 			{
 				t.Add(stat.Category);
 			}
 		}
 
+		//Инициализация видов
+		public ObservableCollection<KindUIModel> KindsInicialization()
+		{
+			BLL.Context.ListOfKinds tempKind = new BLL.Context.ListOfKinds();
+			List<KindUIModel> _tempKinds = tempKind.GetAllAsync().Result.Select(kind => Mappers.UIMapper.MapKindBLLToKindUI(kind)).ToList();
+			return new ObservableCollection<KindUIModel>(_tempKinds);
+		}
+
+		// Обновление видов
+		public void UpdateKinds()
+		{
+			Kinds.Clear();
+			TempKinds.Clear();
+			TempKindsMain.Clear();
+
+			var tk = KindsInicialization();
+			foreach (var k in tk) { Kinds.Add(k); TempKinds.Add(k); TempKindsMain.Add(k); }
+			UpdateKindsIndexEvent();
+		}
+
+		//Инициализация монет
+		public ObservableCollection<CoinUIModel> CoinsInicialization()
+		{
+			BLL.Context.ListOfCoins tempCoin = new BLL.Context.ListOfCoins();
+			List<CoinUIModel> tempCoins = tempCoin.GetAllAsync().Result.Select(coin => Mappers.UIMapper.MapCoinBLLToCoinUI(coin)).ToList();
+			return new ObservableCollection<CoinUIModel>(tempCoins);
+		}
+
+		//Обновление списка монет
+		public void UpdateCoins()
+		{
+			//var tc = CoinsInicialization();
+			//CoinUIModel tCoin = new CoinUIModel();
+			//for (int i = 0; i < Coins.Count; i++)
+			//{
+			//	for (int j = 0; j < tc.Count; j++)
+			//	{
+			//		if (Coins[i].Id != tc[j].Id)
+			//		{
+			//			tCoin = tc[j];
+			//		}
+			//	}
+			//}
+			//Coins.Add(tCoin);
+			Coins.Clear();
+			var tc = CoinsInicialization();
+			foreach (var coin in tc) { Coins.Add(coin); }
+			UpdateCoinsIndexEvent();
+		}
+
+		public async void DeleteSelectedPosDataGrid()
+		{
+			if (SelectedPosition != null)
+			{
+				await _context.PositionsTableBL.DeleteAsync(Mappers.UIMapper.MapPositionUIToPositionBLL(SelectedPosition));
+				var t = Positions.Where(t => t.Id == _selectedPosition.Id);
+				Positions.Remove(t.First());
+				SelectedPosition = null;
+			}
+		}
+
+
+
+
+
+
+
+
 		//public void hardUpdate(BLL.Context.ListOfPositions tempPos)
 		//{
-
 		//	var maxId = (tempPos.GetAllAsync().Result.Select(p => Mappers.UIMapper.MapPositionBLLToPositionUI(p)).ToList()).Max(p => p.Id);
 		//	var updatedPos = (tempPos.GetAllAsync().Result.Select(p => Mappers.UIMapper.MapPositionBLLToPositionUI(p)).ToList()).Where(p => p.Id == maxId);
 		//	PositionUIModel temp = new PositionUIModel();
@@ -253,7 +349,6 @@ namespace MyMiniLedger.WPF.WindowsModels
 		//}
 
 		//Добавлие даты закрытия
-
 		//DateTime TempOpenDate = DateTime.ParseExact(PositionConstruct.OpenDate, "M/dd/yyyy hh:mm:ss tt", CultureInfo.InvariantCulture);
 		////Установка текущего времени
 		//TempOpenDate = TempOpenDate + DateTime.Now.TimeOfDay;
