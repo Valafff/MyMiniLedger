@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using MyMiniLedger.WPF.Models;
+using MyMiniLedger.WPF.Windows.EditContinuePosition;
 using MyMiniLedger.WPF.WindowsModels;
 using System.Windows;
 using System.Windows.Controls;
@@ -268,6 +269,11 @@ namespace MyMiniLedger.WPF
 			dp_OpenDate.SelectedDate = DateTime.Today;
 		}
 
+		private void Row_DoubleClick(object sender, MouseButtonEventArgs e)
+		{
+			var ecw = new EditContinuePositionWindow((DataContext as MainWindowModel));
+			ecw.ShowDialog();
+		}
 	}
 
 }

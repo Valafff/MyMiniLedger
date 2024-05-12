@@ -80,7 +80,6 @@ namespace MyMiniLedger.WPF.Windows.NewPositionWindow
 				foreach (var item in ((MainWindowModel)DataContext).Kinds.AsList())
 				{
 					((MainWindowModel)DataContext).TempKinds.Add(item);
-
 				}
 			}
 		}

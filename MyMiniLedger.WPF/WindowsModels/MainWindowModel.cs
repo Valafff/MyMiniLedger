@@ -5,6 +5,7 @@ using MyMiniLedger.BLL.Models;
 using MyMiniLedger.WPF.Models;
 using MyMiniLedger.WPF.Windows.CategoryWindow;
 using MyMiniLedger.WPF.Windows.CoinWindow;
+using MyMiniLedger.WPF.Windows.EditContinuePosition;
 using MyMiniLedger.WPF.Windows.KindWindow;
 using MyMiniLedger.WPF.Windows.NewPositionWindow;
 using System;
@@ -46,6 +47,13 @@ namespace MyMiniLedger.WPF.WindowsModels
 			set => SetField(ref _createPostitle, value);
 		}
 
+		private string _editContinuePos = "Редактирование/Продолжение позиции";
+		public string EditContinuePosition
+		{
+			get => _editContinuePos;
+			set => SetField(ref _editContinuePos, value);
+		}
+
 		private PositionUIModel? _positionConstruct;
 		public PositionUIModel? PositionConstruct
 		{
@@ -72,12 +80,17 @@ namespace MyMiniLedger.WPF.WindowsModels
 		public ObservableCollection<StatusUIModel> StatusesForService { get; set; }
 		public ObservableCollection<StatusUIModel> StatusesForUser { get; set; }
 
+		//Объявление команд
 		public LambdaCommand OpenCategoryWindow { get; set; }
 		public LambdaCommand OpenKindWindow { get; set; }
 		public LambdaCommand OpenCoinWindow { get; set; }
 		public LambdaCommand OpenNewPositionWindow { get; set; }
+		public LambdaCommand OpenEditContinueWindow { get; set; }
+
+
 		public LambdaCommand InsertNewPosition { get; set; }
 		public LambdaCommand DeletePosition { get; set; }
+
 
 
 		public LambdaCommand RefreshPositions { get; set; }
@@ -148,13 +161,21 @@ namespace MyMiniLedger.WPF.WindowsModels
 			OpenCategoryWindow = new LambdaCommand(execute => { new CategoryWindow(this).Show(); });
 			OpenKindWindow = new LambdaCommand(execute => { new KindWindow(this).Show(); });
 			OpenCoinWindow = new LambdaCommand(execute => { new CoinWindow(this).Show(); });
-			//OpenNewPositionWindow = new LambdaCommand(execute => { new NewPositionWindow().Show();  });
+			//Открывается как модальное окно
 			OpenNewPositionWindow = new LambdaCommand(execute =>
 			{
 				NewPositionWindow np = new NewPositionWindow(this);
 				np.Owner = Application.Current.MainWindow;
-				np.Show();
-			}
+				np.ShowDialog();
+			}			
+			);
+			OpenEditContinueWindow = new LambdaCommand(execute =>
+			{
+				NewPositionWindow np = new NewPositionWindow(this);
+				np.Owner = Application.Current.MainWindow;
+				np.ShowDialog();
+			},
+			canExecute => SelectedPosition != null
 			);
 
 			//Вставка новой позиции

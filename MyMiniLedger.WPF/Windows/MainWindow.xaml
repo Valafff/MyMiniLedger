@@ -177,6 +177,13 @@
                       CanUserAddRows="False"
                       SelectionChanged="DataGrid_SelectionChanged_MainWindow"
                       PreviewKeyDown="DataGrid_PreviewKeyDown">
+
+                <DataGrid.ItemContainerStyle>
+                    <Style TargetType="DataGridRow">
+                        <EventSetter x:Name="Row_DoubleClick" Event="MouseDoubleClick" Handler="Row_DoubleClick"/>
+                    </Style>
+                </DataGrid.ItemContainerStyle>
+                
                 <DataGrid.Columns>
                     <!--<DataGridTextColumn Header="Id" Binding="{Binding Path=Id}" IsReadOnly="True"/>-->
                     <DataGridTextColumn Header="Номер поз." Binding="{Binding Path=PositionKey, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsReadOnly="True" Width="*"/>
@@ -255,7 +262,7 @@
 
                 <StackPanel Grid.Column="2">
                     <Button Content="Создать новую позицию" Margin="5,10,5,5" Height="30" Command="{Binding Path=OpenNewPositionWindow}"/>
-                    <Button Content="Изменить/продолжить позицию"  Margin="5,5,5,5" Height="30" />
+                    <Button Content="Редактировать/Продолжить позицию"  Margin="5,5,5,5" Height="30"  Command="{Binding Path=OpenEditContinueWindow}"/>
                     <Button Content="Удалить позицию"  Margin="5,5,5,5" Height="30" Command="{Binding Path=DeletePosition}"/>
                     <Button Content="Принудительно обновить данные"  Margin="5,5,5,5" Height="30" Command="{Binding Path=RefreshPositions}"/>
                     <Button Content="Завершить работу" Margin="5,5,5,10" Height="30" Click="MenuItem_Click_Close"/>
