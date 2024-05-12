@@ -25,6 +25,7 @@ namespace MyMiniLedger.WPF
 			(DataContext as MainWindowModel).UpdateCoinsIndexEvent += UpdateSelectedCoin;
 			(DataContext as MainWindowModel).UpdateCategoriesIndexEvent += UpdateSelectedCategory;
 			(DataContext as MainWindowModel).UpdateKindsIndexEvent += UpdateSelectedKind;
+			(DataContext as MainWindowModel).UpdateDatePickerEvent += UpdateDatePicker;
 
 
 			//// Не получилось забиндить через VM
@@ -34,13 +35,14 @@ namespace MyMiniLedger.WPF
 			//(this.DataContext as MainWindowModel).cf.
 		}
 
+		//Удаление позиции
 		private void DataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.Key == Key.Delete)
 			{
 				(DataContext as MainWindowModel).DeleteSelectedPosDataGrid();
 			}
-        }
+		}
 
 		private void MenuItem_Click_Close(object sender, RoutedEventArgs e)
 		{
@@ -60,10 +62,12 @@ namespace MyMiniLedger.WPF
 		{
 			((MainWindowModel)DataContext).SelectedPosition = (PositionUIModel)(((DataGrid)sender).CurrentItem);
 		}
-
-		private void dp_OpenDate_DataContextChanged_MainWindow(object sender, DependencyPropertyChangedEventArgs e)
+		private void dp_OpenDate_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
 		{
-			((MainWindowModel)DataContext).PositionConstruct.OpenDate = dp_OpenDate.DisplayDate.ToString();
+			if (sender != null)
+			{
+				((MainWindowModel)DataContext).PositionConstruct.OpenDate = sender.ToString();
+			}
 		}
 
 		private void ComboBox_Category_SelectionChanged_MainWindow(object sender, SelectionChangedEventArgs e)
@@ -259,7 +263,11 @@ namespace MyMiniLedger.WPF
 			cb_Kind.SelectedIndex = 0;
 		}
 
+		void UpdateDatePicker()
+		{
+			dp_OpenDate.SelectedDate = DateTime.Today;
+		}
 
-    }
+	}
 
 }

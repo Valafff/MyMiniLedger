@@ -4,12 +4,13 @@ using MyMiniLedger.WPF.ViewTools;
 
 namespace MyMiniLedger.WPF.Models
 {
+
 	// BaseNotify реализует интерфейс INotifyPropertyChanged
 	public class PositionUIModel : BaseNotify, ICloneable, IComparable
 	{
 		public PositionUIModel() { }
 
-		public PositionUIModel(int id, int poskey, string opdate, string cldate, KindUIModel kind, string income, string expense, string saldo, CoinUIModel coin, StatusUIModel status, string tag, string note)
+		public PositionUIModel(int id, int poskey, string opdate, string cldate, KindUIModel kind, string income, string expense, string saldo, CoinUIModel coin, StatusUIModel status, string? tag, string? note, int? _zeroParrentKey, int? _parrentKey)
 		{
 			Id = id;
 			PositionKey = poskey;
@@ -23,6 +24,8 @@ namespace MyMiniLedger.WPF.Models
 			Status = status;
 			Tag = tag;
 			Notes = note;
+			ZeroParrentKey = _zeroParrentKey;
+			ParrentKey = _parrentKey;
 		}
 
 		private int _id;
@@ -109,12 +112,26 @@ namespace MyMiniLedger.WPF.Models
 			set => SetField(ref _notes, value);
 		}
 
+		private int? _zeroParrentKey;
+        public int? ZeroParrentKey
+		{
+			get => _zeroParrentKey;
+			set => SetField(ref _zeroParrentKey, value);
+		}
+
+		private int? _parrentKey;
+		public int? ParrentKey
+		{
+			get => _parrentKey;
+			set => SetField(ref _parrentKey, value);
+		}
+
 		public object Clone()
 		{
 			var cloneKind = new KindUIModel(_id, Kind.Kind, new CategoryUIModel() { Id = Kind.Category.Id, Category = Kind.Category.Category });
 			var cloneCoin = new CoinUIModel() { Id = Coin.Id, ShortName = Coin.ShortName, FullName = Coin.FullName, CoinNotes = Coin.CoinNotes };
 			var cloneStatus = new StatusUIModel() { Id = Status.Id, StatusName = Status.StatusName, StatusNotes = Status.StatusNotes };	
-			return new PositionUIModel(_id, _positionKey, _openDate, _closeDate, cloneKind, _income, _expense, _saldo, cloneCoin, cloneStatus, _tag, _notes);
+			return new PositionUIModel(_id, _positionKey, _openDate, _closeDate, cloneKind, _income, _expense, _saldo, cloneCoin, cloneStatus, _tag, _notes, _zeroParrentKey, _parrentKey);
 		}
 
 		public int CompareTo(object? obj)

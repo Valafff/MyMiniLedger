@@ -91,6 +91,11 @@ namespace MyMiniLedger.BLL.Context
 			{
 				entity.PositionKey = max+1;
 			}
+			if (entity.Status.StatusName == "Открыта" && entity.additionalPositionDataBLL.ZeroParrentKey == null)
+			{
+				entity.additionalPositionDataBLL.ZeroParrentKey = entity.PositionKey;
+				entity.additionalPositionDataBLL.PerrentKey = entity.PositionKey;
+			}
 			//Установка текущего времени
 			entity.OpenDate = entity.OpenDate + DateTime.Now.TimeOfDay;
 			//Расчет сальдо

@@ -30,7 +30,7 @@ namespace MyMiniLedger.WPF.Windows.NewPositionWindow
 			DataContext = _mainWindowModel;
 			dp_OpenDate.SelectedDate = DateTime.Now;
 
-
+			(DataContext as MainWindowModel).UpdateDatePickerEvent += UpdateDatePicker;
 		}
 
 		//Работа с автоматизированным вводом категории и вида для интерфейса юзера (в конструкт вид передается как объект уже с категорией) начало
@@ -122,9 +122,12 @@ namespace MyMiniLedger.WPF.Windows.NewPositionWindow
 			Close();
 		}
 
-		private void dp_OpenDate_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+		private void dp_OpenDate_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
 		{
-			((MainWindowModel)DataContext).PositionConstruct.OpenDate = dp_OpenDate.DisplayDate.ToString();
+			if (sender != null)
+			{
+				((MainWindowModel)DataContext).PositionConstruct.OpenDate = sender.ToString();
+			}
 		}
 
 		//Работа с заполнением полей income
@@ -221,6 +224,11 @@ namespace MyMiniLedger.WPF.Windows.NewPositionWindow
 				tb_Expense.Text = "0";
 				tb_Expense.SelectionStart = 1;
 			}
+		}
+
+		void UpdateDatePicker()
+		{
+			dp_OpenDate.SelectedDate = DateTime.Today;
 		}
 	}
 }

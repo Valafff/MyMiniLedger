@@ -21,6 +21,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 	public delegate void UpdateCoinsIndexDelegate();
 	public delegate void UpdateCategoriesIndexDelegate();
 	public delegate void UpdateKindsIndexDelegate();
+	public delegate void UpdateDatePicker();
 
 	public class MainWindowModel : BaseNotify
 	{
@@ -28,7 +29,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 		public event UpdateCoinsIndexDelegate UpdateCoinsIndexEvent;
 		public event UpdateCategoriesIndexDelegate UpdateCategoriesIndexEvent;
 		public event UpdateKindsIndexDelegate UpdateKindsIndexEvent;
-
+		public event UpdateDatePicker UpdateDatePickerEvent;
 
 		public InitConfigBLL cf { get; set; }
 		private readonly Context _context;
@@ -58,8 +59,6 @@ namespace MyMiniLedger.WPF.WindowsModels
 			get => _selectedPosition;
 			set => SetField(ref _selectedPosition, value);
 		}
-
-
 		public ObservableCollection<PositionUIModel> Positions { get; set; }
 		public ObservableCollection<CategoryUIModel> Categories { get; set; }
 		public ObservableCollection<CoinUIModel> Coins { get; set; }
@@ -143,7 +142,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 
 			PositionConstruct = new PositionUIModel() { Kind = new KindUIModel() { Category = new CategoryUIModel() }, Coin = new CoinUIModel(), Status = new StatusUIModel(), Income = "0", Expense = "0" };
 
-			PositionConstruct.OpenDate = DateTime.Now.ToString();
+			//PositionConstruct.OpenDate = DateTime.Today.ToString();
 			//PositionConstruct.Status.StatusName = StatusesForUser.ElementAt(0).StatusName;
 
 			OpenCategoryWindow = new LambdaCommand(execute => { new CategoryWindow(this).Show(); });
@@ -182,12 +181,13 @@ namespace MyMiniLedger.WPF.WindowsModels
 					PositionConstruct.Expense = "0";
 					PositionConstruct.Tag = "";
 					PositionConstruct.Notes = "";
-
+					PositionConstruct.OpenDate = DateTime.Today.ToString();
+					UpdateDatePickerEvent();
 				},
 			canExecute => PositionConstruct.Kind is not null && PositionConstruct.Income != null && PositionConstruct.Expense != null
 			//&& SelectedKind.Kind != null &&
 			//Kinds.Any(k => k.Kind == _selectedKind.Kind) == false
-			); ;
+			);
 
 			RefreshPositions = new LambdaCommand(
 				execute =>

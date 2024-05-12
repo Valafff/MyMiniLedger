@@ -1,5 +1,4 @@
-﻿
-using MyMiniLedger.WPF.Models;
+﻿using MyMiniLedger.WPF.Models;
 
 namespace MyMiniLedger.WPF.Mappers
 {
@@ -70,21 +69,29 @@ namespace MyMiniLedger.WPF.Mappers
 				Coin = MapCoinBLLToCoinUI(_pos.Coin),
 				Status = MapStatusBLLToStatusUI(_pos.Status),
 				Tag = _pos.Tag,
-				Notes = _pos.Notes
+				Notes = _pos.Notes,
+				ZeroParrentKey = _pos.additionalPositionDataBLL.ZeroParrentKey,
+				ParrentKey = _pos.additionalPositionDataBLL.PerrentKey	
 			};
 		}
 
 		//Перевод даты в Datetime,  перевод income expense saldo в decemal
 		public static BLL.Models.PositionBLLModel MapPositionUIToPositionBLL(PositionUIModel _pos)
 		{
+			//Приведение к текущему часовому поясу
+			//TimeZoneInfo userTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Russian Standard Time");
 			if (_pos.CloseDate == "")
 			{
 				_pos.CloseDate = new DateTime(1900, 01, 01).ToString();
 			}
 			return new BLL.Models.PositionBLLModel()
 			{
+
 				Id = _pos.Id,
 				PositionKey = _pos.PositionKey,
+				//OpenDate = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(Convert.ToDateTime(_pos.OpenDate), "Russian Standard Time"),
+				//CloseDate = TimeZoneInfo.ConvertTime(Convert.ToDateTime(_pos.CloseDate), userTimeZone),
+				//Конвертирует со сдвигом часовых поясов UTC
 				OpenDate = Convert.ToDateTime(_pos.OpenDate),
 				CloseDate = Convert.ToDateTime(_pos.CloseDate),
 				Kind = MapKindUIToKindBLL(_pos.Kind),
@@ -94,7 +101,8 @@ namespace MyMiniLedger.WPF.Mappers
 				Coin = MapCoinUIToCoinBLL(_pos.Coin),
 				Status = MapStatusUIToStatusBLL(_pos.Status),
 				Tag = _pos.Tag,
-				Notes = _pos.Notes
+				Notes = _pos.Notes,
+				additionalPositionDataBLL = new BLL.Models.AdditionalPositionDataClass(_pos.ZeroParrentKey, _pos.ParrentKey)
 			};
 		}
 

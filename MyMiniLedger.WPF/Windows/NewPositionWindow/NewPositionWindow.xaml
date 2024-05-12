@@ -43,7 +43,7 @@
             <TextBlock Grid.Row="0" Grid.Column="6" Text="Статус"  VerticalAlignment="Center"/>
             <TextBlock Grid.Row="0" Grid.Column="7" Text="Тег"  VerticalAlignment="Center"/>
 
-            <DatePicker Grid.Row="1" Grid.Column="0" x:Name="dp_OpenDate" DataContextChanged="dp_OpenDate_DataContextChanged">
+            <DatePicker Grid.Row="1" Grid.Column="0" x:Name="dp_OpenDate" SelectedDateChanged="dp_OpenDate_SelectedDateChanged">
                 <!--<DatePicker.Resources>
                     <Style TargetType="{x:Type DatePickerTextBox}">
                         <Setter Property="Control.Template">

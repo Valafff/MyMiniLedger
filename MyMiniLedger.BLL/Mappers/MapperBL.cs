@@ -1,4 +1,6 @@
 ﻿using MyMiniLedger.BLL.Models;
+using System.Text.Json;
+using static MyMiniLedger.BLL.Models.PositionBLLModel;
 
 namespace MyMiniLedger.BLL.Mappers
 {
@@ -61,41 +63,89 @@ namespace MyMiniLedger.BLL.Mappers
 			// categoriesDAL приклеиваются тк у видов есть зависимая таблица категории
 			IEnumerable<DAL.Models.CategoryModel> categoriesDAL)
 		{
-			return new PositionBLLModel()
+			if (positionDAL.AdditionalPositionData != null)
 			{
-				Id = positionDAL.Id,
-				PositionKey = positionDAL.PositionKey,
-				OpenDate = positionDAL.OpenDate,
-				CloseDate = positionDAL.CloseDate,
-				Kind = MapKindDALToKindBLL(kindsDAL.First(kind => kind.Id == positionDAL.KindId), categoriesDAL),
-				Income = positionDAL.Income,
-				Expense = positionDAL.Expense,
-				Saldo = positionDAL.Saldo,
-				Coin = MapCoinDALToCoinBLL(coinsDAL.First(coin => coin.Id == positionDAL.CoinId)),
-				Status = MapStatusDALToStatusBLL( statusesDAL.First(status => status.Id == positionDAL.StatusId)),
-				Tag = positionDAL.Tag,
-				Notes = positionDAL.Notes
-			};
+				return new PositionBLLModel()
+				{
+					Id = positionDAL.Id,
+					PositionKey = positionDAL.PositionKey,
+					OpenDate = positionDAL.OpenDate,
+					CloseDate = positionDAL.CloseDate,
+					Kind = MapKindDALToKindBLL(kindsDAL.First(kind => kind.Id == positionDAL.KindId), categoriesDAL),
+					Income = positionDAL.Income,
+					Expense = positionDAL.Expense,
+					Saldo = positionDAL.Saldo,
+					Coin = MapCoinDALToCoinBLL(coinsDAL.First(coin => coin.Id == positionDAL.CoinId)),
+					Status = MapStatusDALToStatusBLL(statusesDAL.First(status => status.Id == positionDAL.StatusId)),
+					Tag = positionDAL.Tag,
+					Notes = positionDAL.Notes,
+					additionalPositionDataBLL = JsonSerializer.Deserialize<AdditionalPositionDataClass>(json: positionDAL.AdditionalPositionData)
+				};
+			}
+			else
+			{
+				return new PositionBLLModel()
+				{
+					Id = positionDAL.Id,
+					PositionKey = positionDAL.PositionKey,
+					OpenDate = positionDAL.OpenDate,
+					CloseDate = positionDAL.CloseDate,
+					Kind = MapKindDALToKindBLL(kindsDAL.First(kind => kind.Id == positionDAL.KindId), categoriesDAL),
+					Income = positionDAL.Income,
+					Expense = positionDAL.Expense,
+					Saldo = positionDAL.Saldo,
+					Coin = MapCoinDALToCoinBLL(coinsDAL.First(coin => coin.Id == positionDAL.CoinId)),
+					Status = MapStatusDALToStatusBLL(statusesDAL.First(status => status.Id == positionDAL.StatusId)),
+					Tag = positionDAL.Tag,
+					Notes = positionDAL.Notes,
+					additionalPositionDataBLL = new AdditionalPositionDataClass()
+				};
+			}
+			
 		}
 
 		// Позиция из BLL в DAL
 		public static DAL.Models.PositionModel MapPositionBLLToPositionDAL(PositionBLLModel positionBLL)
 		{
-			return new DAL.Models.PositionModel()
+			if (/*positionBLL.additionalPositionData != null | */positionBLL.additionalPositionDataBLL.ZeroParrentKey != null & positionBLL.additionalPositionDataBLL.PerrentKey != null)
 			{
-				Id = positionBLL.Id,
-				PositionKey = positionBLL.PositionKey,
-				OpenDate = positionBLL.OpenDate,
-				CloseDate = positionBLL.CloseDate,
-				KindId = positionBLL.Kind.Id,
-				Income = positionBLL.Income,
-				Expense = positionBLL.Expense,
-				Saldo = positionBLL.Saldo,
-				CoinId = positionBLL.Coin.Id,
-				StatusId = positionBLL.Status.Id,
-				Tag = positionBLL.Tag,
-				Notes = positionBLL.Notes
-			};
+				return new DAL.Models.PositionModel()
+				{
+					Id = positionBLL.Id,
+					PositionKey = positionBLL.PositionKey,
+					OpenDate = positionBLL.OpenDate,
+					CloseDate = positionBLL.CloseDate,
+					KindId = positionBLL.Kind.Id,
+					Income = positionBLL.Income,
+					Expense = positionBLL.Expense,
+					Saldo = positionBLL.Saldo,
+					CoinId = positionBLL.Coin.Id,
+					StatusId = positionBLL.Status.Id,
+					Tag = positionBLL.Tag,
+					Notes = positionBLL.Notes,
+					AdditionalPositionData = JsonSerializer.Serialize(positionBLL.additionalPositionDataBLL)
+				};
+			}
+			else
+			{
+				return new DAL.Models.PositionModel()
+				{
+					Id = positionBLL.Id,
+					PositionKey = positionBLL.PositionKey,
+					OpenDate = positionBLL.OpenDate,
+					CloseDate = positionBLL.CloseDate,
+					KindId = positionBLL.Kind.Id,
+					Income = positionBLL.Income,
+					Expense = positionBLL.Expense,
+					Saldo = positionBLL.Saldo,
+					CoinId = positionBLL.Coin.Id,
+					StatusId = positionBLL.Status.Id,
+					Tag = positionBLL.Tag,
+					Notes = positionBLL.Notes,
+					AdditionalPositionData = null
+				};
+			}
+			
 		}
 	}
 

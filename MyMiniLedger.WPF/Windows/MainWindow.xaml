@@ -109,7 +109,7 @@
                     <TextBlock Grid.Row="0" Grid.Column="7" Text="Тег"  VerticalAlignment="Center"/>
                     <TextBlock Grid.Row="0" Grid.Column="8" Text="Примечания"  VerticalAlignment="Center"/>
 
-                    <DatePicker  Grid.Row="1" Grid.Column="0" x:Name="dp_OpenDate" DataContextChanged="dp_OpenDate_DataContextChanged_MainWindow"/>
+                    <DatePicker  Grid.Row="1" Grid.Column="0" x:Name="dp_OpenDate" SelectedDateChanged="dp_OpenDate_SelectedDateChanged" />
 
                     <ComboBox Grid.Row="1" Grid.Column="1"
                       x:Name="cb_Category"

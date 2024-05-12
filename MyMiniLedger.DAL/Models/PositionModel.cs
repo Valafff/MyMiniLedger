@@ -20,5 +20,6 @@ namespace MyMiniLedger.DAL.Models
         public int StatusId { get; set; }
         public string? Tag { get; set; }
         public string? Notes { get; set; }
+        public string? AdditionalPositionData { get; set; }
     }
 }

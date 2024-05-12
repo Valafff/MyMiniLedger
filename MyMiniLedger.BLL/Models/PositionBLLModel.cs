@@ -6,6 +6,17 @@ using System.Threading.Tasks;
 
 namespace MyMiniLedger.BLL.Models
 {
+    public class AdditionalPositionDataClass
+    {
+		public int? ZeroParrentKey { get; set; }
+		public int? PerrentKey { get; set; }
+        public AdditionalPositionDataClass(){}
+        public AdditionalPositionDataClass(int? _zeroParrentKey, int? _perrentKey)
+        {
+            ZeroParrentKey = _zeroParrentKey;
+            PerrentKey = _perrentKey;
+        }
+    }
 	public class PositionBLLModel
 	{
         public int Id { get; set; }
@@ -20,5 +31,6 @@ namespace MyMiniLedger.BLL.Models
         public StatusBLLModel Status { get; set; }
         public string? Tag { get; set; }
         public string? Notes { get; set; }
-    }
+        public AdditionalPositionDataClass additionalPositionDataBLL { get; set; }
+	}
 }
