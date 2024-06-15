@@ -1,0 +1,224 @@
+﻿<Window x:Class="MyMiniLedger.WPF.Windows.EditContinuePosition.EditContinuePositionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:wm="clr-namespace:MyMiniLedger.WPF.WindowsModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:local="clr-namespace:MyMiniLedger.WPF.Windows.EditContinuePosition"
+        mc:Ignorable="d"
+        Title= "{Binding Path=TitleEditContinuePosition}" Height="750" Width="1600"
+        WindowStartupLocation="CenterScreen">
+
+    <Window.DataContext>
+        <wm:EditContinuePositionWindowsModel/>
+    </Window.DataContext>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.5*"/>
+            <RowDefinition Height="0.5*"/>
+            <RowDefinition Height="0.5*"/>
+            <RowDefinition Height="3*"/>
+        </Grid.RowDefinitions>
+        <GroupBox Grid.Row="0" Header="Текущая позиция">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Номер позиции" VerticalAlignment="Bottom"/>
+                <TextBlock Grid.Row="0" Grid.Column="1" Text="Дата откр. поз." VerticalAlignment="Bottom"/>
+                <TextBlock Grid.Row="0" Grid.Column="2" Text="Дата закр. поз." VerticalAlignment="Bottom"/>
+                <TextBlock Grid.Row="0" Grid.Column="3" Text="Категория" VerticalAlignment="Bottom"/>
+                <TextBlock Grid.Row="0" Grid.Column="4" Text="Вид" VerticalAlignment="Bottom"/>
+                <TextBlock Grid.Row="0" Grid.Column="5" Text="Приход" VerticalAlignment="Bottom"/>
+                <TextBlock Grid.Row="0" Grid.Column="6" Text="Расход" VerticalAlignment="Bottom"/>
+                <TextBlock Grid.Row="0" Grid.Column="7" Text="Сальдо" VerticalAlignment="Bottom"/>
+                <TextBlock Grid.Row="0" Grid.Column="8" Text="Валюта" VerticalAlignment="Bottom"/>
+                <TextBlock Grid.Row="0" Grid.Column="9" Text="Статус" VerticalAlignment="Bottom"/>
+                <TextBlock Grid.Row="0" Grid.Column="10" Text="Тег" VerticalAlignment="Bottom"/>
+                <TextBlock Grid.Row="0" Grid.Column="11" Text="Примечания" VerticalAlignment="Bottom"/>
+                <TextBox Grid.Row="1" Grid.Column="0" x:Name="tb_PosKey" IsReadOnly="True" Focusable="False" Text="{Binding Path = SelectedPosition.PositionKey}"/>
+                <TextBox Grid.Row="1" Grid.Column="1" x:Name="tb_OpenDate" IsReadOnly="True" Focusable="False" Text="{Binding Path = SelectedPosition.OpenDate}"/>
+                <TextBox Grid.Row="1" Grid.Column="2" x:Name="tb_CloseDate" IsReadOnly="True" Focusable="False" Text="{Binding Path = SelectedPosition.CloseDate}"/>
+                <TextBox Grid.Row="1" Grid.Column="3" x:Name="tb_Category" IsReadOnly="True" Focusable="False" Text="{Binding Path = SelectedPosition.Kind.Category.Category}"/>
+                <TextBox Grid.Row="1" Grid.Column="4" x:Name="tb_Kind" IsReadOnly="True" Focusable="False" Text="{Binding Path = SelectedPosition.Kind.Kind}"/>
+                <TextBox Grid.Row="1" Grid.Column="5" x:Name="tb_IncomeSelectedPos" IsReadOnly="True" Focusable="False" Text="{Binding Path = SelectedPosition.Income}"/>
+                <TextBox Grid.Row="1" Grid.Column="6" x:Name="tb_ExpenseSelectedPos" IsReadOnly="True" Focusable="False" Text="{Binding Path = SelectedPosition.Expense}"/>
+                <TextBox Grid.Row="1" Grid.Column="7" x:Name="tb_Saldo" IsReadOnly="True" Focusable="False" Text="{Binding Path = SelectedPosition.Saldo}"/>
+                <TextBox Grid.Row="1" Grid.Column="8" x:Name="tb_Coin" IsReadOnly="True" Focusable="False" Text="{Binding Path = SelectedPosition.Coin.ShortName}"/>
+                <TextBox Grid.Row="1" Grid.Column="9" x:Name="tb_Status" IsReadOnly="True" Focusable="False" Text="{Binding Path = SelectedPosition.Status.StatusName}"/>
+                <TextBox Grid.Row="1" Grid.Column="10" x:Name="tb_Tag" IsReadOnly="True" Focusable="False" Text="{Binding Path = SelectedPosition.Tag}"/>
+                <TextBox Grid.Row="1" Grid.Column="11" x:Name="tb_Notes" IsReadOnly="True" Focusable="False" Text="{Binding Path = SelectedPosition.Notes}"/>
+
+            </Grid>
+        </GroupBox>
+
+        <!-- Редактирование/добавление позиции -->
+        <GroupBox Grid.Row="1" Header="Редактирование/Продолжение позиции">
+            <Grid Grid.Row="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" Text="Дата открытия позиции" VerticalAlignment="Center"/>
+                <TextBlock Grid.Column="1" Text="Категория"  VerticalAlignment="Center"/>
+                <TextBlock Grid.Column="2" Text="Вид"  VerticalAlignment="Center"/>
+                <TextBlock Grid.Column="3" Text="Приход"  VerticalAlignment="Center" />
+                <TextBlock Grid.Column="4" Text="Расход" VerticalAlignment="Center" />
+                <TextBlock Grid.Column="5" Text="Валюта"  VerticalAlignment="Center" />
+                <TextBlock Grid.Column="6" Text="Статус"  VerticalAlignment="Center" />
+                <TextBlock Grid.Column="7" Text="Тег"  VerticalAlignment="Center"/>
+                <TextBlock Grid.Column="8" Text="Примечания"  VerticalAlignment="Center"/>
+
+                <DatePicker  Grid.Column="0" Grid.Row="1" x:Name="dp_OpenDate"  SelectedDateChanged="dp_OpenDate_SelectedDateChanged"/>
+
+                <ComboBox Grid.Row="1" Grid.Column="1"
+                      x:Name="cb_Category"
+                      ItemsSource="{Binding tempCategories, UpdateSourceTrigger=PropertyChanged}"
+                      SelectedIndex="0"
+                      SelectedItem="{Binding SelectedCategory, UpdateSourceTrigger=PropertyChanged}"
+                      SelectionChanged="ComboBox_Category_SelectionChanged_EditContinueWindow"/>
+
+                <ComboBox Grid.Row="1" Grid.Column="2"
+                      x:Name="cb_Kind"
+                      ItemsSource="{Binding Path=TempKinds, UpdateSourceTrigger=PropertyChanged}"
+                      SelectedItem="{Binding SelectedPosition.Kind}"
+                      TextSearch.TextPath="Kind" 
+                      SelectedIndex="0"
+                      IsEditable="true" 
+                      TextBoxBase.TextChanged="cb_Kind_TextChanged_EditContinueWindow"
+                      SelectionChanged="cb_Kind_SelectionChanged_EditContinueWindow">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Path=Kind, UpdateSourceTrigger=PropertyChanged}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+
+                <TextBox  Grid.Row="1" Grid.Column="3"
+                x:Name="tb_Income" 
+                Text="{Binding Path=SelectedPosition.Income, UpdateSourceTrigger=PropertyChanged}"
+                PreviewTextInput="tb_Income_PreviewTextInput_EditContinueWindow"
+                PreviewKeyDown="tb_Income_PreviewKeyDown_EditContinueWindow"
+                TextChanged="tb_Income_TextChanged_EditContinueWindow"/>
+
+                <TextBox Grid.Row="1" Grid.Column="4" 
+                x:Name="tb_Expense"  
+                Text="{Binding Path=SelectedPosition.Expense, UpdateSourceTrigger=PropertyChanged}"
+                PreviewTextInput="tb_Expense_PreviewTextInput_EditContinueWindow"
+                PreviewKeyDown="tb_Expense_PreviewKeyDown_EditContinueWindow"
+                TextChanged="tb_Expense_TextChanged_EditContinueWindow"/>
+
+                <ComboBox Grid.Row="1" Grid.Column="5" x:Name="cb_Coin" ItemsSource="{Binding Path=Coins, UpdateSourceTrigger=PropertyChanged}"
+                          SelectedIndex="0"
+                          SelectedItem="{Binding SelectedCoin, UpdateSourceTrigger=PropertyChanged}"
+                          SelectionChanged ="cb_Coin_SelectionChanged_MainWindow">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Path=ShortName, UpdateSourceTrigger=PropertyChanged}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+
+                <ComboBox Grid.Row="1" Grid.Column="6" x:Name="cb_Status" ItemsSource="{Binding Path=StatusesForUser, UpdateSourceTrigger=PropertyChanged}" SelectedIndex="0" SelectionChanged="tb_Status_SelectionChanged_EditContinueWindow">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Path=StatusName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+
+                <TextBox Grid.Row="1" Grid.Column="7" x:Name="tb_inputTag" Text="{Binding Path=SelectedPosition.Tag, UpdateSourceTrigger=PropertyChanged}" TextChanged="tb_inputTag_TextChanged"/>
+
+                <TextBox Grid.Row="1"  Grid.Column="8" x:Name="tb_inpunNotes" Grid.ColumnSpan="2" TextWrapping="Wrap"  VerticalScrollBarVisibility="Auto" Text="{Binding Path=SelectedPosition.Notes, UpdateSourceTrigger=PropertyChanged}" TextChanged="tb_inpunNtes_TextChanged"/>
+
+                <Button Grid.Row="0"  Grid.Column="10" Content="Откат позиции" Grid.RowSpan="2"  Margin="10,5,5,5" Command="{Binding Path=UndoSelectedPosition}"/>
+
+            </Grid>
+        </GroupBox>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" Content="Перезаписать позицию" Margin="10,10,10,10" Command="{Binding Path=UpdatePosition}" />
+            <Button Grid.Column="1" Content="Продолжить позицию" Margin="10,10,10,10" Command="{Binding Path=AddComplexPosition}"/>
+            <Button Grid.Column="2" Content="Удалить выделенную позицию" Margin="10,10,10,10" />
+            <Button Grid.Column="3" Content="Удалить всю цепочку позиций" Margin="10,10,10,10"/>
+            <Button Grid.Column="4" Content="Выход" Margin="10,10,10,10" Click="Button_Click_Close"/>
+            <!--Костыль с имитацией нажатия кнопки-->
+            <Button x:Name="serviceButton" Command="{Binding Path=SelectNewPosition}" Visibility="Hidden"/>
+        </Grid>
+
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <GroupBox  Header="Пул позиций">
+                <DataGrid x:Name="dg_ComplexPositionsList" ItemsSource="{Binding Path=SelectedPositions, UpdateSourceTrigger=PropertyChanged}"
+                          SelectedItem="{Binding DataGridSelectedItem, UpdateSourceTrigger=PropertyChanged}"
+                          AutoGenerateColumns="False"
+                          CanUserAddRows="False" >
+
+                    <DataGrid.ItemContainerStyle>
+                        <Style TargetType="DataGridRow">
+                            <EventSetter x:Name="Row_SelectedPositions" Event="Selected"  Handler="DataGridRow_Selected"/>
+                        </Style>
+                    </DataGrid.ItemContainerStyle>
+
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Номер позиции" Binding="{Binding Path=PositionKey, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="1*"/>
+                        <DataGridTextColumn Header="Ключ родителя" Binding="{Binding Path=ParrentKey, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="1*"/>
+                        <DataGridTextColumn Header="Дата открытия" Binding="{Binding Path=OpenDate, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="1*"/>
+                        <DataGridTextColumn Header="Вид" Binding="{Binding Path=Kind.Kind, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="1*"/>
+                        <DataGridTextColumn Header="Валюта" Binding="{Binding Path=Coin.ShortName, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="1*"/>
+                        <DataGridTextColumn Header="Сальдо" Binding="{Binding Path=Saldo, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="1*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+            </GroupBox>
+
+            <GroupBox Grid.Column="1"  Header="Дополнительная информация">
+                <StackPanel>
+
+                </StackPanel>
+            </GroupBox>
+        </Grid>
+    </Grid>
+
+</Window>

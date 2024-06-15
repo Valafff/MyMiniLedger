@@ -1,0 +1,104 @@
+﻿<Window x:Class="MyMiniLedger.WPF.Windows.CoinWindow.CoinWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:wm="clr-namespace:MyMiniLedger.WPF.WindowsModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MyMiniLedger.WPF.Windows.CoinWindow"
+       mc:Ignorable="d"
+       Title="{Binding Path=Title}" Height="300" Width="650"
+       WindowStartupLocation="CenterScreen">
+
+    <Window.DataContext>
+        <wm:CoinWindowModel/>
+    </Window.DataContext>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="0.5*"/>
+            <RowDefinition Height="3*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0"  VerticalAlignment="Center" HorizontalAlignment="Center">
+                   Название валюты/монеты
+                </TextBlock>
+                <TextBox Grid.Row="1" x:Name="tb_EditCoinName" Text="{Binding Path=SelectedCoin.ShortName, UpdateSourceTrigger=PropertyChanged}"/>
+            </Grid>
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0"  VerticalAlignment="Center" HorizontalAlignment="Center">
+                Полное название валюты/монеты
+                </TextBlock>
+                <TextBox Grid.Row="1" x:Name="tb_EditCoinFullName"  Text="{Binding Path=SelectedCoin.FullName, UpdateSourceTrigger=PropertyChanged}"/>
+            </Grid>
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0"  VerticalAlignment="Center" HorizontalAlignment="Center">
+                Примечания/пояснения
+                </TextBlock>
+                <TextBox Grid.Row="1" x:Name="tb_EditCoinNotes"  Text="{Binding Path=SelectedCoin.CoinNotes, UpdateSourceTrigger=PropertyChanged}"/>
+            </Grid>
+        </Grid>
+
+        <Grid Grid.Row="1" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" Margin="2,2,2,2" x:Name="bt_AddNewCoin" Command="{Binding Path=AddToCoin}">
+                <TextBlock TextAlignment="Center">Добавить<LineBreak/>новую валюту/монту</TextBlock >
+            </Button>
+            <Button Grid.Column="1" Margin="2,2,2,2" Command="{Binding Path=UpdateCoin}" >
+                <TextBlock TextAlignment="Center">Редактировать<LineBreak/>валюту/монту</TextBlock >
+            </Button>
+            <Button Grid.Column="2" x:Name="bt_DelCoin" Content="Удалить валюту/монту" Margin="2,2,2,2" Command="{Binding Path=DeleteCoin}"/>
+            <Button Grid.Column="3" Content="Выход" Margin="2,2,2,2" Click="ButtonExit_Click"/>
+        </Grid>
+        <Grid Grid.Row="2">
+            <StackPanel Orientation="Horizontal">
+                <RadioButton IsChecked="True" Margin="10,2,5,5" Name="rb_Crypto" Checked="rb_Crypto_Checked">
+                    Крипта
+                </RadioButton>
+                <RadioButton Margin="5,2,5,5" Name="rb_Fiat" Checked="rb_Fiat_Checked">
+                    Фиат
+                </RadioButton>
+                <RadioButton Margin="5,2,5,2" Name="rb_Other" Checked="rb_Other_Checked">
+                    Не задано
+                </RadioButton>
+            </StackPanel>
+        </Grid>
+        
+        <DockPanel Grid.Row="3" >
+            <DataGrid x:Name="CoinsList" AutoGenerateColumns="False" CanUserAddRows="False" ItemsSource="{Binding Coins, UpdateSourceTrigger=PropertyChanged}" MouseDoubleClick="CoinsList_MouseDoubleClick" >
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Валюта/Монета" Binding="{Binding Path=ShortName, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="1*"/>
+                    <DataGridTextColumn Header="Полное название" Binding="{Binding Path=FullName, UpdateSourceTrigger=PropertyChanged}"  IsReadOnly="True" Width="1*"/>
+                    <DataGridTextColumn Header="Примечания/пояснения" Binding="{Binding Path=CoinNotes, UpdateSourceTrigger=PropertyChanged}"  IsReadOnly="True" Width="1*"/>
+                    <DataGridTextColumn Header="Количество ссылок" Binding="{Binding Path=RefNumber, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="1*"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </DockPanel>
+
+    </Grid>
+    
+</Window>
