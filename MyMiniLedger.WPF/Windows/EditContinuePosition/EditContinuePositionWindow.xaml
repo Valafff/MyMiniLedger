@@ -4,11 +4,15 @@
         xmlns:wm="clr-namespace:MyMiniLedger.WPF.WindowsModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:MyMiniLedger.WPF.Windows.EditContinuePosition"
         mc:Ignorable="d"
         Title= "{Binding Path=TitleEditContinuePosition}" Height="750" Width="1600"
         WindowStartupLocation="CenterScreen">
+
+
+
 
     <Window.DataContext>
         <wm:EditContinuePositionWindowsModel/>
@@ -107,17 +111,32 @@
                       ItemsSource="{Binding tempCategories, UpdateSourceTrigger=PropertyChanged}"
                       SelectedIndex="0"
                       SelectedItem="{Binding SelectedCategory, UpdateSourceTrigger=PropertyChanged}"
-                      SelectionChanged="ComboBox_Category_SelectionChanged_EditContinueWindow"/>
+                      SelectionChanged="ComboBox_Category_SelectionChanged_EditContinueWindow">
+
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <i:InvokeCommandAction Command="{Binding Cb_CategorySelectionChanged}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+
+                </ComboBox>
 
                 <ComboBox Grid.Row="1" Grid.Column="2"
                       x:Name="cb_Kind"
                       ItemsSource="{Binding Path=TempKinds, UpdateSourceTrigger=PropertyChanged}"
-                      SelectedItem="{Binding SelectedPosition.Kind}"
+                      SelectedItem="{Binding SelectedPosition.Kind, UpdateSourceTrigger=PropertyChanged}"
                       TextSearch.TextPath="Kind" 
                       SelectedIndex="{Binding SelectedKindIndex, UpdateSourceTrigger=PropertyChanged}"
                       IsEditable="true" 
-                      TextBoxBase.TextChanged="cb_Kind_TextChanged_EditContinueWindow"
-                      SelectionChanged="cb_Kind_SelectionChanged_EditContinueWindow">
+                      Text="{Binding TextKind, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}"
+                      TextBoxBase.TextChanged="cb_Kind_TextChanged_EditContinueWindow">
+
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="PreviewKeyDown">
+                            <i:InvokeCommandAction Command="{Binding Cb_KindTextChange}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Path=Kind, UpdateSourceTrigger=PropertyChanged}"/>
@@ -143,6 +162,7 @@
                           SelectedIndex="0"
                           SelectedItem="{Binding SelectedPosition.Coin, UpdateSourceTrigger=PropertyChanged}"
                           SelectionChanged ="cb_Coin_SelectionChanged_MainWindow">
+
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Path=ShortName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
@@ -182,8 +202,6 @@
             <Button Grid.Column="2" Content="Удалить выделенную позицию" Margin="10,10,10,10" />
             <Button Grid.Column="3" Content="Удалить всю цепочку позиций" Margin="10,10,10,10"/>
             <Button Grid.Column="4" Content="Выход" Margin="10,10,10,10" Click="Button_Click_Close"/>
-            <!--Костыль с имитацией нажатия кнопки-->
-            <Button x:Name="serviceButton" Command="{Binding Path=SelectNewPosition}" Visibility="Hidden"/>
         </Grid>
 
         <Grid Grid.Row="3">
@@ -198,11 +216,11 @@
                           AutoGenerateColumns="False"
                           CanUserAddRows="False" >
 
-                    <DataGrid.ItemContainerStyle>
-                        <Style TargetType="DataGridRow">
-                            <EventSetter x:Name="Row_SelectedPositions" Event="Selected"  Handler="DataGridRow_Selected"/>
-                        </Style>
-                    </DataGrid.ItemContainerStyle>
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <i:InvokeCommandAction Command="{Binding SelectNewPosition}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
 
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Номер позиции" Binding="{Binding Path=PositionKey, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="1*"/>

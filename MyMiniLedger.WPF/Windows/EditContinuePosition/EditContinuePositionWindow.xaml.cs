@@ -26,14 +26,12 @@ namespace MyMiniLedger.WPF.Windows.EditContinuePosition
 	{
 		//Блокировка выполнения событий при инициализации
 		bool isLoaded = false;
-		//Блокировка событий cb_Kind text changed при срабатывании события ComboBox_Category_SelectionChanged_EditContinueWindow
-		bool block = false;
 		public EditContinuePositionWindow(PositionUIModel _selectedPosition, ObservableCollection<PositionUIModel> _mainPositionsSourse)
 		{
 			EditContinuePositionWindowsModel model = new EditContinuePositionWindowsModel() { MAINPOSITIONSCOLLECTION = _mainPositionsSourse };
 			model.SelectedPosition = (PositionUIModel)_selectedPosition.Clone();
 			model.OriginalSelectedPosition = (PositionUIModel)_selectedPosition.Clone();
-			model.SelectedPositionsInicailization((model.SelectedPositions));
+			model.SelectedPositionsInicailization((model.SelectedPositions), 1);
 			//Инициализируется в кодбехайнд тк селектед позитион в конструкторе не определена
 			model.SelectedCategory = _selectedPosition.Kind.Category.Category;
 			model.TempKindInicialization();
@@ -46,7 +44,6 @@ namespace MyMiniLedger.WPF.Windows.EditContinuePosition
 			GetSelectedStatus();
 
 			(DataContext as EditContinuePositionWindowsModel).UpdateEvent += ResetColors;
-			(DataContext as EditContinuePositionWindowsModel).LockEvent += LockFunc;
 
 			isLoaded = true;
 		}
@@ -66,48 +63,19 @@ namespace MyMiniLedger.WPF.Windows.EditContinuePosition
 
 		private void ComboBox_Category_SelectionChanged_EditContinueWindow(object sender, SelectionChangedEventArgs e)
 		{
-			//block = true;
-			if (!block)
+			if (isLoaded)
 			{
-				if (isLoaded)
-				{
+				tb_Category.Background = Brushes.Yellow;
+				tb_Kind.Background = Brushes.Yellow;
 
-					(DataContext as EditContinuePositionWindowsModel).TempKindInicializationOfCategory();
-					//GetSelectedKind();
-					cb_Kind.SelectedIndex = 0;
-
-					tb_Category.Background = Brushes.Yellow;
-					tb_Kind.Background = Brushes.Yellow;
-
-				}
 			}
-			block = false;
-		}
-
-		//Кандидат на удаление
-		private void cb_Kind_SelectionChanged_EditContinueWindow(object sender, SelectionChangedEventArgs e)
-		{
-			//if (cb_Kind.SelectedIndex >= 0 && isLoaded)
-			//{
-			//	var temp = ((EditContinuePositionWindowsModel)DataContext).TempKinds[cb_Kind.SelectedIndex];
-			//	cb_Category.SelectedItem = temp.Category.Category;
-			//	tb_Kind.Background = Brushes.Yellow;
-			//}
 		}
 		private void cb_Kind_TextChanged_EditContinueWindow(object sender, TextChangedEventArgs e)
 		{
-			//if (!block)
-			//{
-				if (isLoaded)
-				{
-					//if (cb_Kind.Text != null)
-					//{
-					//	(DataContext as EditContinuePositionWindowsModel).TempKindInicializationTextInput();
-					//}
-					tb_Kind.Background = Brushes.Yellow;
-				}
-			//}
-			//else block = false;
+			if (isLoaded)
+			{
+				tb_Kind.Background = Brushes.Yellow;
+			}
 		}
 
 		private void tb_Income_PreviewTextInput_EditContinueWindow(object sender, TextCompositionEventArgs e)
@@ -311,18 +279,7 @@ namespace MyMiniLedger.WPF.Windows.EditContinuePosition
 		{
 			Close();
 		}
-		private void DataGridRow_Selected(object sender, RoutedEventArgs e)
-		{
 
-			//(DataContext as EditContinuePositionWindowsModel).SelectedPositions.Clear();
-
-
-			////Работает
-			ButtonAutomationPeer peer = new ButtonAutomationPeer(serviceButton);
-			IInvokeProvider invokeProv = peer.GetPattern(PatternInterface.Invoke) as IInvokeProvider;
-			invokeProv.Invoke();
-			ResetColors();
-		}
 
 		void GetSelectedKind()
 		{
@@ -360,11 +317,6 @@ namespace MyMiniLedger.WPF.Windows.EditContinuePosition
 					break;
 				}
 			}
-		}
-
-		void LockFunc()
-		{
-			block = true;
 		}
 	}
 }
