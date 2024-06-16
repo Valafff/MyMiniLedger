@@ -114,7 +114,7 @@
                       ItemsSource="{Binding Path=TempKinds, UpdateSourceTrigger=PropertyChanged}"
                       SelectedItem="{Binding SelectedPosition.Kind}"
                       TextSearch.TextPath="Kind" 
-                      SelectedIndex="0"
+                      SelectedIndex="{Binding SelectedKindIndex, UpdateSourceTrigger=PropertyChanged}"
                       IsEditable="true" 
                       TextBoxBase.TextChanged="cb_Kind_TextChanged_EditContinueWindow"
                       SelectionChanged="cb_Kind_SelectionChanged_EditContinueWindow">
@@ -141,16 +141,19 @@
 
                 <ComboBox Grid.Row="1" Grid.Column="5" x:Name="cb_Coin" ItemsSource="{Binding Path=Coins, UpdateSourceTrigger=PropertyChanged}"
                           SelectedIndex="0"
-                          SelectedItem="{Binding SelectedCoin, UpdateSourceTrigger=PropertyChanged}"
+                          SelectedItem="{Binding SelectedPosition.Coin, UpdateSourceTrigger=PropertyChanged}"
                           SelectionChanged ="cb_Coin_SelectionChanged_MainWindow">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Path=ShortName, UpdateSourceTrigger=PropertyChanged}"/>
+                            <TextBlock Text="{Binding Path=ShortName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
 
-                <ComboBox Grid.Row="1" Grid.Column="6" x:Name="cb_Status" ItemsSource="{Binding Path=StatusesForUser, UpdateSourceTrigger=PropertyChanged}" SelectedIndex="0" SelectionChanged="tb_Status_SelectionChanged_EditContinueWindow">
+                <ComboBox Grid.Row="1" Grid.Column="6" x:Name="cb_Status" ItemsSource="{Binding Path=StatusesForUser, UpdateSourceTrigger=PropertyChanged}"
+                          SelectedIndex="0"
+                          SelectedItem="{Binding SelectedPosition.Status, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                          SelectionChanged="tb_Status_SelectionChanged_EditContinueWindow">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Path=StatusName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>

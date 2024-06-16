@@ -171,7 +171,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 			);
 			OpenEditContinueWindow = new LambdaCommand(execute =>
 			{
-				EditContinuePositionWindow ecp = new EditContinuePositionWindow(SelectedPosition);
+				EditContinuePositionWindow ecp = new EditContinuePositionWindow(SelectedPosition, Positions);
 				ecp.Owner = Application.Current.MainWindow;
 				ecp.ShowDialog();
 			},

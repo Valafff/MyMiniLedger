@@ -3,6 +3,7 @@ using MyMiniLedger.WPF.Models;
 using MyMiniLedger.WPF.WindowsModels;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -27,9 +28,9 @@ namespace MyMiniLedger.WPF.Windows.EditContinuePosition
 		bool isLoaded = false;
 		//Блокировка событий cb_Kind text changed при срабатывании события ComboBox_Category_SelectionChanged_EditContinueWindow
 		bool block = false;
-		public EditContinuePositionWindow(PositionUIModel _selectedPosition)
+		public EditContinuePositionWindow(PositionUIModel _selectedPosition, ObservableCollection<PositionUIModel> _mainPositionsSourse)
 		{
-			EditContinuePositionWindowsModel model = new EditContinuePositionWindowsModel();
+			EditContinuePositionWindowsModel model = new EditContinuePositionWindowsModel() { MAINPOSITIONSCOLLECTION = _mainPositionsSourse };
 			model.SelectedPosition = (PositionUIModel)_selectedPosition.Clone();
 			model.OriginalSelectedPosition = (PositionUIModel)_selectedPosition.Clone();
 			model.SelectedPositionsInicailization((model.SelectedPositions));
@@ -45,6 +46,7 @@ namespace MyMiniLedger.WPF.Windows.EditContinuePosition
 			GetSelectedStatus();
 
 			(DataContext as EditContinuePositionWindowsModel).UpdateEvent += ResetColors;
+			(DataContext as EditContinuePositionWindowsModel).LockEvent += LockFunc;
 
 			isLoaded = true;
 		}
@@ -64,20 +66,25 @@ namespace MyMiniLedger.WPF.Windows.EditContinuePosition
 
 		private void ComboBox_Category_SelectionChanged_EditContinueWindow(object sender, SelectionChangedEventArgs e)
 		{
-			block = true;
-			if (isLoaded)
+			//block = true;
+			if (!block)
 			{
+				if (isLoaded)
+				{
 
-				(DataContext as EditContinuePositionWindowsModel).TempKindInicializationOfCategory();
-				GetSelectedKind();
-				//cb_Kind.SelectedIndex = 0;
+					(DataContext as EditContinuePositionWindowsModel).TempKindInicializationOfCategory();
+					//GetSelectedKind();
+					cb_Kind.SelectedIndex = 0;
 
-				tb_Category.Background = Brushes.Yellow;
-				tb_Kind.Background = Brushes.Yellow;
+					tb_Category.Background = Brushes.Yellow;
+					tb_Kind.Background = Brushes.Yellow;
 
+				}
 			}
+			block = false;
 		}
 
+		//Кандидат на удаление
 		private void cb_Kind_SelectionChanged_EditContinueWindow(object sender, SelectionChangedEventArgs e)
 		{
 			//if (cb_Kind.SelectedIndex >= 0 && isLoaded)
@@ -89,18 +96,18 @@ namespace MyMiniLedger.WPF.Windows.EditContinuePosition
 		}
 		private void cb_Kind_TextChanged_EditContinueWindow(object sender, TextChangedEventArgs e)
 		{
-			if (!block)
-			{
+			//if (!block)
+			//{
 				if (isLoaded)
 				{
-					if (cb_Kind.Text != null)
-					{
-						(DataContext as EditContinuePositionWindowsModel).TempKindInicializationTextInput();
-					}
+					//if (cb_Kind.Text != null)
+					//{
+					//	(DataContext as EditContinuePositionWindowsModel).TempKindInicializationTextInput();
+					//}
 					tb_Kind.Background = Brushes.Yellow;
 				}
-			}
-			else block = false;
+			//}
+			//else block = false;
 		}
 
 		private void tb_Income_PreviewTextInput_EditContinueWindow(object sender, TextCompositionEventArgs e)
@@ -285,12 +292,6 @@ namespace MyMiniLedger.WPF.Windows.EditContinuePosition
 			tb_Status.Background = Brushes.White;
 			tb_Tag.Background = Brushes.White;
 			tb_Notes.Background = Brushes.White;
-
-
-			//Устанавливает индекс при изменении выбранной позиции во VM
-			GetSelectedKind();
-			GetSelectedCoin();
-			GetSelectedStatus();
 		}
 
 		private string SaldoCalculation()
@@ -359,6 +360,11 @@ namespace MyMiniLedger.WPF.Windows.EditContinuePosition
 					break;
 				}
 			}
+		}
+
+		void LockFunc()
+		{
+			block = true;
 		}
 	}
 }
