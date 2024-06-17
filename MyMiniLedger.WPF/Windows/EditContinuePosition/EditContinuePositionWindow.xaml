@@ -61,7 +61,7 @@
                 <TextBox Grid.Row="1" Grid.Column="1" x:Name="tb_OpenDate" IsReadOnly="True" Focusable="False" Text="{Binding Path = SelectedPosition.OpenDate}"/>
                 <TextBox Grid.Row="1" Grid.Column="2" x:Name="tb_CloseDate" IsReadOnly="True" Focusable="False" Text="{Binding Path = SelectedPosition.CloseDate}"/>
                 <TextBox Grid.Row="1" Grid.Column="3" x:Name="tb_Category" IsReadOnly="True" Focusable="False" Text="{Binding Path = SelectedPosition.Kind.Category.Category}"/>
-                <TextBox Grid.Row="1" Grid.Column="4" x:Name="tb_Kind" IsReadOnly="True" Focusable="False" Text="{Binding Path = SelectedPosition.Kind.Kind}"/>
+                <TextBox Grid.Row="1" Grid.Column="4" x:Name="tb_Kind" IsReadOnly="True" Focusable="False" Text="{Binding Path = SelectedPosition.Kind.Kind}" Background="{Binding TB_KindColor, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
                 <TextBox Grid.Row="1" Grid.Column="5" x:Name="tb_IncomeSelectedPos" IsReadOnly="True" Focusable="False" Text="{Binding Path = SelectedPosition.Income}"/>
                 <TextBox Grid.Row="1" Grid.Column="6" x:Name="tb_ExpenseSelectedPos" IsReadOnly="True" Focusable="False" Text="{Binding Path = SelectedPosition.Expense}"/>
                 <TextBox Grid.Row="1" Grid.Column="7" x:Name="tb_Saldo" IsReadOnly="True" Focusable="False" Text="{Binding Path = SelectedPosition.Saldo}"/>
@@ -128,14 +128,18 @@
                       TextSearch.TextPath="Kind" 
                       SelectedIndex="{Binding SelectedKindIndex, UpdateSourceTrigger=PropertyChanged}"
                       IsEditable="true" 
-                      Text="{Binding TextKind, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}"
-                      TextBoxBase.TextChanged="cb_Kind_TextChanged_EditContinueWindow">
+                      Text="{Binding TextKind, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}">
 
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="PreviewKeyDown">
                             <i:InvokeCommandAction Command="{Binding Cb_KindTextChange}"/>
                         </i:EventTrigger>
+
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <i:InvokeCommandAction Command="{Binding Cb_KindSelected}"/>
+                        </i:EventTrigger>
                     </i:Interaction.Triggers>
+                    
 
                     <ComboBox.ItemTemplate>
                         <DataTemplate>

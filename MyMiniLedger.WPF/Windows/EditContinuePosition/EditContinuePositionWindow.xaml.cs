@@ -31,7 +31,7 @@ namespace MyMiniLedger.WPF.Windows.EditContinuePosition
 			EditContinuePositionWindowsModel model = new EditContinuePositionWindowsModel() { MAINPOSITIONSCOLLECTION = _mainPositionsSourse };
 			model.SelectedPosition = (PositionUIModel)_selectedPosition.Clone();
 			model.OriginalSelectedPosition = (PositionUIModel)_selectedPosition.Clone();
-			model.SelectedPositionsInicailization((model.SelectedPositions), 1);
+			model.SelectedPositionsInicailization((model.SelectedPositions));
 			//Инициализируется в кодбехайнд тк селектед позитион в конструкторе не определена
 			model.SelectedCategory = _selectedPosition.Kind.Category.Category;
 			model.TempKindInicialization();
@@ -68,13 +68,6 @@ namespace MyMiniLedger.WPF.Windows.EditContinuePosition
 				tb_Category.Background = Brushes.Yellow;
 				tb_Kind.Background = Brushes.Yellow;
 
-			}
-		}
-		private void cb_Kind_TextChanged_EditContinueWindow(object sender, TextChangedEventArgs e)
-		{
-			if (isLoaded)
-			{
-				tb_Kind.Background = Brushes.Yellow;
 			}
 		}
 

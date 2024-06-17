@@ -6,7 +6,9 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing;
 using System.Linq;
+using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -86,6 +88,14 @@ namespace MyMiniLedger.WPF.WindowsModels
 			set => SetField(ref _textKind, value);
 		}
 
+		//Тупо записывается название цвета через биндинг
+		private string? _tb_kind_color;
+		public string? TB_KindColor
+		{
+			get => _tb_kind_color;
+			set => SetField(ref _tb_kind_color, value);
+		}
+
 		private CoinUIModel? _selectedCoin;
 		public CoinUIModel? SelectedCoin
 		{
@@ -127,10 +137,14 @@ namespace MyMiniLedger.WPF.WindowsModels
 		public LambdaCommand SelectNewPosition { get; set; }
 		public LambdaCommand Cb_KindTextChange { get; set; }
 		public LambdaCommand Cb_CategorySelectionChanged { get; set; }
+        public LambdaCommand Cb_KindSelected { get; set; }
 
 
-		public EditContinuePositionWindowsModel()
+
+        public EditContinuePositionWindowsModel()
 		{
+
+
 			_context = new Context();
 
 			LockEvent += SetBlock;
@@ -142,6 +156,9 @@ namespace MyMiniLedger.WPF.WindowsModels
 
 			SelectedPositions = new ObservableCollection<PositionUIModel>();
 			MAINPOSITIONSCOLLECTION = new ObservableCollection<PositionUIModel>();
+
+			//Инициализация цвета
+			TB_KindColor = "White";
 
 			//Инициализация категорий
 			Categories = CategoriesInicialization();
@@ -167,7 +184,9 @@ namespace MyMiniLedger.WPF.WindowsModels
 			//Команды
 			UndoSelectedPosition = new LambdaCommand(execute =>
 			{
+				//Console.WriteLine($"Оригинальная позиция {OriginalSelectedPosition.Kind.Kind}");
 				ValuePositionCopy(SelectedPosition, OriginalSelectedPosition);
+				//Console.WriteLine($"Оригинальная позиция {OriginalSelectedPosition.Kind.Kind}");
 				SelectedPositionsInicailization(SelectedPositions);
 				UpdateEvent();
 			},
@@ -205,7 +224,13 @@ namespace MyMiniLedger.WPF.WindowsModels
 					SelectedCategory = (Kinds.First(k => k.Kind == TextKind)).Category.Category;
 				}
 				block = false;
+				TB_KindColor = "Yellow";
 			},
+			canExecute => true
+			);
+
+			Cb_KindSelected = new LambdaCommand(execute =>
+			TB_KindColor = "Yellow",
 			canExecute => true
 			);
 
@@ -311,7 +336,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 				PositionUIModel sp = new PositionUIModel();
 				if (_flagSource == 0)
 				{
-					sp = SelectedPosition;
+					sp = (PositionUIModel)SelectedPosition.Clone();
 				}
 				else
 				{
@@ -401,7 +426,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 			catch (Exception ex)
 			{
 				Console.WriteLine($"{ex.Message} При попытке инициализировать временные позиции");
-				SelectedPositionsInicailization(SelectedPositions, 1);
+				SelectedPositionsInicailization(SelectedPositions, 0);
 				Console.WriteLine($"Список временных позиций перестроен");
 			}
 		}
@@ -416,10 +441,6 @@ namespace MyMiniLedger.WPF.WindowsModels
 					var cloneKind = (KindUIModel)SelectedPosition.Kind.Clone();
 					TempKinds.Clear();
 					SelectedPosition.Kind = cloneKind;
-
-					//var clonePosition = (PositionUIModel)SelectedPosition.Clone();
-					//TempKinds.Clear();
-					//ValuePositionCopy(SelectedPosition, clonePosition);
 
 					if (SelectedCategory != null)
 					{
@@ -443,18 +464,34 @@ namespace MyMiniLedger.WPF.WindowsModels
 			}
 		}
 
+		//При обновлении текста
 		public void TempKindInicializationTextInput()
 		{
 			try
 			{
-				if (TempKinds != null)
+				//  && SelectedPosition.Kind != null НЕ ПРОВЕРЯЛОСЬ!
+				if (TempKinds != null && SelectedPosition.Kind != null)
 				{
-
-					//var cloneKind = (KindUIModel)SelectedPosition.Kind.Clone();
+					//Создаю позицию с оригинальным адресом
+					var OrigAddressPosKind = SelectedPosition.Kind;
+					var cloneKind = (KindUIModel)SelectedPosition.Kind.Clone();
+					SelectedPosition.Kind = cloneKind;
 					TempKinds.Clear();
-					//SelectedPosition.Kind = cloneKind;
+					SelectedPosition.Kind = OrigAddressPosKind;
 
+					//Работало, но не совсем корректно
+					////var cloneKind = (KindUIModel)SelectedPosition.Kind.Clone();
+					//TempKinds.Clear();
+					////SelectedPosition.Kind = cloneKind;
 
+					foreach (var item in Kinds)
+					{
+						TempKinds.Add((KindUIModel)item.Clone());
+					}
+				}
+				else if (TempKinds != null)
+				{
+					TempKinds.Clear();
 					foreach (var item in Kinds)
 					{
 						TempKinds.Add((KindUIModel)item.Clone());
@@ -463,46 +500,58 @@ namespace MyMiniLedger.WPF.WindowsModels
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(ex.Message);
+				Console.WriteLine($"Ошибка при обновлении текста: {ex.Message}");
 			}
 		}
 
 		void ValuePositionCopy(PositionUIModel _tocopy, PositionUIModel _fromCopy)
 		{
-			if (_tocopy != null && _fromCopy != null)
+			try
 			{
-				_tocopy.Id = _fromCopy.Id;
-				_tocopy.PositionKey = _fromCopy.PositionKey;
-				_tocopy.OpenDate = _fromCopy.OpenDate;
-				_tocopy.CloseDate = _fromCopy.CloseDate;
+				if (_tocopy != null && _fromCopy != null && _tocopy.Kind != null && _tocopy.Kind.Category != null)
+				{
+					_tocopy.Id = _fromCopy.Id;
+					_tocopy.PositionKey = _fromCopy.PositionKey;
+					_tocopy.OpenDate = _fromCopy.OpenDate;
+					_tocopy.CloseDate = _fromCopy.CloseDate;
 
-				//_tocopy.Kind = _fromCopy.Kind;
-				_tocopy.Kind.Id = _fromCopy.Kind.Id;
-				_tocopy.Kind.Kind = _fromCopy.Kind.Kind;
-				_tocopy.Kind.Category.Id = _fromCopy.Kind.Category.Id;
-				_tocopy.Kind.Category.Category = _fromCopy.Kind.Category.Category;
-				_tocopy.Kind.Category.RefNumber = _fromCopy.Kind.Category.RefNumber;
+					//_tocopy.Kind = _fromCopy.Kind;
+					_tocopy.Kind.Id = _fromCopy.Kind.Id;
+					_tocopy.Kind.Kind = _fromCopy.Kind.Kind;
+					_tocopy.Kind.Category.Id = _fromCopy.Kind.Category.Id;
+					_tocopy.Kind.Category.Category = _fromCopy.Kind.Category.Category;
+					_tocopy.Kind.Category.RefNumber = _fromCopy.Kind.Category.RefNumber;
 
-				_tocopy.Income = _fromCopy.Income;
-				_tocopy.Expense = _fromCopy.Expense;
-				_tocopy.Saldo = _fromCopy.Saldo;
+					_tocopy.Income = _fromCopy.Income;
+					_tocopy.Expense = _fromCopy.Expense;
+					_tocopy.Saldo = _fromCopy.Saldo;
 
-				//_tocopy.Coin = _fromCopy.Coin;
-				_tocopy.Coin.Id = _fromCopy.Coin.Id;
-				_tocopy.Coin.FullName = _fromCopy.Coin.FullName;
-				_tocopy.Coin.ShortName = _fromCopy.Coin.ShortName;
-				_tocopy.Coin.RefNumber = _fromCopy.Coin.RefNumber;
-				_tocopy.Coin.CoinNotes = _fromCopy.Coin.CoinNotes;
+					//_tocopy.Coin = _fromCopy.Coin;
+					_tocopy.Coin.Id = _fromCopy.Coin.Id;
+					_tocopy.Coin.FullName = _fromCopy.Coin.FullName;
+					_tocopy.Coin.ShortName = _fromCopy.Coin.ShortName;
+					_tocopy.Coin.RefNumber = _fromCopy.Coin.RefNumber;
+					_tocopy.Coin.CoinNotes = _fromCopy.Coin.CoinNotes;
 
-				//_tocopy.Status = _fromCopy.Status;
-				_tocopy.Status.Id = _fromCopy.Status.Id;
-				_tocopy.Status.StatusName = _fromCopy.Status.StatusName;
-				_tocopy.Status.StatusNotes = _fromCopy.Status.StatusNotes;
+					//_tocopy.Status = _fromCopy.Status;
+					_tocopy.Status.Id = _fromCopy.Status.Id;
+					_tocopy.Status.StatusName = _fromCopy.Status.StatusName;
+					_tocopy.Status.StatusNotes = _fromCopy.Status.StatusNotes;
 
-				_tocopy.Tag = _fromCopy.Tag;
-				_tocopy.Notes = _fromCopy.Notes;
-				_tocopy.ZeroParrentKey = _fromCopy.ZeroParrentKey;
-				_tocopy.ParrentKey = _fromCopy.ParrentKey;
+					_tocopy.Tag = _fromCopy.Tag;
+					_tocopy.Notes = _fromCopy.Notes;
+					_tocopy.ZeroParrentKey = _fromCopy.ZeroParrentKey;
+					_tocopy.ParrentKey = _fromCopy.ParrentKey;
+				}
+				else
+				{
+                    Console.WriteLine("Сработала передача вида по новой ссылке (не исключение)");
+                    SelectedPosition.Kind = (KindUIModel)OriginalSelectedPosition.Kind.Clone();
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"{ex.Message} _tocopy {_tocopy.Kind.Kind} _fromcopy {_fromCopy.Kind.Kind}");
 			}
 		}
 
@@ -513,6 +562,15 @@ namespace MyMiniLedger.WPF.WindowsModels
 			_tocopy.Category.Id = _fromCopy.Category.Id;
 			_tocopy.Category.Category = _fromCopy.Category.Category;
 			_tocopy.Category.RefNumber = _fromCopy.Category.RefNumber;
+		}
+
+		void SoftEraseKind(KindUIModel _toerase)
+		{
+			_toerase.Id = 0;
+			_toerase.Kind = null;
+			_toerase.Category.Id = 0;
+			_toerase.Category.Category = null;
+			_toerase.Category.RefNumber = 0;
 		}
 
 		void SetBlock()
