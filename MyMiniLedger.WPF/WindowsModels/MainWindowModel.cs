@@ -186,6 +186,11 @@ namespace MyMiniLedger.WPF.WindowsModels
 
 					PositionConstruct.CloseDate = (ViewTools.FormatterPositions.SetCloseDate(PositionConstruct.Status.StatusName)).ToString();
 
+					//Затычка, даже не костыль, до лучших времен
+					DateTime t = Convert.ToDateTime(PositionConstruct.OpenDate);
+					t += DateTime.Now.TimeOfDay;
+					PositionConstruct.OpenDate = t.ToString();
+
 					await _context.PositionsTableBL.InsertAsync(Mappers.UIMapper.MapPositionUIToPositionBLL(PositionConstruct));
 
 					//Обновление списка UI

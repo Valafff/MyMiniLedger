@@ -67,7 +67,8 @@ namespace MyMiniLedger.WPF
 		{
 			if (sender != null)
 			{
-				((MainWindowModel)DataContext).PositionConstruct.OpenDate = sender.ToString();
+				//((MainWindowModel)DataContext).PositionConstruct.OpenDate = sender.ToString();
+				((MainWindowModel)DataContext).PositionConstruct.OpenDate = ((DateTime)((DatePicker)sender).SelectedDate).ToString("dd.MM.yyyy");
 			}
 		}
 

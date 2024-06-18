@@ -120,8 +120,8 @@ namespace MyMiniLedger.BLL.Context
 				entity.additionalPositionDataBLL.ZeroParrentKey = entity.PositionKey;
 				entity.additionalPositionDataBLL.PerrentKey = entity.PositionKey;
 			}
-			//Установка текущего времени
-			entity.OpenDate = entity.OpenDate + DateTime.Now.TimeOfDay;
+			////Установка текущего времени - ЭТО ДИЧЬ!
+			//entity.OpenDate = entity.OpenDate + DateTime.Now.TimeOfDay;
 			//Расчет сальдо
 			entity.Saldo = entity.Income - entity.Expense;
 			//Запись в БД

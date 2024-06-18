@@ -43,7 +43,7 @@ namespace MyMiniLedger.WPF.Windows.EditContinuePosition
 				Statuses = _mainStatuses
 			};
 			model.SelectedPosition = (PositionUIModel)_selectedPosition.Clone();
-			model.OriginalSelectedPosition = (PositionUIModel)_selectedPosition.Clone();
+			model.DublecateSelectedPosition = (PositionUIModel)_selectedPosition.Clone();
 
 			model.SetStringCaregories(model.StringCategories, model.Categories);
 			model.SetStringKinds(model.StringKinds, model.Kinds, model.SelectedPosition.Kind.Category);
@@ -56,8 +56,6 @@ namespace MyMiniLedger.WPF.Windows.EditContinuePosition
 			model.SelectedKind = model.SelectedPosition.Kind.Kind;
 			model.SelectedCoin = model.SelectedPosition.Coin.ShortName;
 			model.SelectedStatus = model.SelectedPosition.Status.StatusName;
-
-			//model.TempKindInicialization();
 
 			InitializeComponent();
 			DataContext = model;
@@ -222,44 +220,5 @@ namespace MyMiniLedger.WPF.Windows.EditContinuePosition
 		{
 			Close();
 		}
-
-
-		//void GetSelectedKind()
-		//{
-		//	if (cb_Kind.Items != null && (DataContext as EditContinuePositionWindowsModel).SelectedPosition.Kind != null)
-		//	{
-		//		for (int i = 0; i < cb_Kind.Items.Count; i++)
-		//		{
-		//			if (((KindUIModel)cb_Kind.Items[i]).Kind == (DataContext as EditContinuePositionWindowsModel).SelectedPosition.Kind.Kind)
-		//			{
-		//				cb_Kind.SelectedIndex = i;
-		//				break;
-		//			}
-		//		}
-		//	}
-
-		//}
-		//void GetSelectedCoin()
-		//{
-		//	for (int i = 0; i < cb_Coin.Items.Count; i++)
-		//	{
-		//		if (((CoinUIModel)cb_Coin.Items[i]).ShortName == (DataContext as EditContinuePositionWindowsModel).SelectedPosition.Coin.ShortName)
-		//		{
-		//			cb_Coin.SelectedIndex = i;
-		//			break;
-		//		}
-		//	}
-		//}
-		//void GetSelectedStatus()
-		//{
-		//	for (int i = 0; i < cb_Status.Items.Count; i++)
-		//	{
-		//		if (((StatusUIModel)cb_Status.Items[i]).StatusName == (DataContext as EditContinuePositionWindowsModel).SelectedPosition.Status.StatusName)
-		//		{
-		//			cb_Status.SelectedIndex = i;
-		//			break;
-		//		}
-		//	}
-		//}
 	}
 }

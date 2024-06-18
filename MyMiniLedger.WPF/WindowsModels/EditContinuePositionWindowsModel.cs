@@ -30,6 +30,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 		private ComplexPositionHendler complexPositionsHendler = new ComplexPositionHendler();
 
 		bool block = false;
+		bool dateTimeWasChanged = false;
 
 		private readonly Context _context;
 
@@ -51,12 +52,11 @@ namespace MyMiniLedger.WPF.WindowsModels
 
 		//Оригинальная модель выбранной позиции - для отката изменений
 		private PositionUIModel? _originalSelectedPosition;
-		public PositionUIModel? OriginalSelectedPosition
+		public PositionUIModel? DublecateSelectedPosition
 		{
 			get => _originalSelectedPosition;
 			set => SetField(ref _originalSelectedPosition, value);
 		}
-
 
 		private PositionUIModel? _dataGridtSelectedItem;
 		public PositionUIModel? DataGridSelectedItem
@@ -79,13 +79,6 @@ namespace MyMiniLedger.WPF.WindowsModels
 			get => _selectedKind;
 			set => SetField(ref _selectedKind, value);
 		}
-
-		//private int? _selectedKindIndex;
-		//public int? SelectedKindIndex
-		//{
-		//	get => _selectedKindIndex;
-		//	set => SetField(ref _selectedKindIndex, value);
-		//}
 
 		//Для корректного переводы в нужный формат
 		private DateTime? _tempselectedOpenDate;
@@ -204,12 +197,8 @@ namespace MyMiniLedger.WPF.WindowsModels
 		public LambdaCommand Cb_CategorySelectionChanged { get; set; }
 		public LambdaCommand Cb_KindSelected { get; set; }
 
-
-
 		public EditContinuePositionWindowsModel()
 		{
-
-
 			_context = new Context();
 
 			LockEvent += SetBlock;
@@ -217,7 +206,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 			//Иницмализируется в классе *xaml.cs
 			//Создание выбранной позиции
 			SelectedPosition = new PositionUIModel();
-			OriginalSelectedPosition = new PositionUIModel();
+			DublecateSelectedPosition = new PositionUIModel();
 
 			SelectedPositions = new ObservableCollection<PositionUIModel>();
 			MAINPOSITIONSCOLLECTION = new ObservableCollection<PositionUIModel>(); //Ссылки на все позиции из главного окна
@@ -246,27 +235,19 @@ namespace MyMiniLedger.WPF.WindowsModels
 			//Команды
 			UndoSelectedPosition = new LambdaCommand(execute =>
 			{
-				//Console.WriteLine($"Оригинальная позиция {OriginalSelectedPosition.Kind.Kind}");
-				ValuePositionCopy( SelectedPosition, OriginalSelectedPosition);
+				//Console.WriteLine($"Оригинальная позиция {DublecateSelectedPosition.Kind.Kind}");
+				ValuePositionCopy(SelectedPosition, DublecateSelectedPosition);
 				//Безопасный откат выбранных позиций в комбобокс
-
-				SelectedOpenDate = SelectedPosition.OpenDate;
-				SelectedCloseDate = SelectedPosition.CloseDate;
-				SelectedCategory = SelectedPosition.Kind.Category.Category;
-				SetStringKinds(StringKinds, Kinds, SelectedPosition.Kind.Category);
-				SelectedKind = SelectedPosition.Kind.Kind;
-				SelectedCoin = SelectedPosition.Coin.ShortName;
-				SelectedStatus = SelectedPosition.Status.StatusName;
-				TempSelectedOpenDate = null;
-
+				UpdateSelectedStringFields();
 				SelectedPositionsInicailization(SelectedPositions);
 				UpdateEvent();
 			},
-			canExecute => SelectedPosition != null && OriginalSelectedPosition != null
+			canExecute => SelectedPosition != null && DublecateSelectedPosition != null
 			);
 
 			Dp_OpenDateChange = new LambdaCommand(execute =>
 			{
+				dateTimeWasChanged = true;
 				DateTime temp = TempSelectedOpenDate.Value + DateTime.Now.TimeOfDay;
 				SelectedOpenDate = temp.ToString();
 				if (SelectedStatus == "Закрыта" || SelectedStatus == "Closed")
@@ -379,14 +360,19 @@ namespace MyMiniLedger.WPF.WindowsModels
 				canExecute => SelectedPosition.Kind is not null && SelectedPosition.Income != null && SelectedPosition.Expense != null
 			);
 
+			//Продолжение комплексной позиции
 			AddComplexPosition = new LambdaCommand(
 
 				async execute =>
 				{
 					var editPosition = (PositionUIModel)SelectedPosition.Clone();
-					ValuePositionCopy(SelectedPosition, OriginalSelectedPosition);
+					ValuePositionCopy(SelectedPosition, DublecateSelectedPosition);
+					SetStringKinds(StringKinds, Kinds, SelectedCategory);
+					UpdateSelectedStringFields();
+					if(!dateTimeWasChanged)	editPosition.OpenDate = DateTime.Now.ToString();
+					
 					complexPositionsHendler.AddComplexPosition(SelectedPositions, editPosition, _context);
-					//Console.WriteLine($"Оригинальная позиция {OriginalSelectedPosition.Kind.Kind}");
+					
 					UpdateEvent();
 					SelectedPositionsInicailization(SelectedPositions);
 
@@ -402,32 +388,20 @@ namespace MyMiniLedger.WPF.WindowsModels
 
 
 
-
-
-
-					//Добавление новой комплексной позиции
+					dateTimeWasChanged = false;
 				},
-				canExecute => SelectedPosition.Kind is not null && SelectedPosition.Income != null && SelectedPosition.Expense != null && SelectedPosition.Status.StatusName == "Открыта"
+				//Условие: все позиции из SelectedPositions должны иметь статус Открыта или Open (!Закрыта !Closed)
+				canExecute => SelectedPosition.Kind is not null && SelectedPosition.Income != null && SelectedPosition.Expense != null && !SelectedPositions.Any(s =>  s.Status.StatusName == "Закрыта" || s.Status.StatusName == "Closed")
 			);
 
-			//Активация через костыль в кодбехайнд
 			SelectNewPosition = new LambdaCommand(
 
 				async execute =>
 					{
 						LockEvent();
 						ValuePositionCopy(SelectedPosition, DataGridSelectedItem);
-
 						//Безопасный откат выбранных позиций в комбобокс
-						SelectedOpenDate = SelectedPosition.OpenDate;
-						SelectedCloseDate = SelectedPosition.CloseDate;
-						SelectedCategory = SelectedPosition.Kind.Category.Category;
-						SetStringKinds(StringKinds, Kinds, SelectedPosition.Kind.Category);
-						SelectedKind = SelectedPosition.Kind.Kind;
-						SelectedCoin = SelectedPosition.Coin.ShortName;
-						SelectedStatus = SelectedPosition.Status.StatusName;
-						TempSelectedOpenDate = null;
-
+						UpdateSelectedStringFields();
 						UpdateEvent();
 						block = false;
 					},
@@ -517,34 +491,6 @@ namespace MyMiniLedger.WPF.WindowsModels
 			}
 		}
 
-		////Инициализация категорий
-		//public ObservableCollection<CategoryUIModel> CategoriesInicialization()
-		//{
-		//	BLL.Context.ListOfCategories tempCat = new BLL.Context.ListOfCategories();
-		//	List<CategoryUIModel> tempCategoriesAsync = tempCat.GetAllAsync().Result.Select(cat => Mappers.UIMapper.MapCategoryBLLToCategoryUI(cat)).ToList();
-		//	return new ObservableCollection<CategoryUIModel>(tempCategoriesAsync);
-		//}
-
-		////Инициализация монет
-		//public ObservableCollection<CoinUIModel> CoinsInicialization()
-		//{
-		//	BLL.Context.ListOfCoins tempCoin = new BLL.Context.ListOfCoins();
-		//	List<CoinUIModel> tempCoins = tempCoin.GetAllAsync().Result.Select(coin => Mappers.UIMapper.MapCoinBLLToCoinUI(coin)).ToList();
-		//	return new ObservableCollection<CoinUIModel>(tempCoins);
-		//}
-
-		////Инициализация статусов отдельный метод не написан
-		//BLL.Context.ListOfStatuses tempStat = new BLL.Context.ListOfStatuses();
-		//List<StatusUIModel> tempStatuses = tempStat.GetAllAsync().Result.Select(stat => Mappers.UIMapper.MapStatusBLLToStatusUI(stat)).ToList();
-
-		////Инициализация видов
-		//public ObservableCollection<KindUIModel> KindsInicialization()
-		//{
-		//	BLL.Context.ListOfKinds tempKind = new BLL.Context.ListOfKinds();
-		//	List<KindUIModel> _tempKinds = tempKind.GetAllAsync().Result.Select(kind => Mappers.UIMapper.MapKindBLLToKindUI(kind)).ToList();
-		//	return new ObservableCollection<KindUIModel>(_tempKinds);
-		//}
-
 		//Инициализация выбранных позиций
 		public void SelectedPositionsInicailization(ObservableCollection<PositionUIModel> _selectedPositions, int _flagSource = 0)
 		{
@@ -557,7 +503,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 				}
 				else
 				{
-					sp = (PositionUIModel)OriginalSelectedPosition.Clone();
+					sp = (PositionUIModel)DublecateSelectedPosition.Clone();
 				}
 
 				_selectedPositions.Clear();
@@ -594,118 +540,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 			}
 			catch (Exception ex)
 			{
-
 				Console.WriteLine($"{ex.Message} ZeroParrentKey: {_selectedPosition.ZeroParrentKey} ParrentKey: {_selectedPosition.ParrentKey}");
-			}
-		}
-
-		//Инициализация всех видов которые находятся в категории выбранной позиции
-		public void TempKindInicialization()
-		{
-			try
-			{
-				//if (TempKinds != null)
-				//{
-				//	var cloneKind = (KindUIModel)SelectedPosition.Kind.Clone();
-				//	TempKinds.Clear();
-				//	SelectedPosition.Kind = cloneKind;
-
-				//	if (SelectedPosition != null)
-				//	{
-				//		foreach (var item in Kinds)
-				//		{
-				//			if (item.Category.Id == SelectedPosition.Kind.Category.Id)
-				//			{
-				//				TempKinds.Add((KindUIModel)item.Clone());
-				//			}
-				//		}
-				//	}
-				//	SelectedCategory = SelectedPosition.Kind.Category.Category;
-
-				//	for (int i = 0; i < TempKinds.Count; i++)
-				//	{
-				//		if (TempKinds[i].Kind == SelectedPosition.Kind.Kind)
-				//		{
-				//			SelectedKindIndex = i;
-				//			break;
-				//		}
-				//	}
-				//}
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine($"{ex.Message} При попытке инициализировать временные позиции");
-				SelectedPositionsInicailization(SelectedPositions, 0);
-				Console.WriteLine($"Список временных позиций перестроен");
-			}
-		}
-
-		//Инициализация временных видов по выбранной категории 
-		public void TempKindInicializationOfCategory()
-		{
-			try
-			{
-				//if (TempKinds != null && SelectedPosition.Kind != null)
-				//{
-				//	var cloneKind = (KindUIModel)SelectedPosition.Kind.Clone();
-				//	TempKinds.Clear();
-				//	SelectedPosition.Kind = cloneKind;
-
-				//	if (SelectedCategory != null)
-				//	{
-				//		foreach (var item in Kinds)
-				//		{
-				//			if (item.Category.Category == SelectedCategory)
-				//			{
-				//				TempKinds.Add((KindUIModel)item.Clone());
-				//			}
-				//		}
-				//	}
-				//}
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine(ex.Message);
-			}
-		}
-
-		//При обновлении текста
-		public void TempKindInicializationTextInput()
-		{
-			try
-			{
-				////  && SelectedPosition.Kind != null НЕ ПРОВЕРЯЛОСЬ!
-				//if (TempKinds != null && SelectedPosition.Kind != null)
-				//{
-				//	//Создаю позицию с оригинальным адресом
-				//	var OrigAddressPosKind = SelectedPosition.Kind;
-				//	var cloneKind = (KindUIModel)SelectedPosition.Kind.Clone();
-				//	SelectedPosition.Kind = cloneKind;
-				//	TempKinds.Clear();
-				//	SelectedPosition.Kind = OrigAddressPosKind;
-
-				//	//Работало, но не совсем корректно
-				//	////var cloneKind = (KindUIModel)SelectedPosition.Kind.Clone();
-				//	//TempKinds.Clear();
-				//	////SelectedPosition.Kind = cloneKind;
-
-				//	foreach (var item in Kinds)
-				//	{
-				//		TempKinds.Add((KindUIModel)item.Clone());
-				//	}
-				//}
-				//else if (TempKinds != null)
-				//{
-				//	TempKinds.Clear();
-				//	foreach (var item in Kinds)
-				//	{
-				//		TempKinds.Add((KindUIModel)item.Clone());
-				//	}
-				//}
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine($"Ошибка при обновлении текста: {ex.Message}");
 			}
 		}
 
@@ -750,8 +585,40 @@ namespace MyMiniLedger.WPF.WindowsModels
 				}
 				else
 				{
-					Console.WriteLine($"Некорректные аргументы метода ValuePositionCopy Сработала передача вида по новой ссылке (не исключение)");
-					SelectedPosition.Kind = (KindUIModel)OriginalSelectedPosition.Kind.Clone();
+					//Console.WriteLine($"Некорректные аргументы метода ValuePositionCopy Сработала передача вида по новой ссылке (не исключение)");
+					//SelectedPosition.Kind = (KindUIModel)DublecateSelectedPosition.Kind.Clone();
+					_tocopy.Id = DublecateSelectedPosition.Id;
+					_tocopy.PositionKey = DublecateSelectedPosition.PositionKey;
+					_tocopy.OpenDate = DublecateSelectedPosition.OpenDate;
+					_tocopy.CloseDate = DublecateSelectedPosition.CloseDate;
+
+					//_tocopy.Kind = _fromCopy.Kind;
+					_tocopy.Kind.Id = DublecateSelectedPosition.Kind.Id;
+					_tocopy.Kind.Kind = DublecateSelectedPosition.Kind.Kind;
+					_tocopy.Kind.Category.Id = DublecateSelectedPosition.Kind.Category.Id;
+					_tocopy.Kind.Category.Category = DublecateSelectedPosition.Kind.Category.Category;
+					_tocopy.Kind.Category.RefNumber = DublecateSelectedPosition.Kind.Category.RefNumber;
+
+					_tocopy.Income = DublecateSelectedPosition.Income;
+					_tocopy.Expense = DublecateSelectedPosition.Expense;
+					_tocopy.Saldo = DublecateSelectedPosition.Saldo;
+
+					//_tocopy.Coin = _fromCopy.Coin;
+					_tocopy.Coin.Id = DublecateSelectedPosition.Coin.Id;
+					_tocopy.Coin.FullName = DublecateSelectedPosition.Coin.FullName;
+					_tocopy.Coin.ShortName = DublecateSelectedPosition.Coin.ShortName;
+					_tocopy.Coin.RefNumber = DublecateSelectedPosition.Coin.RefNumber;
+					_tocopy.Coin.CoinNotes = DublecateSelectedPosition.Coin.CoinNotes;
+
+					//_tocopy.Status = _fromCopy.Status;
+					_tocopy.Status.Id = DublecateSelectedPosition.Status.Id;
+					_tocopy.Status.StatusName = DublecateSelectedPosition.Status.StatusName;
+					_tocopy.Status.StatusNotes = DublecateSelectedPosition.Status.StatusNotes;
+
+					_tocopy.Tag = DublecateSelectedPosition.Tag;
+					_tocopy.Notes = DublecateSelectedPosition.Notes;
+					_tocopy.ZeroParrentKey = DublecateSelectedPosition.ZeroParrentKey;
+					_tocopy.ParrentKey = DublecateSelectedPosition.ParrentKey;
 				}
 			}
 			catch (Exception ex)
@@ -760,7 +627,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 			}
 		}
 
-		
+
 		void ValueCategoryCopy(CategoryUIModel _tocopy, ObservableCollection<CategoryUIModel> _fromCollection, string _categoryName)
 		{
 			if (_tocopy != null && _fromCollection != null)
@@ -787,10 +654,10 @@ namespace MyMiniLedger.WPF.WindowsModels
 				_tocopy.Category.Category = _fromCopy.Category.Category;
 				_tocopy.Category.RefNumber = _fromCopy.Category.RefNumber;
 			}
-			else
-			{
-				Console.WriteLine("Некорректные аргументы метода ValueCategoryCopy (не исключение)");
-			}
+			//else
+			//{
+			//	Console.WriteLine("Некорректные аргументы метода ValueCategoryCopy (не исключение)");
+			//}
 		}
 
 		void ValueKindCopy(KindUIModel _tocopy, KindUIModel _fromCopy)
@@ -822,10 +689,10 @@ namespace MyMiniLedger.WPF.WindowsModels
 				_tocopy.RefNumber = _fromCopy.RefNumber;
 				_tocopy.CoinNotes = _fromCopy.CoinNotes;
 			}
-			else
-			{
-				Console.WriteLine("Некорректные аргументы метода ValueCoinCopy");
-			}
+			//else
+			//{
+			//	Console.WriteLine("Некорректные аргументы метода ValueCoinCopy");
+			//}
 		}
 
 		void ValueStatusCopy(StatusUIModel _tocopy, ObservableCollection<StatusUIModel> _fromCollection, string _statusName)
@@ -837,21 +704,10 @@ namespace MyMiniLedger.WPF.WindowsModels
 				_tocopy.StatusName = _fromCopy.StatusName;
 				_tocopy.StatusNotes = _fromCopy.StatusNotes;
 			}
-			else
-			{
-				Console.WriteLine("Некорректные аргументы метода ValueStatusCopy");
-			}
-		}
-
-
-
-		void SoftEraseKind(KindUIModel _toerase)
-		{
-			_toerase.Id = 0;
-			_toerase.Kind = null;
-			_toerase.Category.Id = 0;
-			_toerase.Category.Category = null;
-			_toerase.Category.RefNumber = 0;
+			//else
+			//{
+			//	Console.WriteLine("Некорректные аргументы метода ValueStatusCopy");
+			//}
 		}
 
 		void SetBlock()
@@ -859,6 +715,17 @@ namespace MyMiniLedger.WPF.WindowsModels
 			block = true;
 		}
 
+		void UpdateSelectedStringFields()
+		{
+			SelectedOpenDate = SelectedPosition.OpenDate;
+			SelectedCloseDate = SelectedPosition.CloseDate;
+			SelectedCategory = SelectedPosition.Kind.Category.Category;
+			SetStringKinds(StringKinds, Kinds, SelectedPosition.Kind.Category);
+			SelectedKind = SelectedPosition.Kind.Kind;
+			SelectedCoin = SelectedPosition.Coin.ShortName;
+			SelectedStatus = SelectedPosition.Status.StatusName;
+			TempSelectedOpenDate = null;
+		}
 	}
 
 }
