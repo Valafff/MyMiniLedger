@@ -185,9 +185,8 @@ namespace MyMiniLedger.WPF.WindowsModels
 					//Добавление новой позиции
 
 					PositionConstruct.CloseDate = (ViewTools.FormatterPositions.SetCloseDate(PositionConstruct.Status.StatusName)).ToString();
-
-					//Затычка, даже не костыль, до лучших времен
-					DateTime t = Convert.ToDateTime(PositionConstruct.OpenDate);
+                    //Затычка, даже не костыль, до лучших времен
+                    DateTime t = Convert.ToDateTime(PositionConstruct.OpenDate);
 					t += DateTime.Now.TimeOfDay;
 					PositionConstruct.OpenDate = t.ToString();
 
@@ -242,11 +241,18 @@ namespace MyMiniLedger.WPF.WindowsModels
 			//Полное удаление категории
 			DeletePosition = new LambdaCommand(async execute =>
 			{
-				await _context.PositionsTableBL.DeleteAsync(Mappers.UIMapper.MapPositionUIToPositionBLL(_selectedPosition));
+				//if (Positions.Any(p => p.ZeroParrentKey == SelectedPosition.PositionKey))
+				//{
+				//	MessageBox.Show("Удаление родительской позиции запрещено! Используйте меню для работы с комплексными позициями");
+				//}
+				//else
+				{
+					await _context.PositionsTableBL.DeleteAsync(Mappers.UIMapper.MapPositionUIToPositionBLL(_selectedPosition));
+					var t = Positions.Where(t => t.Id == _selectedPosition.Id);
+					Positions.Remove(t.First());
+					SelectedPosition = null;
+				}
 
-				var t = Positions.Where(t => t.Id == _selectedPosition.Id);
-				Positions.Remove(t.First());
-				SelectedPosition = null;
 			},
 			canExecute => SelectedPosition is not null);
 
@@ -360,10 +366,22 @@ namespace MyMiniLedger.WPF.WindowsModels
 		{
 			if (SelectedPosition != null)
 			{
-				await _context.PositionsTableBL.DeleteAsync(Mappers.UIMapper.MapPositionUIToPositionBLL(SelectedPosition));
-				var t = Positions.Where(t => t.Id == _selectedPosition.Id);
-				Positions.Remove(t.First());
-				SelectedPosition = null;
+				//if (Positions.Any(p => p.ZeroParrentKey == SelectedPosition.PositionKey))
+				//{
+				//	MessageBox.Show("Удаление родительской позиции запрещено! Используйте меню для работы с комплексными позициями");
+				//}
+				//else
+				{
+					await _context.PositionsTableBL.DeleteAsync(Mappers.UIMapper.MapPositionUIToPositionBLL(_selectedPosition));
+					var t = Positions.Where(t => t.Id == _selectedPosition.Id);
+					Positions.Remove(t.First());
+					SelectedPosition = null;
+				}
+
+				//await _context.PositionsTableBL.DeleteAsync(Mappers.UIMapper.MapPositionUIToPositionBLL(SelectedPosition));
+				//var t = Positions.Where(t => t.Id == _selectedPosition.Id);
+				//Positions.Remove(t.First());
+				//SelectedPosition = null;
 			}
 		}
 

@@ -12,11 +12,9 @@ namespace MyMiniLedger.WPF.ViewTools
 	//Обработчик добавления редактирования и удаления комплексных позиций
 	class ComplexPositionHendler
 	{
-
 		public async void AddComplexPosition(ObservableCollection<PositionUIModel> _selectedPositions, PositionUIModel _editPosition, Context _context)
 		{
 			int? maxPositionKey = null;
-
 			//await Console.Out.WriteLineAsync(_editPosition.OpenDate);
 			//await Console.Out.WriteLineAsync(_editPosition.CloseDate);
 
@@ -37,13 +35,10 @@ namespace MyMiniLedger.WPF.ViewTools
 				_editPosition.ParrentKey = _editPosition.PositionKey;
 
 			}
-			await Console.Out.WriteLineAsync($"ZeroParrentKey {_editPosition.ZeroParrentKey}");
-			await Console.Out.WriteLineAsync($"ParrentKey {_editPosition.ParrentKey}");
-			await Console.Out.WriteLineAsync($"maxParrentKey {maxPositionKey}");
-
-			_editPosition.CloseDate = (ViewTools.FormatterPositions.SetCloseDate(_editPosition.Status.StatusName)).ToString();
+			//await Console.Out.WriteLineAsync($"ZeroParrentKey {_editPosition.ZeroParrentKey}");
+			//await Console.Out.WriteLineAsync($"ParrentKey {_editPosition.ParrentKey}");
+			//await Console.Out.WriteLineAsync($"maxParrentKey {maxPositionKey}");
 			await _context.PositionsTableBL.InsertAsync(Mappers.UIMapper.MapPositionUIToPositionBLL(_editPosition));
 		}
-
 	}
 }

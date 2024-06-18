@@ -115,11 +115,12 @@ namespace MyMiniLedger.BLL.Context
 			{
 				entity.PositionKey = max+1;
 			}
-			if (entity.Status.StatusName == "Открыта" && entity.additionalPositionDataBLL.ZeroParrentKey == null)
-			{
-				entity.additionalPositionDataBLL.ZeroParrentKey = entity.PositionKey;
-				entity.additionalPositionDataBLL.PerrentKey = entity.PositionKey;
-			}
+			////Установка позиций - ЭТО ДИЧЬ!
+			//if (entity.Status.StatusName == "Открыта" && entity.additionalPositionDataBLL.ZeroParrentKey == null)
+			//{
+			//	entity.additionalPositionDataBLL.ZeroParrentKey = entity.PositionKey;
+			//	entity.additionalPositionDataBLL.PerrentKey = entity.PositionKey;
+			//}
 			////Установка текущего времени - ЭТО ДИЧЬ!
 			//entity.OpenDate = entity.OpenDate + DateTime.Now.TimeOfDay;
 			//Расчет сальдо

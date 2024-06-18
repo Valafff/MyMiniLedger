@@ -8,7 +8,7 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:MyMiniLedger.WPF.Windows.EditContinuePosition"
         mc:Ignorable="d"
-        Title= "{Binding Path=TitleEditContinuePosition}" Height="750" Width="1600"
+        Title= "{Binding Path=TitleEditContinuePosition}" Height="750" Width="1800"
         WindowStartupLocation="CenterScreen">
 
 
@@ -217,8 +217,8 @@
 
         <Grid Grid.Row="3">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
+                <ColumnDefinition Width="4*"/>
+                <ColumnDefinition Width="3*"/>
             </Grid.ColumnDefinitions>
 
             <GroupBox  Header="Пул позиций">
@@ -234,12 +234,13 @@
                     </i:Interaction.Triggers>
 
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Номер позиции" Binding="{Binding Path=PositionKey, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="1*"/>
-                        <DataGridTextColumn Header="Ключ родителя" Binding="{Binding Path=ParrentKey, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="1*"/>
-                        <DataGridTextColumn Header="Дата открытия" Binding="{Binding Path=OpenDate, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="1*"/>
-                        <DataGridTextColumn Header="Вид" Binding="{Binding Path=Kind.Kind, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="1*"/>
+                        <DataGridTextColumn Header="№ первой поз." Binding="{Binding Path=ZeroParrentKey, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="2*"/>
+                        <DataGridTextColumn Header="Номер позиции" Binding="{Binding Path=PositionKey, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="2*"/>
+                        <DataGridTextColumn Header="Ключ родителя" Binding="{Binding Path=ParrentKey, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="2*"/>
+                        <DataGridTextColumn Header="Дата открытия" Binding="{Binding Path=OpenDate, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="2*"/>
+                        <DataGridTextColumn Header="Вид" Binding="{Binding Path=Kind.Kind, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="4*"/>
                         <DataGridTextColumn Header="Валюта" Binding="{Binding Path=Coin.ShortName, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="1*"/>
-                        <DataGridTextColumn Header="Сальдо" Binding="{Binding Path=Saldo, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="1*"/>
+                        <DataGridTextColumn Header="Сальдо" Binding="{Binding Path=Saldo, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="3*"/>
                     </DataGrid.Columns>
                 </DataGrid>
 
