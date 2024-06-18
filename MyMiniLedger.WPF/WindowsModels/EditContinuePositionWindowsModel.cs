@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using MyMiniLedger.BLL.Context;
 using MyMiniLedger.WPF.Models;
+using MyMiniLedger.WPF.ViewTools;
 using MyMiniLedger.WPF.Windows.EditContinuePosition;
 using System;
 using System.Collections.Concurrent;
@@ -22,6 +23,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 		public event UpdateDelegate UpdateEvent;
 		public event LockDelegate LockEvent;
 
+		private ComplexPositionHendler complexPositionsHendler = new ComplexPositionHendler();
 
 		bool block = false;
 
@@ -81,12 +83,23 @@ namespace MyMiniLedger.WPF.WindowsModels
 			set => SetField(ref _selectedKindIndex, value);
 		}
 
+
+		private string? _selectedOpenDate;
+		public string? SelectedOpenDate
+		{
+			get => _selectedOpenDate;
+			set => SetField(ref _selectedOpenDate, value);
+		}
+
 		private string? _textKind;
 		public string? TextKind
 		{
 			get => _textKind;
 			set => SetField(ref _textKind, value);
 		}
+
+
+
 
 		//Тупо записывается название цвета через биндинг
 		private string? _tb_kind_color;
@@ -96,8 +109,27 @@ namespace MyMiniLedger.WPF.WindowsModels
 			set => SetField(ref _tb_kind_color, value);
 		}
 
-		private CoinUIModel? _selectedCoin;
-		public CoinUIModel? SelectedCoin
+		private string? _tb_coincolor;
+		public string? TB_CoinColor
+		{
+			get => _tb_coincolor;
+			set => SetField(ref _tb_coincolor, value);
+		}
+
+		private string? _tb_statuscolor;
+		public string? TB_StatusColor
+		{
+			get => _tb_statuscolor;
+			set => SetField(ref _tb_statuscolor, value);
+		}
+
+
+
+
+
+		//Названия полей позиции для комбобокса
+		private string? _selectedCoin;
+		public string? SelectedCoin
 		{
 			get => _selectedCoin;
 			set => SetField(ref _selectedCoin, value);
@@ -109,6 +141,9 @@ namespace MyMiniLedger.WPF.WindowsModels
 			get => _selectedStatus;
 			set => SetField(ref _selectedStatus, value);
 		}
+
+
+
 
 		//Позиции которые должны подтянуться, если позиция является комплексной, всегда подтягивается первая позиция
 		//https://stackoverflow.com/questions/45292905/wpf-collectionview-error-collection-was-modified-enumeration-operation-may-no
@@ -122,26 +157,31 @@ namespace MyMiniLedger.WPF.WindowsModels
 		//Служебные поля
 		public ObservableCollection<CategoryUIModel> Categories { get; set; }
 		//Для ограниченного выбора при фильтрации в комбобоксе отдельного окна
-		public ObservableCollection<string> tempCategories { get; set; } = new ObservableCollection<string>();
+		public ObservableCollection<string> StringCategories { get; set; }
 		public ObservableCollection<CoinUIModel> Coins { get; set; }
+		public ObservableCollection<string> StringCoins { get; set; }
 		public ObservableCollection<KindUIModel> Kinds { get; set; }
 		//Для ограниченного выбора при фильтрации в комбобоксе отдельного окна
 		public ObservableCollection<KindUIModel> TempKinds { get; set; }
-		public ObservableCollection<StatusUIModel> StatusesForService { get; set; }
-		public ObservableCollection<StatusUIModel> StatusesForUser { get; set; }
+
+		public ObservableCollection<StatusUIModel> Statuses { get; set; }
+		public ObservableCollection<string> StringStatuses { get; set; }
 
 
 		public LambdaCommand UndoSelectedPosition { get; set; }
 		public LambdaCommand UpdatePosition { get; set; }
 		public LambdaCommand AddComplexPosition { get; set; }
 		public LambdaCommand SelectNewPosition { get; set; }
+		public LambdaCommand Dp_OpenDateChange { get; set; }
 		public LambdaCommand Cb_KindTextChange { get; set; }
+		public LambdaCommand cb_CoinSelectionChanged { get; set; }
+		public LambdaCommand cb_StatusSelectionChanged { get; set; }
 		public LambdaCommand Cb_CategorySelectionChanged { get; set; }
-        public LambdaCommand Cb_KindSelected { get; set; }
+		public LambdaCommand Cb_KindSelected { get; set; }
 
 
 
-        public EditContinuePositionWindowsModel()
+		public EditContinuePositionWindowsModel()
 		{
 
 
@@ -155,30 +195,27 @@ namespace MyMiniLedger.WPF.WindowsModels
 			OriginalSelectedPosition = new PositionUIModel();
 
 			SelectedPositions = new ObservableCollection<PositionUIModel>();
-			MAINPOSITIONSCOLLECTION = new ObservableCollection<PositionUIModel>();
+			MAINPOSITIONSCOLLECTION = new ObservableCollection<PositionUIModel>(); //Ссылки на все позиции из главного окна
 
 			//Инициализация цвета
 			TB_KindColor = "White";
 
-			//Инициализация категорий
-			Categories = CategoriesInicialization();
+			Categories = new ObservableCollection<CategoryUIModel>(); //Изначально подгруженные категории
 
-			//Инициализация монет
-			Coins = CoinsInicialization();
+			StringCategories = new ObservableCollection<string>();
 
-			//Инициализация видов
-			Kinds = KindsInicialization();
+			Kinds = new ObservableCollection<KindUIModel>();  //Изначально подгруженные виды
 
-			TempKinds = new ObservableCollection<KindUIModel>();
+			TempKinds = new ObservableCollection<KindUIModel>(); // Не подгружаются
 
-			setTempCaregories(tempCategories, Categories);
+			Coins = new ObservableCollection<CoinUIModel>(); //Изначально подгруженные монеты
 
-			//Инициализация статусов
-			BLL.Context.ListOfStatuses tempStat = new BLL.Context.ListOfStatuses();
-			List<StatusUIModel> tempStatuses = tempStat.GetAllAsync().Result.Select(stat => Mappers.UIMapper.MapStatusBLLToStatusUI(stat)).ToList();
-			StatusesForService = new ObservableCollection<StatusUIModel>(tempStatuses);
-			StatusesForUser = new ObservableCollection<StatusUIModel>();
-			setStatusesForUser(StatusesForService);
+			StringCoins = new ObservableCollection<string>();
+
+			Statuses = new ObservableCollection<StatusUIModel>(); //Изначально подгруженные статусы
+
+			StringStatuses = new ObservableCollection<string>(); //Подгружаются из Statuses
+
 
 
 			//Команды
@@ -186,12 +223,24 @@ namespace MyMiniLedger.WPF.WindowsModels
 			{
 				//Console.WriteLine($"Оригинальная позиция {OriginalSelectedPosition.Kind.Kind}");
 				ValuePositionCopy(SelectedPosition, OriginalSelectedPosition);
+				//Безопасный откат выбранных позиций в комбобокс
+				SelectedCoin = SelectedPosition.Coin.ShortName;
+				SelectedStatus = SelectedPosition.Status.StatusName;
+
 				//Console.WriteLine($"Оригинальная позиция {OriginalSelectedPosition.Kind.Kind}");
 				SelectedPositionsInicailization(SelectedPositions);
 				UpdateEvent();
 			},
 			canExecute => SelectedPosition != null && OriginalSelectedPosition != null
 			);
+
+			Dp_OpenDateChange = new LambdaCommand(execute =>
+			{
+				Console.WriteLine($"Обновляю dp {SelectedOpenDate} ");
+			},
+			canExecute => !block
+			);
+
 
 			Cb_CategorySelectionChanged = new LambdaCommand(execute =>
 			{
@@ -234,6 +283,23 @@ namespace MyMiniLedger.WPF.WindowsModels
 			canExecute => true
 			);
 
+			cb_CoinSelectionChanged = new LambdaCommand(execute =>
+			{
+				ValueCoinCopy(SelectedPosition.Coin, Coins, SelectedCoin);
+				TB_CoinColor = "Yellow";
+
+			},		
+			canExecute => true
+			);
+
+			cb_StatusSelectionChanged = new LambdaCommand(execute =>
+			{
+				ValueStatusCopy(SelectedPosition.Status, Statuses, SelectedStatus);
+				TB_StatusColor = "Yellow";
+			},
+			canExecute => true
+			);
+
 
 			UpdatePosition = new LambdaCommand(
 			async execute =>
@@ -255,6 +321,28 @@ namespace MyMiniLedger.WPF.WindowsModels
 
 				async execute =>
 				{
+					var editPosition = (PositionUIModel)SelectedPosition.Clone();
+					ValuePositionCopy(SelectedPosition, OriginalSelectedPosition);
+					complexPositionsHendler.AddComplexPosition(SelectedPositions, editPosition, _context);
+					//Console.WriteLine($"Оригинальная позиция {OriginalSelectedPosition.Kind.Kind}");
+					UpdateEvent();
+					SelectedPositionsInicailization(SelectedPositions);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 					//Добавление новой комплексной позиции
 				},
 				canExecute => SelectedPosition.Kind is not null && SelectedPosition.Income != null && SelectedPosition.Expense != null && SelectedPosition.Status.StatusName == "Открыта"
@@ -267,6 +355,11 @@ namespace MyMiniLedger.WPF.WindowsModels
 					{
 						LockEvent();
 						ValuePositionCopy(SelectedPosition, DataGridSelectedItem);
+
+						//Безопасный откат выбранных позиций в комбобокс
+						SelectedCoin = SelectedPosition.Coin.ShortName;
+						SelectedStatus = SelectedPosition.Status.StatusName;
+
 						TempKindInicialization();
 						UpdateEvent();
 						block = false;
@@ -277,19 +370,20 @@ namespace MyMiniLedger.WPF.WindowsModels
 
 
 		//Методы класса
-		void setStatusesForUser(ObservableCollection<StatusUIModel> _input)
+		public void SetStringStatusesAndTranslation(ObservableCollection<StatusUIModel> _input, ObservableCollection<string> _output)
 		{
+			_output.Clear();
 			foreach (var stat in _input)
 			{
 				if (stat.StatusName == "Open")
 				{
 					stat.StatusName = "Открыта";
-					StatusesForUser.Add(stat);
+					_output.Add(stat.StatusName);
 				}
 				else if (stat.StatusName == "Closed")
 				{
 					stat.StatusName = "Закрыта";
-					StatusesForUser.Add(stat);
+					_output.Add(stat.StatusName);
 				}
 				else if (stat.StatusName == "Deleted")
 				{
@@ -297,36 +391,56 @@ namespace MyMiniLedger.WPF.WindowsModels
 				}
 				else
 				{
-					StatusesForUser.Add(stat);
+					_output.Add(stat.StatusName);
 				}
 			}
 		}
 
 
 		//Инициализация временных категорий для добавления новой позиции
-		public void setTempCaregories(ObservableCollection<string> t, ObservableCollection<CategoryUIModel> _cat)
+		public void SetStringCaregories(ObservableCollection<string> _output, ObservableCollection<CategoryUIModel> _input)
 		{
-			foreach (var stat in _cat)
+			foreach (var stat in _input)
 			{
-				t.Add(stat.Category);
+				_output.Add(stat.Category);
 			}
 		}
 
-		//Инициализация категорий
-		public ObservableCollection<CategoryUIModel> CategoriesInicialization()
+		public void SetStringCoins(ObservableCollection<string> _output, ObservableCollection<CoinUIModel> _input)
 		{
-			BLL.Context.ListOfCategories tempCat = new BLL.Context.ListOfCategories();
-			List<CategoryUIModel> tempCategoriesAsync = tempCat.GetAllAsync().Result.Select(cat => Mappers.UIMapper.MapCategoryBLLToCategoryUI(cat)).ToList();
-			return new ObservableCollection<CategoryUIModel>(tempCategoriesAsync);
+			foreach (var stat in _input)
+			{
+				_output.Add(stat.ShortName);
+			}
 		}
 
-		//Инициализация монет
-		public ObservableCollection<CoinUIModel> CoinsInicialization()
-		{
-			BLL.Context.ListOfCoins tempCoin = new BLL.Context.ListOfCoins();
-			List<CoinUIModel> tempCoins = tempCoin.GetAllAsync().Result.Select(coin => Mappers.UIMapper.MapCoinBLLToCoinUI(coin)).ToList();
-			return new ObservableCollection<CoinUIModel>(tempCoins);
-		}
+		////Инициализация категорий
+		//public ObservableCollection<CategoryUIModel> CategoriesInicialization()
+		//{
+		//	BLL.Context.ListOfCategories tempCat = new BLL.Context.ListOfCategories();
+		//	List<CategoryUIModel> tempCategoriesAsync = tempCat.GetAllAsync().Result.Select(cat => Mappers.UIMapper.MapCategoryBLLToCategoryUI(cat)).ToList();
+		//	return new ObservableCollection<CategoryUIModel>(tempCategoriesAsync);
+		//}
+
+		////Инициализация монет
+		//public ObservableCollection<CoinUIModel> CoinsInicialization()
+		//{
+		//	BLL.Context.ListOfCoins tempCoin = new BLL.Context.ListOfCoins();
+		//	List<CoinUIModel> tempCoins = tempCoin.GetAllAsync().Result.Select(coin => Mappers.UIMapper.MapCoinBLLToCoinUI(coin)).ToList();
+		//	return new ObservableCollection<CoinUIModel>(tempCoins);
+		//}
+
+		////Инициализация статусов отдельный метод не написан
+		//BLL.Context.ListOfStatuses tempStat = new BLL.Context.ListOfStatuses();
+		//List<StatusUIModel> tempStatuses = tempStat.GetAllAsync().Result.Select(stat => Mappers.UIMapper.MapStatusBLLToStatusUI(stat)).ToList();
+
+		////Инициализация видов
+		//public ObservableCollection<KindUIModel> KindsInicialization()
+		//{
+		//	BLL.Context.ListOfKinds tempKind = new BLL.Context.ListOfKinds();
+		//	List<KindUIModel> _tempKinds = tempKind.GetAllAsync().Result.Select(kind => Mappers.UIMapper.MapKindBLLToKindUI(kind)).ToList();
+		//	return new ObservableCollection<KindUIModel>(_tempKinds);
+		//}
 
 		//Инициализация выбранных позиций
 		public void SelectedPositionsInicailization(ObservableCollection<PositionUIModel> _selectedPositions, int _flagSource = 0)
@@ -380,14 +494,6 @@ namespace MyMiniLedger.WPF.WindowsModels
 
 				Console.WriteLine($"{ex.Message} ZeroParrentKey: {_selectedPosition.ZeroParrentKey} ParrentKey: {_selectedPosition.ParrentKey}");
 			}
-		}
-
-		//Инициализация видов
-		public ObservableCollection<KindUIModel> KindsInicialization()
-		{
-			BLL.Context.ListOfKinds tempKind = new BLL.Context.ListOfKinds();
-			List<KindUIModel> _tempKinds = tempKind.GetAllAsync().Result.Select(kind => Mappers.UIMapper.MapKindBLLToKindUI(kind)).ToList();
-			return new ObservableCollection<KindUIModel>(_tempKinds);
 		}
 
 		//Инициализация всех видов которые находятся в категории выбранной позиции
@@ -452,10 +558,6 @@ namespace MyMiniLedger.WPF.WindowsModels
 							}
 						}
 					}
-				}
-				else
-				{
-
 				}
 			}
 			catch (Exception ex)
@@ -545,8 +647,8 @@ namespace MyMiniLedger.WPF.WindowsModels
 				}
 				else
 				{
-                    Console.WriteLine("Сработала передача вида по новой ссылке (не исключение)");
-                    SelectedPosition.Kind = (KindUIModel)OriginalSelectedPosition.Kind.Clone();
+					Console.WriteLine("Сработала передача вида по новой ссылке (не исключение)");
+					SelectedPosition.Kind = (KindUIModel)OriginalSelectedPosition.Kind.Clone();
 				}
 			}
 			catch (Exception ex)
@@ -564,6 +666,49 @@ namespace MyMiniLedger.WPF.WindowsModels
 			_tocopy.Category.RefNumber = _fromCopy.Category.RefNumber;
 		}
 
+		void ValueCoinCopy(CoinUIModel _tocopy, CoinUIModel _fromCopy)
+		{
+			_tocopy.Id = _fromCopy.Id;
+			_tocopy.FullName = _fromCopy.FullName;
+			_tocopy.ShortName = _fromCopy.ShortName;
+			_tocopy.RefNumber = _fromCopy.RefNumber;
+			_tocopy.CoinNotes = _fromCopy.CoinNotes;
+		}
+
+		void ValueCoinCopy(CoinUIModel _tocopy, ObservableCollection<CoinUIModel> _fromCollection, string _coinShortName)
+		{
+			if (_tocopy !=null && _fromCollection != null)
+			{
+				var _fromCopy = Coins.First(c => c.ShortName == SelectedCoin);
+				_tocopy.Id = _fromCopy.Id;
+				_tocopy.FullName = _fromCopy.FullName;
+				_tocopy.ShortName = _fromCopy.ShortName;
+				_tocopy.RefNumber = _fromCopy.RefNumber;
+				_tocopy.CoinNotes = _fromCopy.CoinNotes;
+			}
+			else
+			{
+                Console.WriteLine("Некорректные аргументы метода ValueCoinCopy");
+            }
+		}
+
+		void ValueStatusCopy(StatusUIModel _tocopy, ObservableCollection<StatusUIModel> _fromCollection, string _statusName)
+		{
+			if (_tocopy != null && _fromCollection != null)
+			{
+				var _fromCopy = Statuses.First(s => s.StatusName == SelectedStatus);
+				_tocopy.Id = _fromCopy.Id;
+				_tocopy.StatusName = _fromCopy.StatusName;
+				_tocopy.StatusNotes = _fromCopy.StatusNotes;
+			}
+			else
+			{
+				Console.WriteLine("Некорректные аргументы метода ValueStatusCopy");
+			}
+		}
+
+
+
 		void SoftEraseKind(KindUIModel _toerase)
 		{
 			_toerase.Id = 0;
@@ -577,6 +722,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 		{
 			block = true;
 		}
+
 	}
 
 }

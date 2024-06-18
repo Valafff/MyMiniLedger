@@ -26,22 +26,41 @@ namespace MyMiniLedger.WPF.Windows.EditContinuePosition
 	{
 		//Блокировка выполнения событий при инициализации
 		bool isLoaded = false;
-		public EditContinuePositionWindow(PositionUIModel _selectedPosition, ObservableCollection<PositionUIModel> _mainPositionsSourse)
+		public EditContinuePositionWindow(PositionUIModel _selectedPosition,
+			ObservableCollection<PositionUIModel> _mainPositionsSourse,
+			ObservableCollection<CategoryUIModel> _mainCategories,
+			ObservableCollection<KindUIModel> _mainKinds,
+			ObservableCollection<CoinUIModel> _mainCoins,
+			ObservableCollection<StatusUIModel> _mainStatuses)
+
 		{
-			EditContinuePositionWindowsModel model = new EditContinuePositionWindowsModel() { MAINPOSITIONSCOLLECTION = _mainPositionsSourse };
+			EditContinuePositionWindowsModel model = new EditContinuePositionWindowsModel()
+			{
+				MAINPOSITIONSCOLLECTION = _mainPositionsSourse,
+				Categories = _mainCategories,
+				Kinds = _mainKinds,
+				Coins = _mainCoins,
+				Statuses = _mainStatuses
+			};
 			model.SelectedPosition = (PositionUIModel)_selectedPosition.Clone();
 			model.OriginalSelectedPosition = (PositionUIModel)_selectedPosition.Clone();
+
+			model.SetStringCaregories(model.StringCategories, model.Categories);
 			model.SelectedPositionsInicailization((model.SelectedPositions));
+			model.SetStringCoins(model.StringCoins, model.Coins);
+			model.SetStringStatusesAndTranslation(model.Statuses, model.StringStatuses);
+			model.SelectedCoin = model.SelectedPosition.Coin.ShortName;
+			model.SelectedStatus = model.SelectedPosition.Status.StatusName;
+
 			//Инициализируется в кодбехайнд тк селектед позитион в конструкторе не определена
 			model.SelectedCategory = _selectedPosition.Kind.Category.Category;
 			model.TempKindInicialization();
 
 			InitializeComponent();
-
 			DataContext = model;
-			GetSelectedKind();
-			GetSelectedCoin();
-			GetSelectedStatus();
+			//GetSelectedKind();
+			//GetSelectedCoin();
+			//GetSelectedStatus();
 
 			(DataContext as EditContinuePositionWindowsModel).UpdateEvent += ResetColors;
 
@@ -178,50 +197,6 @@ namespace MyMiniLedger.WPF.Windows.EditContinuePosition
 			}
 		}
 
-		private void cb_Coin_SelectionChanged_MainWindow(object sender, SelectionChangedEventArgs e)
-		{
-
-
-			if (isLoaded)
-			{
-				if (((CoinUIModel)cb_Coin.SelectedItem) != null)
-				{
-					try
-					{
-						((EditContinuePositionWindowsModel)DataContext).SelectedPosition.Coin.Id = ((CoinUIModel)cb_Coin.SelectedItem).Id;
-						((EditContinuePositionWindowsModel)DataContext).SelectedPosition.Coin.ShortName = ((CoinUIModel)cb_Coin.SelectedItem).ShortName;
-						((EditContinuePositionWindowsModel)DataContext).SelectedPosition.Coin.FullName = ((CoinUIModel)cb_Coin.SelectedItem).FullName;
-						((EditContinuePositionWindowsModel)DataContext).SelectedPosition.Coin.CoinNotes = ((CoinUIModel)cb_Coin.SelectedItem).CoinNotes;
-						tb_Coin.Background = Brushes.Yellow;
-					}
-					catch (NullReferenceException ex)
-					{
-						Console.WriteLine(ex.Message);
-					}
-				}
-			}
-		}
-
-		private void tb_Status_SelectionChanged_EditContinueWindow(object sender, SelectionChangedEventArgs e)
-		{
-			if (isLoaded)
-			{
-				if (((StatusUIModel)cb_Status.SelectedItem) != null)
-				{
-					try
-					{
-						((EditContinuePositionWindowsModel)DataContext).SelectedPosition.Status.Id = ((StatusUIModel)cb_Status.SelectedItem).Id;
-						((EditContinuePositionWindowsModel)DataContext).SelectedPosition.Status.StatusName = ((StatusUIModel)cb_Status.SelectedItem).StatusName;
-						((EditContinuePositionWindowsModel)DataContext).SelectedPosition.Status.StatusNotes = ((StatusUIModel)cb_Status.SelectedItem).StatusNotes;
-						tb_Status.Background = Brushes.Yellow;
-					}
-					catch (NullReferenceException ex)
-					{
-						Console.WriteLine(ex.Message);
-					}
-				}
-			}
-		}
 
 		private void tb_inputTag_TextChanged(object sender, TextChangedEventArgs e)
 		{

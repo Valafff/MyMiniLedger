@@ -271,7 +271,12 @@ namespace MyMiniLedger.WPF
 
 		private void Row_DoubleClick(object sender, MouseButtonEventArgs e)
 		{
-			EditContinuePositionWindow ecw = new EditContinuePositionWindow((DataContext as MainWindowModel).SelectedPosition, (DataContext as MainWindowModel).Positions);
+			EditContinuePositionWindow ecw = new EditContinuePositionWindow((DataContext as MainWindowModel).SelectedPosition,
+				(DataContext as MainWindowModel).Positions,
+				(DataContext as MainWindowModel).Categories,
+				(DataContext as MainWindowModel).Kinds,
+				(DataContext as MainWindowModel).Coins,
+				(DataContext as MainWindowModel).StatusesForService);
 			//Событие обновляющие  список позиций гланого окна
 			(ecw.DataContext as EditContinuePositionWindowsModel).UpdateEvent += (DataContext as MainWindowModel).UpdatePositionsCollection;
 			ecw.ShowDialog();

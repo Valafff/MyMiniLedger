@@ -12,8 +12,6 @@
         WindowStartupLocation="CenterScreen">
 
 
-
-
     <Window.DataContext>
         <wm:EditContinuePositionWindowsModel/>
     </Window.DataContext>
@@ -57,19 +55,20 @@
                 <TextBlock Grid.Row="0" Grid.Column="9" Text="Статус" VerticalAlignment="Bottom"/>
                 <TextBlock Grid.Row="0" Grid.Column="10" Text="Тег" VerticalAlignment="Bottom"/>
                 <TextBlock Grid.Row="0" Grid.Column="11" Text="Примечания" VerticalAlignment="Bottom"/>
+                <!--ТЕКСТОВАЯ ИНФОРМАЦИЯ ПО ПОЗИЦИИ-->
                 <TextBox Grid.Row="1" Grid.Column="0" x:Name="tb_PosKey" IsReadOnly="True" Focusable="False" Text="{Binding Path = SelectedPosition.PositionKey}"/>
                 <TextBox Grid.Row="1" Grid.Column="1" x:Name="tb_OpenDate" IsReadOnly="True" Focusable="False" Text="{Binding Path = SelectedPosition.OpenDate}"/>
                 <TextBox Grid.Row="1" Grid.Column="2" x:Name="tb_CloseDate" IsReadOnly="True" Focusable="False" Text="{Binding Path = SelectedPosition.CloseDate}"/>
                 <TextBox Grid.Row="1" Grid.Column="3" x:Name="tb_Category" IsReadOnly="True" Focusable="False" Text="{Binding Path = SelectedPosition.Kind.Category.Category}"/>
-                <TextBox Grid.Row="1" Grid.Column="4" x:Name="tb_Kind" IsReadOnly="True" Focusable="False" Text="{Binding Path = SelectedPosition.Kind.Kind}" Background="{Binding TB_KindColor, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                <TextBox Grid.Row="1" Grid.Column="4" x:Name="tb_Kind" IsReadOnly="True" Focusable="False" Text="{Binding Path = SelectedPosition.Kind.Kind}" Background="{Binding TB_KindColor, UpdateSourceTrigger=PropertyChanged}"/>
                 <TextBox Grid.Row="1" Grid.Column="5" x:Name="tb_IncomeSelectedPos" IsReadOnly="True" Focusable="False" Text="{Binding Path = SelectedPosition.Income}"/>
                 <TextBox Grid.Row="1" Grid.Column="6" x:Name="tb_ExpenseSelectedPos" IsReadOnly="True" Focusable="False" Text="{Binding Path = SelectedPosition.Expense}"/>
                 <TextBox Grid.Row="1" Grid.Column="7" x:Name="tb_Saldo" IsReadOnly="True" Focusable="False" Text="{Binding Path = SelectedPosition.Saldo}"/>
-                <TextBox Grid.Row="1" Grid.Column="8" x:Name="tb_Coin" IsReadOnly="True" Focusable="False" Text="{Binding Path = SelectedPosition.Coin.ShortName}"/>
-                <TextBox Grid.Row="1" Grid.Column="9" x:Name="tb_Status" IsReadOnly="True" Focusable="False" Text="{Binding Path = SelectedPosition.Status.StatusName}"/>
+                <TextBox Grid.Row="1" Grid.Column="8" x:Name="tb_Coin" IsReadOnly="True" Focusable="False" Text="{Binding Path = SelectedPosition.Coin.ShortName}"  Background="{Binding TB_CoinColor, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                <TextBox Grid.Row="1" Grid.Column="9" x:Name="tb_Status" IsReadOnly="True" Focusable="False" Text="{Binding Path = SelectedPosition.Status.StatusName}"  Background="{Binding TB_StatusColor, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
                 <TextBox Grid.Row="1" Grid.Column="10" x:Name="tb_Tag" IsReadOnly="True" Focusable="False" Text="{Binding Path = SelectedPosition.Tag}"/>
                 <TextBox Grid.Row="1" Grid.Column="11" x:Name="tb_Notes" IsReadOnly="True" Focusable="False" Text="{Binding Path = SelectedPosition.Notes}"/>
-
+                <!--ТЕКСТОВАЯ ИНФОРМАЦИЯ ПО ПОЗИЦИИ-->
             </Grid>
         </GroupBox>
 
@@ -104,11 +103,21 @@
                 <TextBlock Grid.Column="7" Text="Тег"  VerticalAlignment="Center"/>
                 <TextBlock Grid.Column="8" Text="Примечания"  VerticalAlignment="Center"/>
 
-                <DatePicker  Grid.Column="0" Grid.Row="1" x:Name="dp_OpenDate"  SelectedDateChanged="dp_OpenDate_SelectedDateChanged"/>
+                <DatePicker  Grid.Column="0" Grid.Row="1" 
+                             x:Name="dp_OpenDate"  
+                             SelectedDate="{Binding SelectedOpenDate}"
+                             SelectedDateChanged="dp_OpenDate_SelectedDateChanged">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectedDateChanged">
+                            <i:InvokeCommandAction Command="{Binding Dp_OpenDateChange}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+
+                </DatePicker>
 
                 <ComboBox Grid.Row="1" Grid.Column="1"
                       x:Name="cb_Category"
-                      ItemsSource="{Binding tempCategories, UpdateSourceTrigger=PropertyChanged}"
+                      ItemsSource="{Binding StringCategories, UpdateSourceTrigger=PropertyChanged}"
                       SelectedIndex="0"
                       SelectedItem="{Binding SelectedCategory, UpdateSourceTrigger=PropertyChanged}"
                       SelectionChanged="ComboBox_Category_SelectionChanged_EditContinueWindow">
@@ -162,27 +171,30 @@
                 PreviewKeyDown="tb_Expense_PreviewKeyDown_EditContinueWindow"
                 TextChanged="tb_Expense_TextChanged_EditContinueWindow"/>
 
-                <ComboBox Grid.Row="1" Grid.Column="5" x:Name="cb_Coin" ItemsSource="{Binding Path=Coins, UpdateSourceTrigger=PropertyChanged}"
+                <ComboBox Grid.Row="1" Grid.Column="5" x:Name="cb_Coin" ItemsSource="{Binding Path=StringCoins, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
                           SelectedIndex="0"
-                          SelectedItem="{Binding SelectedPosition.Coin, UpdateSourceTrigger=PropertyChanged}"
-                          SelectionChanged ="cb_Coin_SelectionChanged_MainWindow">
-
-                    <ComboBox.ItemTemplate>
+                          SelectedItem="{Binding SelectedCoin, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <i:InvokeCommandAction Command="{Binding cb_CoinSelectionChanged}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                    <!--если в качестве биндинга передается класс с подъобъектами-->
+                    <!--<ComboBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Path=ShortName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                            <TextBlock Text="{Binding Path=ShortName, UpdateSourceTrigger=PropertyChanged}"/>
                         </DataTemplate>
-                    </ComboBox.ItemTemplate>
+                    </ComboBox.ItemTemplate>-->
                 </ComboBox>
 
-                <ComboBox Grid.Row="1" Grid.Column="6" x:Name="cb_Status" ItemsSource="{Binding Path=StatusesForUser, UpdateSourceTrigger=PropertyChanged}"
+                <ComboBox Grid.Row="1" Grid.Column="6" x:Name="cb_Status" ItemsSource="{Binding Path=StringStatuses, UpdateSourceTrigger=PropertyChanged}"
                           SelectedIndex="0"
-                          SelectedItem="{Binding SelectedPosition.Status, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                          SelectionChanged="tb_Status_SelectionChanged_EditContinueWindow">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Path=StatusName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
+                          SelectedItem="{Binding SelectedStatus, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <i:InvokeCommandAction Command="{Binding cb_StatusSelectionChanged}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
                 </ComboBox>
 
                 <TextBox Grid.Row="1" Grid.Column="7" x:Name="tb_inputTag" Text="{Binding Path=SelectedPosition.Tag, UpdateSourceTrigger=PropertyChanged}" TextChanged="tb_inputTag_TextChanged"/>
