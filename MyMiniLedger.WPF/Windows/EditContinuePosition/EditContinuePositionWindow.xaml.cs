@@ -49,45 +49,19 @@ namespace MyMiniLedger.WPF.Windows.EditContinuePosition
 			model.SelectedPositionsInicailization((model.SelectedPositions));
 			model.SetStringCoins(model.StringCoins, model.Coins);
 			model.SetStringStatusesAndTranslation(model.Statuses, model.StringStatuses);
+			model.SelectedOpenDate = model.SelectedPosition.OpenDate;
+			model.SelectedCloseDate = model.SelectedPosition.CloseDate;
 			model.SelectedCoin = model.SelectedPosition.Coin.ShortName;
 			model.SelectedStatus = model.SelectedPosition.Status.StatusName;
+			model.SelectedCategory = model.SelectedPosition.Kind.Category.Category;
 
-			//Инициализируется в кодбехайнд тк селектед позитион в конструкторе не определена
-			model.SelectedCategory = _selectedPosition.Kind.Category.Category;
 			model.TempKindInicialization();
 
 			InitializeComponent();
 			DataContext = model;
-			//GetSelectedKind();
-			//GetSelectedCoin();
-			//GetSelectedStatus();
 
 			(DataContext as EditContinuePositionWindowsModel).UpdateEvent += ResetColors;
-
 			isLoaded = true;
-		}
-
-		private void dp_OpenDate_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
-		{
-			if (sender != null && sender.ToString() != "" && isLoaded)
-			{
-				DateTime temp = dp_OpenDate.SelectedDate.Value;
-				temp += DateTime.Now.TimeOfDay;
-				((EditContinuePositionWindowsModel)DataContext).SelectedPosition.OpenDate = temp.ToString();
-				tb_CloseDate.Text = DateTime.Now.ToString();
-				tb_OpenDate.Background = Brushes.Yellow;
-				tb_CloseDate.Background = Brushes.Yellow;
-			}
-		}
-
-		private void ComboBox_Category_SelectionChanged_EditContinueWindow(object sender, SelectionChangedEventArgs e)
-		{
-			if (isLoaded)
-			{
-				tb_Category.Background = Brushes.Yellow;
-				tb_Kind.Background = Brushes.Yellow;
-
-			}
 		}
 
 		private void tb_Income_PreviewTextInput_EditContinueWindow(object sender, TextCompositionEventArgs e)
@@ -120,7 +94,6 @@ namespace MyMiniLedger.WPF.Windows.EditContinuePosition
 				e.Handled = true;
 			}
 		}
-
 		private void tb_Income_TextChanged_EditContinueWindow(object sender, TextChangedEventArgs e)
 		{
 			if (isLoaded)
@@ -249,42 +222,42 @@ namespace MyMiniLedger.WPF.Windows.EditContinuePosition
 		}
 
 
-		void GetSelectedKind()
-		{
-			if (cb_Kind.Items != null && (DataContext as EditContinuePositionWindowsModel).SelectedPosition.Kind != null)
-			{
-				for (int i = 0; i < cb_Kind.Items.Count; i++)
-				{
-					if (((KindUIModel)cb_Kind.Items[i]).Kind == (DataContext as EditContinuePositionWindowsModel).SelectedPosition.Kind.Kind)
-					{
-						cb_Kind.SelectedIndex = i;
-						break;
-					}
-				}
-			}
+		//void GetSelectedKind()
+		//{
+		//	if (cb_Kind.Items != null && (DataContext as EditContinuePositionWindowsModel).SelectedPosition.Kind != null)
+		//	{
+		//		for (int i = 0; i < cb_Kind.Items.Count; i++)
+		//		{
+		//			if (((KindUIModel)cb_Kind.Items[i]).Kind == (DataContext as EditContinuePositionWindowsModel).SelectedPosition.Kind.Kind)
+		//			{
+		//				cb_Kind.SelectedIndex = i;
+		//				break;
+		//			}
+		//		}
+		//	}
 
-		}
-		void GetSelectedCoin()
-		{
-			for (int i = 0; i < cb_Coin.Items.Count; i++)
-			{
-				if (((CoinUIModel)cb_Coin.Items[i]).ShortName == (DataContext as EditContinuePositionWindowsModel).SelectedPosition.Coin.ShortName)
-				{
-					cb_Coin.SelectedIndex = i;
-					break;
-				}
-			}
-		}
-		void GetSelectedStatus()
-		{
-			for (int i = 0; i < cb_Status.Items.Count; i++)
-			{
-				if (((StatusUIModel)cb_Status.Items[i]).StatusName == (DataContext as EditContinuePositionWindowsModel).SelectedPosition.Status.StatusName)
-				{
-					cb_Status.SelectedIndex = i;
-					break;
-				}
-			}
-		}
+		//}
+		//void GetSelectedCoin()
+		//{
+		//	for (int i = 0; i < cb_Coin.Items.Count; i++)
+		//	{
+		//		if (((CoinUIModel)cb_Coin.Items[i]).ShortName == (DataContext as EditContinuePositionWindowsModel).SelectedPosition.Coin.ShortName)
+		//		{
+		//			cb_Coin.SelectedIndex = i;
+		//			break;
+		//		}
+		//	}
+		//}
+		//void GetSelectedStatus()
+		//{
+		//	for (int i = 0; i < cb_Status.Items.Count; i++)
+		//	{
+		//		if (((StatusUIModel)cb_Status.Items[i]).StatusName == (DataContext as EditContinuePositionWindowsModel).SelectedPosition.Status.StatusName)
+		//		{
+		//			cb_Status.SelectedIndex = i;
+		//			break;
+		//		}
+		//	}
+		//}
 	}
 }

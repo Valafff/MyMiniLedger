@@ -57,10 +57,10 @@
                 <TextBlock Grid.Row="0" Grid.Column="11" Text="Примечания" VerticalAlignment="Bottom"/>
                 <!--ТЕКСТОВАЯ ИНФОРМАЦИЯ ПО ПОЗИЦИИ-->
                 <TextBox Grid.Row="1" Grid.Column="0" x:Name="tb_PosKey" IsReadOnly="True" Focusable="False" Text="{Binding Path = SelectedPosition.PositionKey}"/>
-                <TextBox Grid.Row="1" Grid.Column="1" x:Name="tb_OpenDate" IsReadOnly="True" Focusable="False" Text="{Binding Path = SelectedPosition.OpenDate}"/>
-                <TextBox Grid.Row="1" Grid.Column="2" x:Name="tb_CloseDate" IsReadOnly="True" Focusable="False" Text="{Binding Path = SelectedPosition.CloseDate}"/>
-                <TextBox Grid.Row="1" Grid.Column="3" x:Name="tb_Category" IsReadOnly="True" Focusable="False" Text="{Binding Path = SelectedPosition.Kind.Category.Category}"/>
-                <TextBox Grid.Row="1" Grid.Column="4" x:Name="tb_Kind" IsReadOnly="True" Focusable="False" Text="{Binding Path = SelectedPosition.Kind.Kind}" Background="{Binding TB_KindColor, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBox Grid.Row="1" Grid.Column="1" x:Name="tb_OpenDate" IsReadOnly="True" Focusable="False" Text="{Binding Path = SelectedOpenDate, UpdateSourceTrigger=PropertyChanged}" Background="{Binding TB_DateColor, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                <TextBox Grid.Row="1" Grid.Column="2" x:Name="tb_CloseDate" IsReadOnly="True" Focusable="False" Text="{Binding Path = SelectedCloseDate, UpdateSourceTrigger=PropertyChanged}" Background="{Binding TB_DateColor, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                <TextBox Grid.Row="1" Grid.Column="3" x:Name="tb_Category" IsReadOnly="True" Focusable="False" Text="{Binding Path = SelectedPosition.Kind.Category.Category}" Background="{Binding TB_CategoryColor, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                <TextBox Grid.Row="1" Grid.Column="4" x:Name="tb_Kind" IsReadOnly="True" Focusable="False" Text="{Binding Path = SelectedPosition.Kind.Kind}" Background="{Binding TB_KindColor, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"/>
                 <TextBox Grid.Row="1" Grid.Column="5" x:Name="tb_IncomeSelectedPos" IsReadOnly="True" Focusable="False" Text="{Binding Path = SelectedPosition.Income}"/>
                 <TextBox Grid.Row="1" Grid.Column="6" x:Name="tb_ExpenseSelectedPos" IsReadOnly="True" Focusable="False" Text="{Binding Path = SelectedPosition.Expense}"/>
                 <TextBox Grid.Row="1" Grid.Column="7" x:Name="tb_Saldo" IsReadOnly="True" Focusable="False" Text="{Binding Path = SelectedPosition.Saldo}"/>
@@ -104,9 +104,8 @@
                 <TextBlock Grid.Column="8" Text="Примечания"  VerticalAlignment="Center"/>
 
                 <DatePicker  Grid.Column="0" Grid.Row="1" 
-                             x:Name="dp_OpenDate"  
-                             SelectedDate="{Binding SelectedOpenDate}"
-                             SelectedDateChanged="dp_OpenDate_SelectedDateChanged">
+                             x:Name="dp_OpenDate"                              
+                             SelectedDate="{Binding TempSelectedOpenDate}">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="SelectedDateChanged">
                             <i:InvokeCommandAction Command="{Binding Dp_OpenDateChange}"/>
@@ -119,9 +118,7 @@
                       x:Name="cb_Category"
                       ItemsSource="{Binding StringCategories, UpdateSourceTrigger=PropertyChanged}"
                       SelectedIndex="0"
-                      SelectedItem="{Binding SelectedCategory, UpdateSourceTrigger=PropertyChanged}"
-                      SelectionChanged="ComboBox_Category_SelectionChanged_EditContinueWindow">
-
+                      SelectedItem="{Binding SelectedCategory, UpdateSourceTrigger=PropertyChanged}">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="SelectionChanged">
                             <i:InvokeCommandAction Command="{Binding Cb_CategorySelectionChanged}"/>

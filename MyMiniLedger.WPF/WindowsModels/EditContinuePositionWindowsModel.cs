@@ -8,6 +8,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Security.Permissions;
 using System.Text;
@@ -69,8 +70,8 @@ namespace MyMiniLedger.WPF.WindowsModels
 			set => SetField(ref _selectedCategory, value);
 		}
 
-		private KindUIModel? _selectedKind;
-		public KindUIModel? SelectedKind
+		private string? _selectedKind;
+		public string? SelectedKind
 		{
 			get => _selectedKind;
 			set => SetField(ref _selectedKind, value);
@@ -83,12 +84,26 @@ namespace MyMiniLedger.WPF.WindowsModels
 			set => SetField(ref _selectedKindIndex, value);
 		}
 
+		//Для корректного переводы в нужный формат
+		private DateTime? _tempselectedOpenDate;
+		public DateTime? TempSelectedOpenDate
+		{
+			get => _tempselectedOpenDate;
+			set => SetField(ref _tempselectedOpenDate, value);
+		}
 
 		private string? _selectedOpenDate;
 		public string? SelectedOpenDate
 		{
 			get => _selectedOpenDate;
 			set => SetField(ref _selectedOpenDate, value);
+		}
+
+		private string? _selectedCloseDate;
+		public string? SelectedCloseDate
+		{
+			get => _selectedCloseDate;
+			set => SetField(ref _selectedCloseDate, value);
 		}
 
 		private string? _textKind;
@@ -102,6 +117,22 @@ namespace MyMiniLedger.WPF.WindowsModels
 
 
 		//Тупо записывается название цвета через биндинг
+
+		//один на опен и клоус дэйт
+		private string? _tb_date_color;
+		public string? TB_DateColor
+		{
+			get => _tb_date_color;
+			set => SetField(ref _tb_date_color, value);
+		}
+
+		private string? _tb_category_color;
+		public string? TB_CategoryColor
+		{
+			get => _tb_category_color;
+			set => SetField(ref _tb_category_color, value);
+		}
+
 		private string? _tb_kind_color;
 		public string? TB_KindColor
 		{
@@ -161,6 +192,8 @@ namespace MyMiniLedger.WPF.WindowsModels
 		public ObservableCollection<CoinUIModel> Coins { get; set; }
 		public ObservableCollection<string> StringCoins { get; set; }
 		public ObservableCollection<KindUIModel> Kinds { get; set; }
+
+
 		//Для ограниченного выбора при фильтрации в комбобоксе отдельного окна
 		public ObservableCollection<KindUIModel> TempKinds { get; set; }
 
@@ -224,8 +257,13 @@ namespace MyMiniLedger.WPF.WindowsModels
 				//Console.WriteLine($"Оригинальная позиция {OriginalSelectedPosition.Kind.Kind}");
 				ValuePositionCopy(SelectedPosition, OriginalSelectedPosition);
 				//Безопасный откат выбранных позиций в комбобокс
+				
+				SelectedOpenDate = SelectedPosition.OpenDate;
+				SelectedCloseDate = SelectedPosition.CloseDate;
+				SelectedCategory = SelectedPosition.Kind.Category.Category;
 				SelectedCoin = SelectedPosition.Coin.ShortName;
 				SelectedStatus = SelectedPosition.Status.StatusName;
+
 
 				//Console.WriteLine($"Оригинальная позиция {OriginalSelectedPosition.Kind.Kind}");
 				SelectedPositionsInicailization(SelectedPositions);
@@ -236,18 +274,32 @@ namespace MyMiniLedger.WPF.WindowsModels
 
 			Dp_OpenDateChange = new LambdaCommand(execute =>
 			{
-				Console.WriteLine($"Обновляю dp {SelectedOpenDate} ");
+				DateTime temp = TempSelectedOpenDate.Value + DateTime.Now.TimeOfDay;
+				SelectedOpenDate = temp.ToString();
+				if (SelectedStatus == "Закрыта" || SelectedStatus == "Closed")
+				{
+					SelectedCloseDate = SelectedOpenDate;
+					//Console.WriteLine($"Мы в закрытой позиции дата: {SelectedCloseDate}");
+				}
+				else if (SelectedStatus == "Открыта" || SelectedStatus == "Open")
+				{
+					SelectedCloseDate = "";
+					//Console.WriteLine($"Мы в открытой позиции дата: {SelectedCloseDate}") ;
+				}
+				SelectedPosition.OpenDate = SelectedOpenDate;
+				SelectedPosition.CloseDate = SelectedCloseDate;
+				TB_DateColor = "Yellow";
 			},
-			canExecute => !block
+			canExecute =>TempSelectedOpenDate != null
 			);
 
 
 			Cb_CategorySelectionChanged = new LambdaCommand(execute =>
 			{
+				TB_CategoryColor = "Yellow";
 				//Console.WriteLine($"Обновляю cb_category ");
 				TempKindInicializationOfCategory();
 				SelectedKindIndex = 0;
-
 			},
 			canExecute => !block
 			);
@@ -292,10 +344,21 @@ namespace MyMiniLedger.WPF.WindowsModels
 			canExecute => true
 			);
 
+			//сброс отображения времени если статус изменился
 			cb_StatusSelectionChanged = new LambdaCommand(execute =>
 			{
 				ValueStatusCopy(SelectedPosition.Status, Statuses, SelectedStatus);
 				TB_StatusColor = "Yellow";
+
+				if (SelectedStatus == "Закрыта" || SelectedStatus == "Closed")
+				{
+					SelectedCloseDate = SelectedOpenDate;
+				}
+				else if (SelectedStatus == "Открыта" || SelectedStatus == "Open")
+				{
+					SelectedCloseDate = "";
+				}
+				TB_DateColor = "Yellow";
 			},
 			canExecute => true
 			);
@@ -357,6 +420,9 @@ namespace MyMiniLedger.WPF.WindowsModels
 						ValuePositionCopy(SelectedPosition, DataGridSelectedItem);
 
 						//Безопасный откат выбранных позиций в комбобокс
+						SelectedOpenDate = SelectedPosition.OpenDate;
+						SelectedCloseDate = SelectedPosition.CloseDate;
+						SelectedCategory = SelectedPosition.Kind.Category.Category;
 						SelectedCoin = SelectedPosition.Coin.ShortName;
 						SelectedStatus = SelectedPosition.Status.StatusName;
 
@@ -403,6 +469,14 @@ namespace MyMiniLedger.WPF.WindowsModels
 			foreach (var stat in _input)
 			{
 				_output.Add(stat.Category);
+			}
+		}
+
+		public void SetStringKinds(ObservableCollection<string> _output, ObservableCollection<KindUIModel> _input)
+		{
+			foreach (var stat in _input)
+			{
+				_output.Add(stat.Kind);
 			}
 		}
 
