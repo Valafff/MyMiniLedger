@@ -129,11 +129,10 @@
 
                 <ComboBox Grid.Row="1" Grid.Column="2"
                       x:Name="cb_Kind"
-                      ItemsSource="{Binding Path=TempKinds, UpdateSourceTrigger=PropertyChanged}"
-                      SelectedItem="{Binding SelectedPosition.Kind, UpdateSourceTrigger=PropertyChanged}"
-                      TextSearch.TextPath="Kind" 
-                      SelectedIndex="{Binding SelectedKindIndex, UpdateSourceTrigger=PropertyChanged}"
-                      IsEditable="true" 
+                      ItemsSource="{Binding Path=StringKinds, UpdateSourceTrigger=PropertyChanged}"
+                      SelectedItem="{Binding SelectedKind, UpdateSourceTrigger=PropertyChanged}"
+                      IsEditable="true"                       
+                      TextSearch.TextPath=""           
                       Text="{Binding TextKind, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}">
 
                     <i:Interaction.Triggers>
@@ -146,12 +145,11 @@
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                     
-
-                    <ComboBox.ItemTemplate>
+                    <!--<ComboBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Path=Kind, UpdateSourceTrigger=PropertyChanged}"/>
                         </DataTemplate>
-                    </ComboBox.ItemTemplate>
+                    </ComboBox.ItemTemplate>-->
                 </ComboBox>
 
                 <TextBox  Grid.Row="1" Grid.Column="3"

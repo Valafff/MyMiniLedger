@@ -114,8 +114,6 @@ namespace MyMiniLedger.WPF.WindowsModels
 		}
 
 
-
-
 		//Тупо записывается название цвета через биндинг
 
 		//один на опен и клоус дэйт
@@ -154,10 +152,6 @@ namespace MyMiniLedger.WPF.WindowsModels
 			set => SetField(ref _tb_statuscolor, value);
 		}
 
-
-
-
-
 		//Названия полей позиции для комбобокса
 		private string? _selectedCoin;
 		public string? SelectedCoin
@@ -174,25 +168,20 @@ namespace MyMiniLedger.WPF.WindowsModels
 		}
 
 
-
-
 		//Позиции которые должны подтянуться, если позиция является комплексной, всегда подтягивается первая позиция
 		//https://stackoverflow.com/questions/45292905/wpf-collectionview-error-collection-was-modified-enumeration-operation-may-no
 		//https://stackoverflow.com/questions/23108045/how-to-make-observablecollection-thread-safe/29288294#29288294
 		public ObservableCollection<PositionUIModel> SelectedPositions { get; set; }
-		//public List<PositionUIModel> SelectedPositions { get; set; }
 
 		//Ссылка на список позиций из главного окна
 		public ObservableCollection<PositionUIModel> MAINPOSITIONSCOLLECTION { get; set; }
-
-		//Служебные поля
 		public ObservableCollection<CategoryUIModel> Categories { get; set; }
 		//Для ограниченного выбора при фильтрации в комбобоксе отдельного окна
 		public ObservableCollection<string> StringCategories { get; set; }
 		public ObservableCollection<CoinUIModel> Coins { get; set; }
 		public ObservableCollection<string> StringCoins { get; set; }
 		public ObservableCollection<KindUIModel> Kinds { get; set; }
-
+		public ObservableCollection<string> StringKinds { get; set; }
 
 		//Для ограниченного выбора при фильтрации в комбобоксе отдельного окна
 		public ObservableCollection<KindUIModel> TempKinds { get; set; }
@@ -238,6 +227,8 @@ namespace MyMiniLedger.WPF.WindowsModels
 			StringCategories = new ObservableCollection<string>();
 
 			Kinds = new ObservableCollection<KindUIModel>();  //Изначально подгруженные виды
+
+			StringKinds = new ObservableCollection<string>();
 
 			TempKinds = new ObservableCollection<KindUIModel>(); // Не подгружаются
 
@@ -466,6 +457,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 		//Инициализация временных категорий для добавления новой позиции
 		public void SetStringCaregories(ObservableCollection<string> _output, ObservableCollection<CategoryUIModel> _input)
 		{
+			_output.Clear();
 			foreach (var stat in _input)
 			{
 				_output.Add(stat.Category);
@@ -474,14 +466,28 @@ namespace MyMiniLedger.WPF.WindowsModels
 
 		public void SetStringKinds(ObservableCollection<string> _output, ObservableCollection<KindUIModel> _input)
 		{
+			_output.Clear();
 			foreach (var stat in _input)
 			{
 				_output.Add(stat.Kind);
 			}
 		}
+		//Добавление видов по категории
+		public void SetStringKinds(ObservableCollection<string> _output, ObservableCollection<KindUIModel> _input, CategoryUIModel _category)
+		{
+			_output.Clear();
+			foreach (var stat in _input)
+			{
+				if (stat.Category.Category == _category.Category)
+				{
+					_output.Add(stat.Kind);
+				}
+			}
+		}
 
 		public void SetStringCoins(ObservableCollection<string> _output, ObservableCollection<CoinUIModel> _input)
 		{
+			_output.Clear();
 			foreach (var stat in _input)
 			{
 				_output.Add(stat.ShortName);

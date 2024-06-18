@@ -46,16 +46,18 @@ namespace MyMiniLedger.WPF.Windows.EditContinuePosition
 			model.OriginalSelectedPosition = (PositionUIModel)_selectedPosition.Clone();
 
 			model.SetStringCaregories(model.StringCategories, model.Categories);
+			model.SetStringKinds(model.StringKinds, model.Kinds, model.SelectedPosition.Kind.Category);
 			model.SelectedPositionsInicailization((model.SelectedPositions));
 			model.SetStringCoins(model.StringCoins, model.Coins);
 			model.SetStringStatusesAndTranslation(model.Statuses, model.StringStatuses);
 			model.SelectedOpenDate = model.SelectedPosition.OpenDate;
 			model.SelectedCloseDate = model.SelectedPosition.CloseDate;
+			model.SelectedCategory = model.SelectedPosition.Kind.Category.Category;
+			model.SelectedKind = model.SelectedPosition.Kind.Kind;
 			model.SelectedCoin = model.SelectedPosition.Coin.ShortName;
 			model.SelectedStatus = model.SelectedPosition.Status.StatusName;
-			model.SelectedCategory = model.SelectedPosition.Kind.Category.Category;
 
-			model.TempKindInicialization();
+			//model.TempKindInicialization();
 
 			InitializeComponent();
 			DataContext = model;
