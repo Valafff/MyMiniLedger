@@ -175,6 +175,7 @@
             <DataGrid Grid.Row="1" ItemsSource="{Binding Path=Positions, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                       AutoGenerateColumns="False" 
                       CanUserAddRows="False"
+                      CanUserDeleteRows="False"
                       SelectionChanged="DataGrid_SelectionChanged_MainWindow"
                       PreviewKeyDown="DataGrid_PreviewKeyDown">
 

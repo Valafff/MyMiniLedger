@@ -196,8 +196,10 @@ namespace MyMiniLedger.WPF.WindowsModels
 		public LambdaCommand cb_StatusSelectionChanged { get; set; }
 		public LambdaCommand Cb_CategorySelectionChanged { get; set; }
 		public LambdaCommand Cb_KindSelected { get; set; }
+		public LambdaCommand DeleteComplexPosition { get; set; }
+        public LambdaCommand DeleteAllComplexPositionsAtRootKey { get; set; }
 
-		public EditContinuePositionWindowsModel()
+        public EditContinuePositionWindowsModel()
 		{
 			_context = new Context();
 
@@ -233,17 +235,6 @@ namespace MyMiniLedger.WPF.WindowsModels
 			StringStatuses = new ObservableCollection<string>(); //Подгружаются из Statuses
 
 			//Команды
-			UndoSelectedPosition = new LambdaCommand(execute =>
-			{
-				//Console.WriteLine($"Оригинальная позиция {DublecateSelectedPosition.Kind.Kind}");
-				ValuePositionCopy(SelectedPosition, DublecateSelectedPosition);
-				//Безопасный откат выбранных позиций в комбобокс
-				UpdateSelectedStringFields();
-				SelectedPositionsInicailization(SelectedPositions);
-				UpdateEvent();
-			},
-			canExecute => SelectedPosition != null && DublecateSelectedPosition != null
-			);
 
 			Dp_OpenDateChange = new LambdaCommand(execute =>
 			{
@@ -264,8 +255,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 				SelectedPosition.CloseDate = SelectedCloseDate;
 				TB_DateColor = "Yellow";
 			},
-			canExecute => TempSelectedOpenDate != null
-			);
+			canExecute => TempSelectedOpenDate != null);
 
 
 			Cb_CategorySelectionChanged = new LambdaCommand(execute =>
@@ -275,8 +265,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 				SetStringKinds(StringKinds, Kinds, SelectedCategory);
 				SelectedKind = StringKinds.FirstOrDefault();
 			},
-			canExecute => !block
-			);
+			canExecute => !block);
 
 			Cb_KindTextChange = new LambdaCommand(execute =>
 			{
@@ -302,16 +291,14 @@ namespace MyMiniLedger.WPF.WindowsModels
 				block = false;
 				TB_KindColor = "Yellow";
 			},
-			canExecute => true
-			);
+			canExecute => true);
 
 			Cb_KindSelected = new LambdaCommand(execute =>
 			{
 				ValueKindCopy(SelectedPosition.Kind, Kinds, SelectedKind);
 				TB_KindColor = "Yellow";
 			},
-			canExecute => true
-			);
+			canExecute => true);
 
 			cb_CoinSelectionChanged = new LambdaCommand(execute =>
 			{
@@ -319,8 +306,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 				TB_CoinColor = "Yellow";
 
 			},
-			canExecute => true
-			);
+			canExecute => true);
 
 			//сброс отображения времени если статус изменился
 			cb_StatusSelectionChanged = new LambdaCommand(execute =>
@@ -338,8 +324,31 @@ namespace MyMiniLedger.WPF.WindowsModels
 				}
 				TB_DateColor = "Yellow";
 			},
-			canExecute => true
-			);
+			canExecute => true);
+
+			UndoSelectedPosition = new LambdaCommand(execute =>
+			{
+				//Console.WriteLine($"Оригинальная позиция {DublecateSelectedPosition.Kind.Kind}");
+				ValuePositionCopy(SelectedPosition, DublecateSelectedPosition);
+				//Безопасный откат выбранных позиций в комбобокс
+				UpdateSelectedStringFields();
+				SelectedPositionsInicailization(SelectedPositions);
+				UpdateEvent();
+			},
+			canExecute => SelectedPosition != null && DublecateSelectedPosition != null);
+
+			SelectNewPosition = new LambdaCommand(
+
+				async execute =>
+				{
+					LockEvent();
+					ValuePositionCopy(SelectedPosition, DataGridSelectedItem);
+					//Безопасный откат выбранных позиций в комбобокс
+					UpdateSelectedStringFields();
+					UpdateEvent();
+					block = false;
+				},
+				canExecute => SelectedPosition.Kind != null);
 
 
 			UpdatePosition = new LambdaCommand(
@@ -354,11 +363,8 @@ namespace MyMiniLedger.WPF.WindowsModels
 				double.TryParse(SelectedPosition.Expense.ToString(), out double r2);
 				SelectedPosition.Saldo = (r1 - r2).ToString();
 				SelectedPositionsInicailization(SelectedPositions);
-
-
 			},
-				canExecute => SelectedPosition.Kind is not null && SelectedPosition.Income != null && SelectedPosition.Expense != null
-			);
+				canExecute => SelectedPosition.Kind is not null && SelectedPosition.Income != null && SelectedPosition.Expense != null);
 
 			//Продолжение комплексной позиции
 			AddComplexPosition = new LambdaCommand(
@@ -369,44 +375,56 @@ namespace MyMiniLedger.WPF.WindowsModels
 					ValuePositionCopy(SelectedPosition, DublecateSelectedPosition);
 					SetStringKinds(StringKinds, Kinds, SelectedCategory);
 					UpdateSelectedStringFields();
-					if(!dateTimeWasChanged)	editPosition.OpenDate = DateTime.Now.ToString();
-					
-					complexPositionsHendler.AddComplexPosition(SelectedPositions, editPosition, _context);
-					
+					if (!dateTimeWasChanged) editPosition.OpenDate = DateTime.Now.ToString();
+
+					complexPositionsHendler.AddComplexPosition(_context, SelectedPositions, editPosition);
+
 					UpdateEvent();
 					SelectedPositionsInicailization(SelectedPositions);
-
-
-
-
-
-
-
-
-
-
-
-
-
 					dateTimeWasChanged = false;
 				},
 				//Условие: все позиции из SelectedPositions должны иметь статус Открыта или Open (!Закрыта !Closed)
-				canExecute => SelectedPosition.Kind is not null && SelectedPosition.Income != null && SelectedPosition.Expense != null && !SelectedPositions.Any(s =>  s.Status.StatusName == "Закрыта" || s.Status.StatusName == "Closed")
-			);
+				canExecute => SelectedPosition.Kind is not null && SelectedPosition.Income != null && SelectedPosition.Expense != null
+				&& !SelectedPositions.Any(s => s.Status.StatusName == "Закрыта" || s.Status.StatusName == "Closed"));
 
-			SelectNewPosition = new LambdaCommand(
+			DeleteComplexPosition = new LambdaCommand(async execute =>
+			{
+				int delPosKey = DataGridSelectedItem.PositionKey;
+				var t = await complexPositionsHendler.DeleteComplexPosition(_context, SelectedPositions, DataGridSelectedItem);
+				//участвует в обновлении главного окна и сбросе цветов
+				UpdateEvent();
 
-				async execute =>
+				//Если удалена корневая позиция
+				if (t.PositionKey != 0 && t.Kind != null && t.ZeroParrentKey == null)
+				{
+					if (delPosKey == SelectedPosition.PositionKey)
 					{
-						LockEvent();
-						ValuePositionCopy(SelectedPosition, DataGridSelectedItem);
-						//Безопасный откат выбранных позиций в комбобокс
-						UpdateSelectedStringFields();
-						UpdateEvent();
-						block = false;
-					},
-				canExecute => SelectedPosition.Kind != null
-				);
+						ValuePositionCopy(SelectedPosition, t);
+						ValuePositionCopy(DublecateSelectedPosition, t);
+					}
+					SelectedPosition.ZeroParrentKey = t.PositionKey;
+					DublecateSelectedPosition.ZeroParrentKey = t.PositionKey;
+				}
+				else
+				{
+					//Возвращается предыдущая позиция
+					if (delPosKey == SelectedPosition.PositionKey && t.PositionKey != 0 && t.Kind != null)
+					{
+						ValuePositionCopy(SelectedPosition, t);
+						ValuePositionCopy(DublecateSelectedPosition, t);
+					}
+				}
+			},
+			canExecute => DataGridSelectedItem != null);
+
+			DeleteAllComplexPositionsAtRootKey = new LambdaCommand(async execute =>
+			{
+				complexPositionsHendler.DeleteAllComplexPositionsAtRootKey(_context, SelectedPositions);
+				UpdateEvent();
+				
+			},
+			canExecute => SelectedPositions.Count > 0);
+
 		}
 
 

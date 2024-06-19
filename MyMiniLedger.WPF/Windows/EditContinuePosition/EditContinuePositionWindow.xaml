@@ -210,8 +210,8 @@
             </Grid.ColumnDefinitions>
             <Button Grid.Column="0" Content="Перезаписать позицию" Margin="10,10,10,10" Command="{Binding Path=UpdatePosition}" />
             <Button Grid.Column="1" Content="Продолжить позицию" Margin="10,10,10,10" Command="{Binding Path=AddComplexPosition}"/>
-            <Button Grid.Column="2" Content="Удалить выделенную позицию" Margin="10,10,10,10" />
-            <Button Grid.Column="3" Content="Удалить всю цепочку позиций" Margin="10,10,10,10"/>
+            <Button Grid.Column="2" Content="Удалить выделенную позицию" Margin="10,10,10,10" Command="{Binding Path=DeleteComplexPosition}" />
+            <Button Grid.Column="3" Content="Удалить всю цепочку позиций" Margin="10,10,10,10" Command="{Binding Path=DeleteAllComplexPositionsAtRootKey}"/>
             <Button Grid.Column="4" Content="Выход" Margin="10,10,10,10" Click="Button_Click_Close"/>
         </Grid>
 
@@ -225,7 +225,8 @@
                 <DataGrid x:Name="dg_ComplexPositionsList" ItemsSource="{Binding Path=SelectedPositions, UpdateSourceTrigger=PropertyChanged}"
                           SelectedItem="{Binding DataGridSelectedItem, UpdateSourceTrigger=PropertyChanged}"
                           AutoGenerateColumns="False"
-                          CanUserAddRows="False" >
+                          CanUserAddRows="False" 
+                          CanUserDeleteRows="False">
 
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="SelectionChanged">
