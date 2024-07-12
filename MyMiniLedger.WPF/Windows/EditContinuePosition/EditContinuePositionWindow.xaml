@@ -248,9 +248,7 @@
             </GroupBox>
 
             <GroupBox Grid.Column="1"  Header="Дополнительная информация">
-                <StackPanel>
-
-                </StackPanel>
+                <StackPanel x:Name="sp_BalanceInfo"/>
             </GroupBox>
         </Grid>
     </Grid>

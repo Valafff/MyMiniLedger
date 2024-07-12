@@ -47,7 +47,7 @@ namespace MyMiniLedger.WPF.Windows.EditContinuePosition
 
 			model.SetStringCaregories(model.StringCategories, model.Categories);
 			model.SetStringKinds(model.StringKinds, model.Kinds, model.SelectedPosition.Kind.Category);
-			model.SelectedPositionsInicailization((model.SelectedPositions));
+			model.SelectedPositionsInitialization((model.SelectedPositions));
 			model.SetStringCoins(model.StringCoins, model.Coins);
 			model.SetStringStatusesAndTranslation(model.Statuses, model.StringStatuses);
 			model.SelectedOpenDate = model.SelectedPosition.OpenDate;
@@ -56,9 +56,9 @@ namespace MyMiniLedger.WPF.Windows.EditContinuePosition
 			model.SelectedKind = model.SelectedPosition.Kind.Kind;
 			model.SelectedCoin = model.SelectedPosition.Coin.ShortName;
 			model.SelectedStatus = model.SelectedPosition.Status.StatusName;
-
 			InitializeComponent();
 			DataContext = model;
+			GetBalances();
 
 			(DataContext as EditContinuePositionWindowsModel).UpdateEvent += ResetColors;
 			isLoaded = true;
@@ -215,6 +215,28 @@ namespace MyMiniLedger.WPF.Windows.EditContinuePosition
 				return "0";
 			}
 		}
+
+		private void GetBalances()
+		{
+			if (DataContext != null)
+				foreach (var balance in (DataContext as EditContinuePositionWindowsModel).TotalBalances)
+				{
+					TextBlock textBloc = new TextBlock { Text = $"Монета {balance.CoinName}" };
+					sp_BalanceInfo.Children.Add(textBloc);
+					if (balance.Balance <= 0)
+					{
+						TextBlock textBlockBalance = new TextBlock { Text = $"Баланс {balance.Balance}", Foreground = Brushes.Red };
+						sp_BalanceInfo.Children.Add(textBlockBalance);
+					}
+					else
+					{
+						TextBlock textBlockBalance = new TextBlock { Text = $"Баланс {balance.Balance}", Foreground = Brushes.LawnGreen };
+						sp_BalanceInfo.Children.Add(textBlockBalance);
+					}
+
+				}
+		}
+
 
 		private void Button_Click_Close(object sender, RoutedEventArgs e)
 		{

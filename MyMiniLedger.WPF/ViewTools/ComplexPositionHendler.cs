@@ -105,5 +105,6 @@ namespace MyMiniLedger.WPF.ViewTools
 			}
 			_selectedPositions.Clear();
 		}
+
 	}
 }

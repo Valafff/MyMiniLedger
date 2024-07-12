@@ -163,11 +163,17 @@ namespace MyMiniLedger.WPF.WindowsModels
 			set => SetField(ref _selectedStatus, value);
 		}
 
+		private List<TotalBalance> _totalBalances;
+        public List<TotalBalance> TotalBalances
+		{
+			get => _totalBalances;
+			set =>SetField(ref _totalBalances, value);
+		}
 
-		//Позиции которые должны подтянуться, если позиция является комплексной, всегда подтягивается первая позиция
-		//https://stackoverflow.com/questions/45292905/wpf-collectionview-error-collection-was-modified-enumeration-operation-may-no
-		//https://stackoverflow.com/questions/23108045/how-to-make-observablecollection-thread-safe/29288294#29288294
-		public ObservableCollection<PositionUIModel> SelectedPositions { get; set; }
+        //Позиции которые должны подтянуться, если позиция является комплексной, всегда подтягивается первая позиция
+        //https://stackoverflow.com/questions/45292905/wpf-collectionview-error-collection-was-modified-enumeration-operation-may-no
+        //https://stackoverflow.com/questions/23108045/how-to-make-observablecollection-thread-safe/29288294#29288294
+        public ObservableCollection<PositionUIModel> SelectedPositions { get; set; }
 
 		//Ссылка на список позиций из главного окна
 		public ObservableCollection<PositionUIModel> MAINPOSITIONSCOLLECTION { get; set; }
@@ -199,7 +205,8 @@ namespace MyMiniLedger.WPF.WindowsModels
 		public LambdaCommand DeleteComplexPosition { get; set; }
         public LambdaCommand DeleteAllComplexPositionsAtRootKey { get; set; }
 
-        public EditContinuePositionWindowsModel()
+
+		public EditContinuePositionWindowsModel()
 		{
 			_context = new Context();
 
@@ -211,6 +218,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 			DublecateSelectedPosition = new PositionUIModel();
 
 			SelectedPositions = new ObservableCollection<PositionUIModel>();
+
 			MAINPOSITIONSCOLLECTION = new ObservableCollection<PositionUIModel>(); //Ссылки на все позиции из главного окна
 
 			//Инициализация цвета
@@ -233,6 +241,8 @@ namespace MyMiniLedger.WPF.WindowsModels
 			Statuses = new ObservableCollection<StatusUIModel>(); //Изначально подгруженные статусы
 
 			StringStatuses = new ObservableCollection<string>(); //Подгружаются из Statuses
+
+			TotalBalances = new List<TotalBalance>();
 
 			//Команды
 
@@ -332,7 +342,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 				ValuePositionCopy(SelectedPosition, DublecateSelectedPosition);
 				//Безопасный откат выбранных позиций в комбобокс
 				UpdateSelectedStringFields();
-				SelectedPositionsInicailization(SelectedPositions);
+				SelectedPositionsInitialization(SelectedPositions);
 				UpdateEvent();
 			},
 			canExecute => SelectedPosition != null && DublecateSelectedPosition != null);
@@ -362,7 +372,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 				double.TryParse(SelectedPosition.Income.ToString(), out double r1);
 				double.TryParse(SelectedPosition.Expense.ToString(), out double r2);
 				SelectedPosition.Saldo = (r1 - r2).ToString();
-				SelectedPositionsInicailization(SelectedPositions);
+				SelectedPositionsInitialization(SelectedPositions);
 			},
 				canExecute => SelectedPosition.Kind is not null && SelectedPosition.Income != null && SelectedPosition.Expense != null);
 
@@ -380,7 +390,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 					complexPositionsHendler.AddComplexPosition(_context, SelectedPositions, editPosition);
 
 					UpdateEvent();
-					SelectedPositionsInicailization(SelectedPositions);
+					SelectedPositionsInitialization(SelectedPositions);
 					dateTimeWasChanged = false;
 				},
 				//Условие: все позиции из SelectedPositions должны иметь статус Открыта или Open (!Закрыта !Closed)
@@ -510,7 +520,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 		}
 
 		//Инициализация выбранных позиций
-		public void SelectedPositionsInicailization(ObservableCollection<PositionUIModel> _selectedPositions, int _flagSource = 0)
+		public void SelectedPositionsInitialization(ObservableCollection<PositionUIModel> _selectedPositions, int _flagSource = 0)
 		{
 			try
 			{
@@ -523,6 +533,8 @@ namespace MyMiniLedger.WPF.WindowsModels
 				{
 					sp = (PositionUIModel)DublecateSelectedPosition.Clone();
 				}
+
+				ComplexPositionBalanceCalculator calculator = new ComplexPositionBalanceCalculator();
 
 				_selectedPositions.Clear();
 				//Если позиция простая или выбран родитель
@@ -539,6 +551,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 							_selectedPositions.Add(item);
 						}
 					}
+					TotalBalances = calculator.GetTotalBalances(_selectedPositions);
 				}
 				//Если выбрана дочерняя позиция
 				else
@@ -554,6 +567,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 							_selectedPositions.Add(item);
 						}
 					}
+					TotalBalances = calculator.GetTotalBalances(_selectedPositions);
 				}
 			}
 			catch (Exception ex)
