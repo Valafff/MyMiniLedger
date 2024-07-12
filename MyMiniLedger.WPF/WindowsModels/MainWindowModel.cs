@@ -26,7 +26,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 
 	public class MainWindowModel : BaseNotify
 	{
-		//При выполнении метода UpdateCoins() вызывается событие UpdateCoinsIndexEvent, анологично с другими полями
+		//При выполнении метода UpdateCoins() вызывается событие UpdateCoinsIndexEvent, аналогично с другими полями
 		public event UpdateCoinsIndexDelegate UpdateCoinsIndexEvent;
 		public event UpdateCategoriesIndexDelegate UpdateCategoriesIndexEvent;
 		public event UpdateKindsIndexDelegate UpdateKindsIndexEvent;
@@ -185,8 +185,8 @@ namespace MyMiniLedger.WPF.WindowsModels
 					//Добавление новой позиции
 
 					PositionConstruct.CloseDate = (ViewTools.FormatterPositions.SetCloseDate(PositionConstruct.Status.StatusName)).ToString();
-                    //Затычка, даже не костыль, до лучших времен
-                    DateTime t = Convert.ToDateTime(PositionConstruct.OpenDate);
+					//dp_OpenDate_SelectedDateChanged задает время в виде string конвертирую его в datetime и прибавляю настоящее время
+					DateTime t = Convert.ToDateTime(PositionConstruct.OpenDate);
 					t += DateTime.Now.TimeOfDay;
 					PositionConstruct.OpenDate = t.ToString();
 
@@ -366,11 +366,11 @@ namespace MyMiniLedger.WPF.WindowsModels
 		{
 			if (SelectedPosition != null)
 			{
-				//if (Positions.Any(p => p.ZeroParrentKey == SelectedPosition.PositionKey))
-				//{
-				//	MessageBox.Show("Удаление родительской позиции запрещено! Используйте меню для работы с комплексными позициями");
-				//}
-				//else
+				if (Positions.Any(p => p.ZeroParrentKey == SelectedPosition.PositionKey) || SelectedPosition.ParrentKey != null)
+				{
+					MessageBox.Show("Удаление комплексной позиции запрещено! Используйте меню \"Редактирование\\Продолжение позиции\"");
+				}
+				else
 				{
 					await _context.PositionsTableBL.DeleteAsync(Mappers.UIMapper.MapPositionUIToPositionBLL(_selectedPosition));
 					var t = Positions.Where(t => t.Id == _selectedPosition.Id);
