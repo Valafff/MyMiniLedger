@@ -43,6 +43,8 @@ namespace MyMiniLedger.WPF.Models
 			set => SetField(ref _averagePrice, value);
 		}
 
+
+
 		public object Clone() => MemberwiseClone();
 	}
 }

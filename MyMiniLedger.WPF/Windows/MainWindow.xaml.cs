@@ -1,10 +1,12 @@
 ﻿using Dapper;
 using MyMiniLedger.WPF.Models;
+using MyMiniLedger.WPF.ViewTools;
 using MyMiniLedger.WPF.Windows.EditContinuePosition;
 using MyMiniLedger.WPF.WindowsModels;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace MyMiniLedger.WPF
 {
@@ -61,7 +63,30 @@ namespace MyMiniLedger.WPF
 		private void DataGrid_SelectionChanged_MainWindow(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
 		{
 			((MainWindowModel)DataContext).SelectedPosition = (PositionUIModel)(((DataGrid)sender).CurrentItem);
-		}
+
+            ComplexPositionBalanceCalculator calculator = new ComplexPositionBalanceCalculator();
+			var selectedBalance = calculator.GetTotalBalnce((DataContext as MainWindowModel).Positions, ((MainWindowModel)DataContext).SelectedPosition);
+
+			if (selectedBalance == null)
+			{
+				selectedBalance = new TotalBalance() { Balance = 0, CoinName = "[Валюта]" };
+			}
+
+			tb_CurrentBalance.Text = selectedBalance.Balance.ToString();
+			if (selectedBalance.Balance > 0)
+			{
+				tb_CurrentBalance.Foreground = Brushes.LawnGreen;
+			}
+			else if (selectedBalance.Balance < 0)
+			{
+				tb_CurrentBalance.Foreground = Brushes.Red;
+			}
+			else
+			{
+				tb_CurrentBalance.Foreground= Brushes.Black;
+			}
+			tb_CurrentCoin.Text = selectedBalance.CoinName;
+        }
 		private void dp_OpenDate_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (sender != null)
@@ -94,7 +119,6 @@ namespace MyMiniLedger.WPF
 				cb_Kind.SelectedIndex = 0;
 			}
 
-			//Как-то криво, но работает требуется при первоначальной инициализации
 			if (((MainWindowModel)DataContext).TempKindsMain.Count > 0)
 			{
 				((MainWindowModel)DataContext).PositionConstruct.Kind = ((MainWindowModel)DataContext).TempKindsMain[0];

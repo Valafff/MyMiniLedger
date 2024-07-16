@@ -241,11 +241,11 @@ namespace MyMiniLedger.WPF.WindowsModels
 			//Полное удаление категории
 			DeletePosition = new LambdaCommand(async execute =>
 			{
-				//if (Positions.Any(p => p.ZeroParrentKey == SelectedPosition.PositionKey))
-				//{
-				//	MessageBox.Show("Удаление родительской позиции запрещено! Используйте меню для работы с комплексными позициями");
-				//}
-				//else
+                if (Positions.Any(p => p.ZeroParrentKey == SelectedPosition.PositionKey) || SelectedPosition.ParrentKey != null)
+                {
+                    MessageBox.Show("Удаление комплексной позиции запрещено! Используйте меню \"Редактирование\\Продолжение позиции\"");
+                }
+                else
 				{
 					await _context.PositionsTableBL.DeleteAsync(Mappers.UIMapper.MapPositionUIToPositionBLL(_selectedPosition));
 					var t = Positions.Where(t => t.Id == _selectedPosition.Id);

@@ -52,15 +52,40 @@ namespace MyMiniLedger.WPF.ViewTools
                 {
                     totalBalances[0].AveragePrice = "1";
                 }
-
-
-
-
+                
                 return totalBalances;
             }
             catch (Exception)
             {
                 Console.WriteLine("Ошибка GetTotalBalances");
+                throw;
+            }
+        }
+
+        //Для одной позиции
+        public TotalBalance GetTotalBalnce(ObservableCollection<PositionUIModel> _selectedPositions, PositionUIModel _selectedPosition )
+        {
+            try
+            {
+                if (_selectedPosition != null)
+                {
+                    TotalBalance temp = new TotalBalance() { CoinName = _selectedPosition.Coin.ShortName };
+                    foreach (var position in _selectedPositions)
+                    {
+                        if (position.Coin.ShortName == _selectedPosition.Coin.ShortName)
+                        {
+                            temp.TotalIncome += Double.Parse(position.Income);
+                            temp.TotalExpense += Double.Parse(position.Expense);
+                        }
+                    }
+                    temp.Balance = temp.TotalIncome - temp.TotalExpense;
+                    return temp;
+                }
+                return null;
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Ошибка GetTotalBalnce");
                 throw;
             }
 
