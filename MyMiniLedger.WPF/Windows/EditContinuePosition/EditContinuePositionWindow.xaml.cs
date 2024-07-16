@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using MyMiniLedger.WPF.Models;
+using MyMiniLedger.WPF.ViewTools;
 using MyMiniLedger.WPF.WindowsModels;
 using System;
 using System.Collections.Generic;
@@ -58,9 +59,10 @@ namespace MyMiniLedger.WPF.Windows.EditContinuePosition
 			model.SelectedStatus = model.SelectedPosition.Status.StatusName;
 			InitializeComponent();
 			DataContext = model;
-			GetBalances();
+			GetBalancesInUI();
 
 			(DataContext as EditContinuePositionWindowsModel).UpdateEvent += ResetColors;
+			(DataContext as EditContinuePositionWindowsModel).UpdateEvent += GetBalancesInUI;
 			isLoaded = true;
 		}
 
@@ -216,27 +218,40 @@ namespace MyMiniLedger.WPF.Windows.EditContinuePosition
 			}
 		}
 
-		private void GetBalances()
+		private void GetBalancesInUI()
 		{
+			sp_BalanceInfo.Children.Clear();
+			
 			if (DataContext != null)
+			{
+				ComplexPositionBalanceCalculator calculator = new ComplexPositionBalanceCalculator();
+				(DataContext as EditContinuePositionWindowsModel).TotalBalances = calculator.GetTotalBalances((DataContext as EditContinuePositionWindowsModel).SelectedPositions);
+
 				foreach (var balance in (DataContext as EditContinuePositionWindowsModel).TotalBalances)
 				{
-					TextBlock textBloc = new TextBlock { Text = $"Монета {balance.CoinName}" };
-					sp_BalanceInfo.Children.Add(textBloc);
+
+					StackPanel temp_sp = new StackPanel();
+					temp_sp.Orientation = Orientation.Horizontal;
+					TextBlock textBloc = new TextBlock { Text = $"Баланс: {balance.CoinName}\t" };
+					temp_sp.Children.Add(textBloc);
+					TextBlock textBlockBalance = new TextBlock { Text = $"{balance.Balance} {balance.CoinName}" };
+					textBlockBalance.FontWeight = FontWeights.Bold;
 					if (balance.Balance <= 0)
 					{
-						TextBlock textBlockBalance = new TextBlock { Text = $"Баланс {balance.Balance}", Foreground = Brushes.Red };
-						sp_BalanceInfo.Children.Add(textBlockBalance);
+						textBlockBalance.Foreground = Brushes.Red;
 					}
 					else
 					{
-						TextBlock textBlockBalance = new TextBlock { Text = $"Баланс {balance.Balance}", Foreground = Brushes.LawnGreen };
-						sp_BalanceInfo.Children.Add(textBlockBalance);
+						textBlockBalance.Foreground = Brushes.Green;
 					}
-
+					temp_sp.Children.Add(textBlockBalance);
+					TextBlock averagePriceText = new TextBlock {Text = $"\tСредняя цена сделки: {balance.AveragePrice}" };
+					temp_sp.Children.Add(averagePriceText);
+					sp_BalanceInfo.Children.Add(temp_sp);
 				}
+			}
+				
 		}
-
 
 		private void Button_Click_Close(object sender, RoutedEventArgs e)
 		{

@@ -391,6 +391,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 
 					UpdateEvent();
 					SelectedPositionsInitialization(SelectedPositions);
+					UpdateEvent();
 					dateTimeWasChanged = false;
 				},
 				//Условие: все позиции из SelectedPositions должны иметь статус Открыта или Open (!Закрыта !Closed)
