@@ -27,13 +27,6 @@ namespace MyMiniLedger.WPF
 			(DataContext as MainWindowModel).UpdateCategoriesIndexEvent += UpdateSelectedCategory;
 			(DataContext as MainWindowModel).UpdateKindsIndexEvent += UpdateSelectedKind;
 			(DataContext as MainWindowModel).UpdateDatePickerEvent += UpdateDatePicker;
-
-
-			//// Не получилось забиндить через VM
-			//List<string> searchTypes = new List<string> { "Номер позиции", "Категория", "Вид", "Валюта", "Тег", "Статус" };
-			//cb_Search_MenuItem.ItemsSource = searchTypes;
-			//cb_Search_MenuItem.SelectedIndex = 0;
-			//(this.DataContext as MainWindowModel).cf.
 		}
 
 		//Удаление позиции

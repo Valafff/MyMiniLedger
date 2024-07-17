@@ -430,7 +430,6 @@ namespace MyMiniLedger.WPF.WindowsModels
             foreach (var item in updatedPos)
             {
 				DateTime openDate = DateTime.Parse(item.OpenDate).Date;
-                Console.WriteLine(openDate);
                 int i = 0;
                 if (item.Status.StatusName != "Deleted" && openDate >= StartDate && openDate <= EndDate)
                 {
