@@ -32,16 +32,20 @@
             </MenuItem>
             <!--<TextBox TextWrapping="Wrap" Text="Поиск по" Width="120"/>
             <ComboBox x:Name="cb_Search_MenuItem" Width="120" ItemsSource="{Binding Path = searchTypes}" SelectedIndex="0" IsEditable="True">
-                --><!--<ComboBox.ItemTemplate>
+                -->
+            <!--<ComboBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding Path=}"/>
                     </DataTemplate>
-                </ComboBox.ItemTemplate>--><!--
+                </ComboBox.ItemTemplate>-->
+            <!--
             </ComboBox>-->
-            <!--<Label Content="Показывать записи с:" />
-            <DatePicker Name="datePiker_Start"/>
+            <Label Content="Показывать записи с:" />
+            <DatePicker Name="datePiker_Start" SelectedDate="{Binding Path=StartDate, UpdateSourceTrigger=PropertyChanged}"/>
             <Label Content="по:"/>
-            <DatePicker Name="datePiker_End"/>-->
+            <DatePicker Name="datePiker_End" SelectedDate="{Binding Path=EndDate, UpdateSourceTrigger=PropertyChanged}"/>
+            <Button Content="Показать" x:Name="bt_updatePositionsList" Width="150" Command="{Binding Path= SearchByDateRange}"/>
+            <Button Content="Вернуть полный список" x:Name="bt_returnPositionsList" Width="150" Command="{Binding Path=RefreshPositions}"/>
 
         </Menu>
 
@@ -184,7 +188,7 @@
                         <EventSetter x:Name="Row_DoubleClick" Event="MouseDoubleClick" Handler="Row_DoubleClick"/>
                     </Style>
                 </DataGrid.ItemContainerStyle>
-                
+
                 <DataGrid.Columns>
                     <!--<DataGridTextColumn Header="Id" Binding="{Binding Path=Id}" IsReadOnly="True"/>-->
                     <DataGridTextColumn Header="Номер поз." Binding="{Binding Path=PositionKey, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsReadOnly="True" Width="*"/>
@@ -207,7 +211,7 @@
                     <ColumnDefinition Width="2*"/>
                     <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
-               
+
                 <StackPanel Grid.Column="0">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Данные о позиции № " FontSize="18" FontWeight="Bold"/>

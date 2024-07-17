@@ -67,6 +67,22 @@ namespace MyMiniLedger.WPF.WindowsModels
 			get => _selectedPosition;
 			set => SetField(ref _selectedPosition, value);
 		}
+
+		//Даты для выбора позиции вограниченном диапазоне времени
+		private DateTime _startDate;
+		public DateTime StartDate
+		{
+			get => _startDate;
+			set => SetField(ref _startDate, value);
+		}
+		private DateTime _endDate;
+		public DateTime EndDate
+		{
+			get => _endDate;
+			set => SetField(ref _endDate, value);
+		}
+
+
 		public ObservableCollection<PositionUIModel> Positions { get; set; }
 		public ObservableCollection<CategoryUIModel> Categories { get; set; }
 		public ObservableCollection<CoinUIModel> Coins { get; set; }
@@ -94,6 +110,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 
 
 		public LambdaCommand RefreshPositions { get; set; }
+		public LambdaCommand SearchByDateRange { get; set; }
 		public int MaxPosKey;
 
 		//Для привязки поле должно быть пропой {get; set;}
@@ -217,25 +234,17 @@ namespace MyMiniLedger.WPF.WindowsModels
 			RefreshPositions = new LambdaCommand(
 				execute =>
 				{
-					//List<PositionUIModel> updatedPos = (tempPos.GetAllAsync().Result.Select(p => Mappers.UIMapper.MapPositionBLLToPositionUI(p)).ToList());
-					////Форматирование
-					//updatedPos = ViewTools.FormatterPositions.EditPosFromTableByDate(updatedPos.AsList(), new DateTime(2000, 01, 01));
-					//updatedPos = ViewTools.FormatterPositions.EditPosFromTableByStatus(updatedPos.AsList(), "Open", "Открыта");
-					//updatedPos = ViewTools.FormatterPositions.EditPosFromTableByStatus(updatedPos.AsList(), "Closed", "Закрыта");
-					//updatedPos = ViewTools.FormatterPositions.EditDecemalPosFromTableByMarker(updatedPos.AsList(), "fiat", "0.00");
-
-					//Positions.Clear();
-					//foreach (var item in updatedPos)
-					//{
-					//	int i = 0;
-					//	if (item.Status.StatusName != "Deleted")
-					//	{
-					//		Positions.Insert(i, item);
-					//		i++;
-					//	}
-					//}
 					UpdatePositionsCollection();
 				}
+				);
+
+			SearchByDateRange = new LambdaCommand(
+				execute => 
+				{
+					//Console.WriteLine(StartDate);
+					//Console.WriteLine(EndDate);
+					UpdatePositionsByDateRange();
+                }
 				);
 
 			//Полное удаление категории
@@ -406,6 +415,30 @@ namespace MyMiniLedger.WPF.WindowsModels
 				}
 			}
 		}
+
+		public void UpdatePositionsByDateRange()
+		{
+            BLL.Context.ListOfPositions tempPos = new BLL.Context.ListOfPositions();
+            List<PositionUIModel> updatedPos = (tempPos.GetAllAsync().Result.Select(p => Mappers.UIMapper.MapPositionBLLToPositionUI(p)).ToList());
+            //Форматирование
+            updatedPos = ViewTools.FormatterPositions.EditPosFromTableByDate(updatedPos.AsList(), new DateTime(2000, 01, 01));
+            updatedPos = ViewTools.FormatterPositions.EditPosFromTableByStatus(updatedPos.AsList(), "Open", "Открыта");
+            updatedPos = ViewTools.FormatterPositions.EditPosFromTableByStatus(updatedPos.AsList(), "Closed", "Закрыта");
+            updatedPos = ViewTools.FormatterPositions.EditDecemalPosFromTableByMarker(updatedPos.AsList(), "fiat", "0.00");
+
+            Positions.Clear();
+            foreach (var item in updatedPos)
+            {
+				DateTime openDate = DateTime.Parse(item.OpenDate).Date;
+                Console.WriteLine(openDate);
+                int i = 0;
+                if (item.Status.StatusName != "Deleted" && openDate >= StartDate && openDate <= EndDate)
+                {
+                    Positions.Insert(i, item);
+                    i++;
+                }
+            }
+        }
 
 		//public void hardUpdate(BLL.Context.ListOfPositions tempPos)
 		//{

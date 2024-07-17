@@ -19,8 +19,8 @@ namespace MyMiniLedger.WPF
 		public MainWindow()
 		{
 			InitializeComponent();
-			//datePiker_Start.SelectedDate = new DateTime(DateTime.Now.Year, 1, 1);
-			//datePiker_End.SelectedDate = DateTime.Now;
+			datePiker_Start.SelectedDate = new DateTime(DateTime.Now.Year, 1, 1);
+			datePiker_End.SelectedDate = DateTime.Now;
 			dp_OpenDate.SelectedDate = DateTime.Now;
 
 			(DataContext as MainWindowModel).UpdateCoinsIndexEvent += UpdateSelectedCoin;
