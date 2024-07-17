@@ -12,6 +12,7 @@ namespace MyMiniLedger.BLL
         public  InitConfigBLL(string path = "config.json")
         {
             DAL.Services.DataConfig.Init(path);
+
         }
     }
 }

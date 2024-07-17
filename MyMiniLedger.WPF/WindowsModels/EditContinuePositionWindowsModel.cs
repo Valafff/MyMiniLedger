@@ -588,7 +588,6 @@ namespace MyMiniLedger.WPF.WindowsModels
                         }
                     }
                     TotalBalances = calculator.GetTotalBalances(_selectedPositions);
-
                 }
             }
             catch (Exception ex)

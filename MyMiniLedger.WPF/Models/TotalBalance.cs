@@ -43,6 +43,12 @@ namespace MyMiniLedger.WPF.Models
 			set => SetField(ref _averagePrice, value);
 		}
 
+		private string? _currentCourseToUsd;
+		public string? CurrentCourseToUsd
+		{
+			get => _currentCourseToUsd;
+			set => SetField(ref _currentCourseToUsd, value);
+		}
 
 
 		public object Clone() => MemberwiseClone();

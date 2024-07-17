@@ -18,15 +18,19 @@ namespace MyMiniLedger.WPF.ViewTools
             totalBalances = new List<TotalBalance>();
         }
 
-        public List<TotalBalance> GetTotalBalances(ObservableCollection<PositionUIModel> _selectedPositions)
+        public  List<TotalBalance> GetTotalBalances(ObservableCollection<PositionUIModel> _selectedPositions)
         {
             try
             {
+                //BLL.ServicesAPI.Requsts requsts = new BLL.ServicesAPI.Requsts();
+
                 string[] coins = _selectedPositions.Select(p => p.Coin.ShortName).Distinct().ToArray();
 
                 foreach (var coin in coins)
                 {
                     TotalBalance temp = new TotalBalance();
+                    //Блокируется поток на время эксперимента
+                    //temp.CurrentCourseToUsd =  requsts.GetCoinCourseToFiatAsync((_selectedPositions.First(c => c.Coin.ShortName == coin)).Coin.FullName, "usd").Result;
                     for (int i = 0; i < _selectedPositions.Count; i++)
                     {
                         if (_selectedPositions[i].Coin.ShortName == coin)
@@ -35,7 +39,7 @@ namespace MyMiniLedger.WPF.ViewTools
                             temp.TotalIncome += Double.Parse(_selectedPositions[i].Income);
                             temp.TotalExpense += Double.Parse(_selectedPositions[i].Expense);
                             //Требуется усложнить логику с тегами для обработки 3х и более монет
-                            temp.AveragePrice = "Курс не определен";
+                            temp.AveragePrice = "Отношение не определено";
                         }
                     }
                     temp.Balance = temp.TotalIncome - temp.TotalExpense;

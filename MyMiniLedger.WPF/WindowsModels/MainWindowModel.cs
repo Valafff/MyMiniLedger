@@ -123,7 +123,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 		{
 			//ToDo В файле сделать базовые настройки строк, дат, пользователя 
 			cf = new BLL.InitConfigBLL("config.json");
-
+			
 			////Тестовое открытие формы при запуске приложения
 			//new CategoryWindow().Show();
 
