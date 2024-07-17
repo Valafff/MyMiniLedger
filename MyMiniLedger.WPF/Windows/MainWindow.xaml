@@ -30,18 +30,18 @@
                 <MenuItem Header="Создать резервную копию БД"/>
                 <MenuItem Header="Выход " Click="MenuItem_Click_Close"/>
             </MenuItem>
-            <TextBox TextWrapping="Wrap" Text="Поиск по" Width="120"/>
+            <!--<TextBox TextWrapping="Wrap" Text="Поиск по" Width="120"/>
             <ComboBox x:Name="cb_Search_MenuItem" Width="120" ItemsSource="{Binding Path = searchTypes}" SelectedIndex="0" IsEditable="True">
-                <!--<ComboBox.ItemTemplate>
+                --><!--<ComboBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding Path=}"/>
                     </DataTemplate>
-                </ComboBox.ItemTemplate>-->
-            </ComboBox>
-            <Label Content="Показывать записи с:" />
+                </ComboBox.ItemTemplate>--><!--
+            </ComboBox>-->
+            <!--<Label Content="Показывать записи с:" />
             <DatePicker Name="datePiker_Start"/>
             <Label Content="по:"/>
-            <DatePicker Name="datePiker_End"/>
+            <DatePicker Name="datePiker_End"/>-->
 
         </Menu>
 
