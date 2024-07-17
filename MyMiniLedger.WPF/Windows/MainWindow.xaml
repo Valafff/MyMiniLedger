@@ -257,8 +257,22 @@
                         <TextBlock Text="Номер позиции: " FontSize="18"/>
                         <TextBlock Text="{Binding SelectedPosition.PositionKey}" FontSize="18"/>
                     </StackPanel>
-
-
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Валюта: " FontSize="18"/>
+                        <TextBlock Text="{Binding SelectedPosition.Coin.ShortName}" FontSize="18"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Приход: " FontSize="18"/>
+                        <TextBlock Text="{Binding SelectedPosition.Income}" FontSize="18"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Расход: " FontSize="18"/>
+                        <TextBlock Text="{Binding SelectedPosition.Expense}" FontSize="18"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Сальдо: " FontSize="18"/>
+                        <TextBlock Text="{Binding SelectedPosition.Saldo}" FontSize="18"/>
+                    </StackPanel>
                 </StackPanel>
 
                 <StackPanel Grid.Column="2">

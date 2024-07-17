@@ -245,7 +245,7 @@ namespace MyMiniLedger.WPF.Windows.EditContinuePosition
 						textBlockBalance.Foreground = Brushes.Green;
 					}
 					temp_sp.Children.Add(textBlockBalance);
-					TextBlock averagePriceText = new TextBlock {Text = $"\tСредняя цена сделки: {balance.AveragePrice}" };
+					TextBlock averagePriceText = new TextBlock {Text = $"\tСредняя отношение сделки: {balance.AveragePrice}" };
 					temp_sp.Children.Add(averagePriceText);
 					sp_BalanceInfo.Children.Add(temp_sp);
 				}
