@@ -1,0 +1,390 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="MyMiniLedger.WPF.Mappers.UIMapper" Collapsed="true">
+    <Position X="30.75" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAIAAQAAiAAAAgAAIBAAAAAAAAAAAIMAAAA=</HashCode>
+      <FileName>Mappers\UIMapper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MyMiniLedger.WPF.Models.CategoryUIModel" Collapsed="true">
+    <Position X="7.25" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAIAAABAAAAABAAAAAAIAAAAAAAAAAAAAACBA=</HashCode>
+      <FileName>Models\CategoryUIModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MyMiniLedger.WPF.Models.CoinUIModel" Collapsed="true">
+    <Position X="7.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAIAAAAIAAAABAAAICAIAAAICIAAAAAAAAABA=</HashCode>
+      <FileName>Models\CoinUIModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MyMiniLedger.WPF.Models.KindUIModel" Collapsed="true">
+    <Position X="14" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAIABABAAAAABAAAAAAIBAAAAAAAAAAAAACBA=</HashCode>
+      <FileName>Models\KindUIModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MyMiniLedger.WPF.Models.PositionUIModel" Collapsed="true">
+    <Position X="18.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEEyAABEAABqABQQgABABAAAEAJCEAAAABIFCAAAIBA=</HashCode>
+      <FileName>Models\PositionUIModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MyMiniLedger.WPF.Models.StatusUIModel" Collapsed="true">
+    <Position X="16.25" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAABAAAQAAAAAAASAAAIAAAAAABA=</HashCode>
+      <FileName>Models\StatusUIModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MyMiniLedger.WPF.Models.TotalBalance" Collapsed="true">
+    <Position X="9.5" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAQAAACACIAACAAAAAgAAgAAAAAAAACAAAJAAAAAEBA=</HashCode>
+      <FileName>Models\TotalBalance.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MyMiniLedger.WPF.ViewTools.ComplexPositionBalanceCalculator" Collapsed="true">
+    <Position X="30.75" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEgAAAACAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewTools\ComplexPositionBalanceCalculator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MyMiniLedger.WPF.ViewTools.ComplexPositionHendler" Collapsed="true">
+    <Position X="25.5" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAQAABgAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewTools\ComplexPositionHendler.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MyMiniLedger.WPF.ViewTools.FormatterPositions" Collapsed="true">
+    <Position X="29" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAEAAAAAAAAAAABAAAAAAAAAAAAEAAAAQAAA=</HashCode>
+      <FileName>ViewTools\FormatterPositions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MyMiniLedger.WPF.Windows.CategoryWindow.CategoryWindow" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="27.25" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAEAAAAEAAAAAAAAAAAAAAAAAAAAAAQ=</HashCode>
+      <FileName>Windows\CategoryWindow\CategoryWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="MyMiniLedger.WPF.Windows.CoinWindow.CoinWindow" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="29" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAgAAAEAAAAACAAAAAAAAAAAAAAEAw=</HashCode>
+      <FileName>Windows\CoinWindow\CoinWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="MyMiniLedger.WPF.Windows.EditContinuePosition.EditContinuePositionWindow" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="27.25" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAAAADACAAAAQACAgAAAAAAAIEEACAAAAEAAA=</HashCode>
+      <FileName>Windows\EditContinuePosition\EditContinuePositionWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="MyMiniLedger.WPF.Windows.KindWindow.KindWindow" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="30.75" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAAAAAAAAAAAAAEAAAAAAAAAAAgAAAAAAAAAAQ=</HashCode>
+      <FileName>Windows\KindWindow\KindWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="MyMiniLedger.WPF.Windows.NewPositionWindow.NewPositionWindow" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="29" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAgAAGBBCAAAAgIAAAAABAAAAABAAAAAAAAAJAE=</HashCode>
+      <FileName>Windows\NewPositionWindow\NewPositionWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="MyMiniLedger.WPF.MainWindow" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="27.25" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAAFAJAAkAAAgEAAgAARIACBAggAAAAAIwE=</HashCode>
+      <FileName>Windows\MainWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="MyMiniLedger.WPF.App" Collapsed="true">
+    <Position X="25.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>App.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MyMiniLedger.WPF.BaseNotify" Collapsed="true">
+    <Position X="11.75" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAAAAAAAIAAAAAAAgAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>BaseNotify.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MyMiniLedger.WPF.LambdaCommand" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="25.5" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEACAAQAAECAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>LambdaCommand.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="MyMiniLedger.WPF.WindowsModels.CategoryWindowModel" Collapsed="true">
+    <Position X="9.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAEAAAAAAIIADEAIAEAAAAAAAAAAEAAAAAAAAAAAAAg=</HashCode>
+      <FileName>WindowsModels\CategoryWindowModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MyMiniLedger.WPF.WindowsModels.CoinWindowModel" Collapsed="true">
+    <Position X="14" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAcAABEAgAgAACAACAAAAAAAAABAAQAAAQAA=</HashCode>
+      <FileName>WindowsModels\CoinWindowModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MyMiniLedger.WPF.WindowsModels.EditContinuePositionWindowsModel" Collapsed="true">
+    <Position X="5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>COAQhAIDYGIRHGEMQ1IEHgQGCBEGGQBXABDEgUgIxiA=</HashCode>
+      <FileName>WindowsModels\EditContinuePositionWindowsModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MyMiniLedger.WPF.WindowsModels.KindWindowModel" Collapsed="true">
+    <Position X="16.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAABAIAADEAoEAQAAAAAAAAAEAAAQAAAAAAAAAI=</HashCode>
+      <FileName>WindowsModels\KindWindowModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MyMiniLedger.WPF.WindowsModels.MainWindowModel" Collapsed="true">
+    <Position X="11.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>GMAQAJAAAIAAvkosBAMACCCgAwAmFAAABEEAJlgSgUg=</HashCode>
+      <FileName>WindowsModels\MainWindowModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MyMiniLedger.DAL.Config.Config" Collapsed="true">
+    <Position X="18" Y="7.5" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="MyMiniLedger.DAL.Models.CategoryModel" Collapsed="true">
+    <Position X="14.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="MyMiniLedger.DAL.Models.CoinModel" Collapsed="true">
+    <Position X="16.25" Y="7.5" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="MyMiniLedger.DAL.Models.KindModel" Collapsed="true">
+    <Position X="14.5" Y="8.5" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="MyMiniLedger.DAL.Models.PositionModel" Collapsed="true">
+    <Position X="16.25" Y="8.5" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="MyMiniLedger.DAL.Models.StatusModel" Collapsed="true">
+    <Position X="19.75" Y="8.5" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="MyMiniLedger.DAL.Services.DataConfig" Collapsed="true">
+    <Position X="19.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="MyMiniLedger.DAL.Services.SQLService&lt;T&gt;" Collapsed="true">
+    <Position X="18" Y="8.5" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="MyMiniLedger.DAL.SQL.TableCategories" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="14.5" Y="9.5" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="MyMiniLedger.DAL.SQL.TableCoins" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="16.25" Y="9.5" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="MyMiniLedger.DAL.SQL.TableKinds" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="18" Y="9.5" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="MyMiniLedger.DAL.SQL.TablePositions" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="19.75" Y="9.5" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="MyMiniLedger.DAL.SQL.TableStatuses" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="14.5" Y="10.5" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="MyMiniLedger.BLL.Context.Context" Collapsed="true">
+    <Position X="27.25" Y="8.25" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="MyMiniLedger.BLL.Context.ListOfCategories" Collapsed="true">
+    <Position X="25.5" Y="9.25" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="MyMiniLedger.BLL.Context.ListOfCoins" Collapsed="true">
+    <Position X="27.25" Y="9.25" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="MyMiniLedger.BLL.Context.ListOfKinds" Collapsed="true">
+    <Position X="22" Y="10.25" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="MyMiniLedger.BLL.Context.ListOfPositions" Collapsed="true">
+    <Position X="23.75" Y="10.25" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="MyMiniLedger.BLL.Context.ListOfStatuses" Collapsed="true">
+    <Position X="25.5" Y="10.25" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="MyMiniLedger.BLL.Mappers.MapperBL" Collapsed="true">
+    <Position X="27.25" Y="10.25" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="MyMiniLedger.BLL.Models.CategoryBLLModel" Collapsed="true">
+    <Position X="23.75" Y="8.25" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="MyMiniLedger.BLL.Models.CoinBLLModel" Collapsed="true">
+    <Position X="25.5" Y="8.25" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="MyMiniLedger.BLL.Models.KindBLLModel" Collapsed="true">
+    <Position X="23.75" Y="9.25" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="MyMiniLedger.BLL.Models.AdditionalPositionDataClass" Collapsed="true">
+    <Position X="22" Y="8.25" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="MyMiniLedger.BLL.Models.PositionBLLModel" Collapsed="true">
+    <Position X="22" Y="11.25" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="MyMiniLedger.BLL.Models.StatusBLLModel" Collapsed="true">
+    <Position X="25.5" Y="11.25" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="MyMiniLedger.BLL.ServicesAPI.Requsts" Collapsed="true">
+    <Position X="23.75" Y="11.25" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="MyMiniLedger.BLL.InitConfigBLL" Collapsed="true">
+    <Position X="22" Y="9.25" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Interface Name="MyMiniLedger.DAL.Interfaces.ICreate&lt;T&gt;" Collapsed="true">
+    <Position X="14.5" Y="11.75" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="MyMiniLedger.DAL.Interfaces.IDeleteHard&lt;T&gt;" Collapsed="true">
+    <Position X="16.25" Y="11.75" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="MyMiniLedger.DAL.Interfaces.IDeleteSoft&lt;T&gt;" Collapsed="true">
+    <Position X="18" Y="11.75" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="MyMiniLedger.DAL.Interfaces.IReadAll&lt;T&gt;" Collapsed="true">
+    <Position X="19.75" Y="11.75" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="MyMiniLedger.DAL.Interfaces.IReadById&lt;T&gt;" Collapsed="true">
+    <Position X="14.5" Y="12.5" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="MyMiniLedger.DAL.Interfaces.IUpdate&lt;T&gt;" Collapsed="true">
+    <Position X="16.25" Y="12.5" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Delegate Name="MyMiniLedger.WPF.WindowsModels.UpdateCategoryDelegate" Collapsed="true">
+    <Position X="29" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>WindowsModels\CategoryWindowModel.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Delegate Name="MyMiniLedger.WPF.WindowsModels.UpdateCoinsDelegate" Collapsed="true">
+    <Position X="30.75" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>WindowsModels\CoinWindowModel.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Delegate Name="MyMiniLedger.WPF.WindowsModels.UpdateDelegate" Collapsed="true">
+    <Position X="29" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>WindowsModels\EditContinuePositionWindowsModel.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Delegate Name="MyMiniLedger.WPF.WindowsModels.LockDelegate" Collapsed="true">
+    <Position X="25.5" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>WindowsModels\EditContinuePositionWindowsModel.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Delegate Name="MyMiniLedger.WPF.WindowsModels.UpdateKindDelegate" Collapsed="true">
+    <Position X="30.75" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>WindowsModels\KindWindowModel.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Delegate Name="MyMiniLedger.WPF.WindowsModels.UpdateCoinsIndexDelegate" Collapsed="true">
+    <Position X="25.5" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>WindowsModels\MainWindowModel.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Delegate Name="MyMiniLedger.WPF.WindowsModels.UpdateCategoriesIndexDelegate" Collapsed="true">
+    <Position X="27.25" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>WindowsModels\MainWindowModel.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Delegate Name="MyMiniLedger.WPF.WindowsModels.UpdateKindsIndexDelegate" Collapsed="true">
+    <Position X="25.5" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>WindowsModels\MainWindowModel.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Delegate Name="MyMiniLedger.WPF.WindowsModels.UpdateDatePicker" Collapsed="true">
+    <Position X="27.25" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>WindowsModels\MainWindowModel.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
