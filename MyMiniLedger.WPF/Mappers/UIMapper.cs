@@ -78,22 +78,11 @@ namespace MyMiniLedger.WPF.Mappers
 		//Перевод даты в Datetime,  перевод income expense saldo в decemal
 		public static BLL.Models.PositionBLLModel MapPositionUIToPositionBLL(PositionUIModel _pos)
 		{
-			//Приведение к текущему часовому поясу
-			//TimeZoneInfo userTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Russian Standard Time");
-			//if (_pos.CloseDate == "")
-			//{
-			//	_pos.CloseDate = new DateTime(1900, 01, 01).ToString();
-			//}
 			return new BLL.Models.PositionBLLModel()
 			{
 
 				Id = _pos.Id,
 				PositionKey = _pos.PositionKey,
-                //OpenDate = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(Convert.ToDateTime(_pos.OpenDate), "Russian Standard Time"),
-                //CloseDate = TimeZoneInfo.ConvertTime(Convert.ToDateTime(_pos.CloseDate), userTimeZone),
-                //Конвертирует со сдвигом часовых поясов UTC
-                //OpenDate = Convert.ToDateTime(_pos.OpenDate),
-                //CloseDate = Convert.ToDateTime(_pos.CloseDate),
                 OpenDate = _pos.OpenDate,
                 CloseDate = _pos.CloseDate,
                 Kind = MapKindUIToKindBLL(_pos.Kind),

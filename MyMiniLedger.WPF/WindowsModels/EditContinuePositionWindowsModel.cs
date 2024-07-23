@@ -709,10 +709,6 @@ namespace MyMiniLedger.WPF.WindowsModels
                 _tocopy.Category.Category = _fromCopy.Category.Category;
                 _tocopy.Category.RefNumber = _fromCopy.Category.RefNumber;
             }
-            //else
-            //{
-            //	Console.WriteLine("Некорректные аргументы метода ValueCategoryCopy (не исключение)");
-            //}
         }
 
         void ValueKindCopy(KindUIModel _tocopy, KindUIModel _fromCopy)
@@ -744,10 +740,6 @@ namespace MyMiniLedger.WPF.WindowsModels
                 _tocopy.RefNumber = _fromCopy.RefNumber;
                 _tocopy.CoinNotes = _fromCopy.CoinNotes;
             }
-            //else
-            //{
-            //	Console.WriteLine("Некорректные аргументы метода ValueCoinCopy");
-            //}
         }
 
         void ValueStatusCopy(StatusUIModel _tocopy, ObservableCollection<StatusUIModel> _fromCollection, string _statusName)
@@ -759,10 +751,6 @@ namespace MyMiniLedger.WPF.WindowsModels
                 _tocopy.StatusName = _fromCopy.StatusName;
                 _tocopy.StatusNotes = _fromCopy.StatusNotes;
             }
-            //else
-            //{
-            //	Console.WriteLine("Некорректные аргументы метода ValueStatusCopy");
-            //}
         }
 
         void SetBlock()

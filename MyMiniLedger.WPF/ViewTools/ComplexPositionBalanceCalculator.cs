@@ -26,16 +26,16 @@ namespace MyMiniLedger.WPF.ViewTools
         {
             try
             {
-                //Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
                 //BLL.ServicesAPI.Requsts requsts = new BLL.ServicesAPI.Requsts();
-
                 var coins = _selectedPositions.Select(p => new { p.Coin.ShortName, p.Coin.CoinNotes }).Distinct().ToArray();
 
                 foreach (var coin in coins)
                 {
                     TotalBalance temp = new TotalBalance();
+
                     //Блокируется поток на время эксперимента
                     //temp.CurrentCourseToUsd =  requsts.GetCoinCourseToFiatAsync((_selectedPositions.First(c => c.Coin.ShortName == coin)).Coin.FullName, "usd").Result;
+                   
                     for (int i = 0; i < _selectedPositions.Count; i++)
                     {
                         if (_selectedPositions[i].Coin.ShortName == coin.ShortName)

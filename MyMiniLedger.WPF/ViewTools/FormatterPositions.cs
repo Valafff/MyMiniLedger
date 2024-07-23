@@ -27,24 +27,6 @@ namespace MyMiniLedger.WPF.ViewTools
             return ResultPositionsList;
         }
 
-        ////Форматирование по дате - редактирует дату закрытия меньше целевой
-        //public static List<PositionUIModel> EditPosFromTableByDate(List<PositionUIModel> _ps, DateTime targetDate, string newRecord = "")
-        //{
-        //          Thread.CurrentThread.CurrentCulture = CultureInfo.CurrentCulture;
-        //          List<PositionUIModel> ResultPositionsList = new List<PositionUIModel>();
-        //	foreach (var item in _ps)
-        //	{
-        //		//string t = Convert.ToString(item.CloseDate);
-        //		//var date = DateTime.ParseExact(item.CloseDate, "G", null);
-        //		//if (date < targetDate )
-        //		//{
-        //		//	item.CloseDate = newRecord;
-        //		//}
-        //		ResultPositionsList.Add(item);
-        //	}
-        //	return ResultPositionsList;
-        //}
-
         //Форматирование статуса
         public static List<PositionUIModel> EditPosFromTableByStatus(List<PositionUIModel> _ps, string targetStatus = "", string newStatus = "")
         {
@@ -106,21 +88,6 @@ namespace MyMiniLedger.WPF.ViewTools
 
             return _ps;
         }
-
-
-        //Добавление Даты закрытия для позиции
-        //public static DateTime SetCloseDate(string _status = "Close")
-        //{
-        //	DateTime temp;
-        //	if (_status == "Закрыта" || _status == "Close")
-        //	{
-        //		return temp = DateTime.Now;
-        //	}
-        //	else 
-        //	{
-        //		return temp = new DateTime(1900,  1, 1, 0, 0, 0, 0);
-        //	}
-        //}
 
         public static string SetCloseDate(string _status = "Close")
         {

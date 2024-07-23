@@ -45,10 +45,6 @@ namespace MyMiniLedger.WPF.Windows.NewPositionWindow
 					{
 						((MainWindowModel)DataContext).TempKinds.Add(item);
 					}
-					//if (cb_Category.SelectedItem.ToString() == item.Category.Category)
-					//{
-					//	((MainWindowModel)DataContext).TempKinds.Add(item);
-					//}
 				}
 			}
 

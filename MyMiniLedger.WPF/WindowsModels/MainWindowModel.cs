@@ -110,13 +110,9 @@ namespace MyMiniLedger.WPF.WindowsModels
         public LambdaCommand DeletePosition { get; set; }
 
 
-
         public LambdaCommand RefreshPositions { get; set; }
         public LambdaCommand SearchByDateRange { get; set; }
         public int MaxPosKey;
-
-        //Для привязки поле должно быть пропой {get; set;}
-        public string[] searchTypes { get; set; } = new string[] { "Номер позиции", "Категория", "Вид", "Валюта", "Тег", "Статус" };
 
         public ObservableCollection<string> tempCategories { get; set; } = new ObservableCollection<string>();
 
@@ -134,14 +130,10 @@ namespace MyMiniLedger.WPF.WindowsModels
             BLL.Context.ListOfPositions tempPos = new BLL.Context.ListOfPositions();
 
             List<PositionUIModel> tempPositions = new List<PositionUIModel>();
-            //.Net 6.0 не поддерживает .ToBlockingEnumerable()
-            //tempPositionsAsync = tempPos.GetAll().Result.Select(pos => Mappers.UIMapper.MapPositionBLLToPositionUI(pos)).ToList();
             tempPositions = tempPos.GetAll().Select(pos => Mappers.UIMapper.MapPositionBLLToPositionUI(pos)).ToList();
 
             //Удаление Deleted позиций
             tempPositions = ViewTools.FormatterPositions.ErasePosFromTableByStatus(tempPositions, "Deleted");
-            ////Удаление нулевой даты
-            //tempPositions = ViewTools.FormatterPositions.EditPosFromTableByDate(tempPositions, new DateTime(2000, 01, 01));
             //Переименовывание статусов
             tempPositions = ViewTools.FormatterPositions.EditPosFromTableByStatus(tempPositions, "Open", "Открыта");
             tempPositions = ViewTools.FormatterPositions.EditPosFromTableByStatus(tempPositions, "Closed", "Закрыта");
@@ -168,7 +160,6 @@ namespace MyMiniLedger.WPF.WindowsModels
 
             //Инициализация статусов
             BLL.Context.ListOfStatuses tempStat = new BLL.Context.ListOfStatuses();
-            //List<StatusUIModel> tempStatuses = tempStat.GetAll().Result.Select(stat => Mappers.UIMapper.MapStatusBLLToStatusUI(stat)).ToList();
             List<StatusUIModel> tempStatuses = tempStat.GetAll().Select(stat => Mappers.UIMapper.MapStatusBLLToStatusUI(stat)).ToList();
             StatusesForService = new ObservableCollection<StatusUIModel>(tempStatuses);
 
@@ -176,9 +167,6 @@ namespace MyMiniLedger.WPF.WindowsModels
             setStatusesForUser(StatusesForService);
 
             PositionConstruct = new PositionUIModel() { Kind = new KindUIModel() { Category = new CategoryUIModel() }, Coin = new CoinUIModel(), Status = new StatusUIModel(), Income = "0", Expense = "0" };
-
-            //PositionConstruct.OpenDate = DateTime.Today.ToString();
-            //PositionConstruct.Status.StatusName = StatusesForUser.ElementAt(0).StatusName;
 
             OpenCategoryWindow = new LambdaCommand(execute => { new CategoryWindow(this).Show(); });
             OpenKindWindow = new LambdaCommand(execute => { new KindWindow(this).Show(); });
@@ -211,19 +199,11 @@ namespace MyMiniLedger.WPF.WindowsModels
                     t += DateTime.Now.TimeOfDay;
                     PositionConstruct.OpenDate = t.ToString();
 
-                    //await _context.PositionsTableBL.Insert(Mappers.UIMapper.MapPositionUIToPositionBLL(PositionConstruct));
                     _context.PositionsTableBL.Insert(Mappers.UIMapper.MapPositionUIToPositionBLL(PositionConstruct));
 
                     //Обновление списка UI находим крайнюю добавленную позицию
-                    //var maxId = (tempPos.GetAll().Result.Select(p => Mappers.UIMapper.MapPositionBLLToPositionUI(p)).ToList()).Max(p => p.Id);
                     var maxId = (tempPos.GetAll().Select(p => Mappers.UIMapper.MapPositionBLLToPositionUI(p)).ToList()).Max(p => p.Id);
-                    //var updatedPos = (tempPos.GetAll().Result.Select(p => Mappers.UIMapper.MapPositionBLLToPositionUI(p)).ToList()).Where(p => p.Id == maxId);
-                    //var updatedPos = (tempPos.GetAll().Select(p => Mappers.UIMapper.MapPositionBLLToPositionUI(p)).ToList()).Where(p => p.Id == maxId);
-                    //updatedPos = ViewTools.FormatterPositions.EditPosFromTableByDate(updatedPos.AsList(), new DateTime(2000, 01, 01));
                     var updatedPos = (tempPos.GetById(maxId));
-
-                    //updatedPos = ViewTools.FormatterPositions.EditPosFromTableByStatus(updatedPos.AsList(), "Closed", "Закрыта");
-                    //updatedPos = ViewTools.FormatterPositions.EditDecemalPosFromTableByMarker(updatedPos.AsList(), "fiat", "0.00");
 
                     PositionUIModel temp = new PositionUIModel();
                     temp = Mappers.UIMapper.MapPositionBLLToPositionUI(updatedPos);
@@ -255,8 +235,6 @@ namespace MyMiniLedger.WPF.WindowsModels
             SearchByDateRange = new LambdaCommand(
                 execute =>
                 {
-                    //Console.WriteLine(StartDate);
-                    //Console.WriteLine(EndDate);
                     UpdatePositionsByDateRange();
                 }
                 );
@@ -340,7 +318,6 @@ namespace MyMiniLedger.WPF.WindowsModels
         public ObservableCollection<KindUIModel> KindsInicialization()
         {
             BLL.Context.ListOfKinds tempKind = new BLL.Context.ListOfKinds();
-            //List<KindUIModel> _tempKinds = tempKind.GetAll().Result.Select(kind => Mappers.UIMapper.MapKindBLLToKindUI(kind)).ToList();
             List<KindUIModel> _tempKinds = tempKind.GetAll().Select(kind => Mappers.UIMapper.MapKindBLLToKindUI(kind)).ToList();
             return new ObservableCollection<KindUIModel>(_tempKinds);
         }
@@ -361,7 +338,6 @@ namespace MyMiniLedger.WPF.WindowsModels
         public ObservableCollection<CoinUIModel> CoinsInicialization()
         {
             BLL.Context.ListOfCoins tempCoin = new BLL.Context.ListOfCoins();
-            //List<CoinUIModel> tempCoins = tempCoin.GetAll().Result.Select(coin => Mappers.UIMapper.MapCoinBLLToCoinUI(coin)).ToList();
             List<CoinUIModel> tempCoins = tempCoin.GetAll().Select(coin => Mappers.UIMapper.MapCoinBLLToCoinUI(coin)).ToList();
             return new ObservableCollection<CoinUIModel>(tempCoins);
         }
@@ -369,19 +345,6 @@ namespace MyMiniLedger.WPF.WindowsModels
         //Обновление списка монет
         public void UpdateCoins()
         {
-            //var tc = CoinsInicialization();
-            //CoinUIModel tCoin = new CoinUIModel();
-            //for (int i = 0; i < Coins.Count; i++)
-            //{
-            //	for (int j = 0; j < tc.Count; j++)
-            //	{
-            //		if (Coins[i].Id != tc[j].Id)
-            //		{
-            //			tCoin = tc[j];
-            //		}
-            //	}
-            //}
-            //Coins.Add(tCoin);
             Coins.Clear();
             var tc = CoinsInicialization();
             foreach (var coin in tc) { Coins.Add(coin); }
@@ -398,27 +361,19 @@ namespace MyMiniLedger.WPF.WindowsModels
                 }
                 else
                 {
-                    //await _context.PositionsTableBL.Delete(Mappers.UIMapper.MapPositionUIToPositionBLL(_selectedPosition));
                     _context.PositionsTableBL.Delete(Mappers.UIMapper.MapPositionUIToPositionBLL(_selectedPosition));
                     var t = Positions.Where(t => t.Id == _selectedPosition.Id);
                     Positions.Remove(t.First());
                     SelectedPosition = null;
                 }
-
-                //await _context.PositionsTableBL.DeleteAsync(Mappers.UIMapper.MapPositionUIToPositionBLL(SelectedPosition));
-                //var t = Positions.Where(t => t.Id == _selectedPosition.Id);
-                //Positions.Remove(t.First());
-                //SelectedPosition = null;
             }
         }
 
         public void UpdatePositionsCollection()
         {
             BLL.Context.ListOfPositions tempPos = new BLL.Context.ListOfPositions();
-            //List<PositionUIModel> updatedPos = (tempPos.GetAll().Result.Select(p => Mappers.UIMapper.MapPositionBLLToPositionUI(p)).ToList());
             List<PositionUIModel> updatedPos = (tempPos.GetAll().Select(p => Mappers.UIMapper.MapPositionBLLToPositionUI(p)).ToList());
             //Форматирование
-            //updatedPos = ViewTools.FormatterPositions.EditPosFromTableByDate(updatedPos.AsList(), new DateTime(2000, 01, 01));
             updatedPos = ViewTools.FormatterPositions.EditPosFromTableByStatus(updatedPos.AsList(), "Open", "Открыта");
             updatedPos = ViewTools.FormatterPositions.EditPosFromTableByStatus(updatedPos.AsList(), "Closed", "Закрыта");
             updatedPos = ViewTools.FormatterPositions.EditDecemalPosFromTableByMarker(updatedPos.AsList(), "fiat", "0.00");
@@ -438,10 +393,8 @@ namespace MyMiniLedger.WPF.WindowsModels
         public void UpdatePositionsByDateRange()
         {
             BLL.Context.ListOfPositions tempPos = new BLL.Context.ListOfPositions();
-            //List<PositionUIModel> updatedPos = (tempPos.GetAll().Result.Select(p => Mappers.UIMapper.MapPositionBLLToPositionUI(p)).ToList());
             List<PositionUIModel> updatedPos = (tempPos.GetAll().Select(p => Mappers.UIMapper.MapPositionBLLToPositionUI(p)).ToList());
             //Форматирование
-            //updatedPos = ViewTools.FormatterPositions.EditPosFromTableByDate(updatedPos.AsList(), new DateTime(2000, 01, 01));
             updatedPos = ViewTools.FormatterPositions.EditPosFromTableByStatus(updatedPos.AsList(), "Open", "Открыта");
             updatedPos = ViewTools.FormatterPositions.EditPosFromTableByStatus(updatedPos.AsList(), "Closed", "Закрыта");
             updatedPos = ViewTools.FormatterPositions.EditDecemalPosFromTableByMarker(updatedPos.AsList(), "fiat", "0.00");
@@ -458,20 +411,5 @@ namespace MyMiniLedger.WPF.WindowsModels
                 }
             }
         }
-
-        //public void hardUpdate(BLL.Context.ListOfPositions tempPos)
-        //{
-        //	var maxId = (tempPos.GetAllAsync().Result.Select(p => Mappers.UIMapper.MapPositionBLLToPositionUI(p)).ToList()).Max(p => p.Id);
-        //	var updatedPos = (tempPos.GetAllAsync().Result.Select(p => Mappers.UIMapper.MapPositionBLLToPositionUI(p)).ToList()).Where(p => p.Id == maxId);
-        //	PositionUIModel temp = new PositionUIModel();
-        //	temp = updatedPos.First(t => t.Id == maxId);
-        //	Positions.Add(temp);
-        //}
-
-        //Добавлие даты закрытия
-        //DateTime TempOpenDate = DateTime.ParseExact(PositionConstruct.OpenDate, "M/dd/yyyy hh:mm:ss tt", CultureInfo.InvariantCulture);
-        ////Установка текущего времени
-        //TempOpenDate = TempOpenDate + DateTime.Now.TimeOfDay;
-        //PositionConstruct.OpenDate = TempOpenDate.ToString();
     }
 }

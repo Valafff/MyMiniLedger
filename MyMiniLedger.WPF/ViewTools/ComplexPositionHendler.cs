@@ -15,8 +15,6 @@ namespace MyMiniLedger.WPF.ViewTools
 		public async void AddComplexPosition(Context _context, ObservableCollection<PositionUIModel> _selectedPositions, PositionUIModel _editPosition)
 		{
 			int? maxPositionKey = null;
-			//await Console.Out.WriteLineAsync(_editPosition.OpenDate);
-			//await Console.Out.WriteLineAsync(_editPosition.CloseDate);
 
 			if (_selectedPositions.Count > 1 && _editPosition.ZeroParrentKey == null)
 			{
@@ -35,10 +33,6 @@ namespace MyMiniLedger.WPF.ViewTools
 				_editPosition.ParrentKey = _editPosition.PositionKey;
 
 			}
-            //await Console.Out.WriteLineAsync($"ZeroParrentKey {_editPosition.ZeroParrentKey}");
-            //await Console.Out.WriteLineAsync($"ParrentKey {_editPosition.ParrentKey}");
-            //await Console.Out.WriteLineAsync($"maxParrentKey {maxPositionKey}");
-            //await _context.PositionsTableBL.Insert(Mappers.UIMapper.MapPositionUIToPositionBLL(_editPosition));
             _context.PositionsTableBL.Insert(Mappers.UIMapper.MapPositionUIToPositionBLL(_editPosition));
         }
 
@@ -71,11 +65,9 @@ namespace MyMiniLedger.WPF.ViewTools
 					{
 						position.ZeroParrentKey = nextPosition;
 					}
-                    //await _context.PositionsTableBL.Update(Mappers.UIMapper.MapPositionUIToPositionBLL(position));
                     _context.PositionsTableBL.Update(Mappers.UIMapper.MapPositionUIToPositionBLL(position));
                 }
 				_selectedPositions.Remove(_deletingPosition);
-                //await _context.PositionsTableBL.Delete(Mappers.UIMapper.MapPositionUIToPositionBLL(_deletingPosition));
                 _context.PositionsTableBL.Delete(Mappers.UIMapper.MapPositionUIToPositionBLL(_deletingPosition));
             }
 			//Удаление промежуточной или последней позиции
@@ -91,12 +83,10 @@ namespace MyMiniLedger.WPF.ViewTools
 					else if (position.ParrentKey == _deletingPosition.PositionKey)
 					{
 						position.ParrentKey = _deletingPosition.ParrentKey;
-                        //await _context.PositionsTableBL.Update(Mappers.UIMapper.MapPositionUIToPositionBLL(position));
                         _context.PositionsTableBL.Update(Mappers.UIMapper.MapPositionUIToPositionBLL(position));
                     }			
 				}
 				_selectedPositions.Remove(_deletingPosition);
-                //await _context.PositionsTableBL.Delete(Mappers.UIMapper.MapPositionUIToPositionBLL(_deletingPosition));
                 _context.PositionsTableBL.Delete(Mappers.UIMapper.MapPositionUIToPositionBLL(_deletingPosition));
             }
 			return newSelectedPosition;
@@ -106,7 +96,6 @@ namespace MyMiniLedger.WPF.ViewTools
 		{
 			foreach (var position in _selectedPositions)
 			{
-                //await _context.PositionsTableBL.Delete(Mappers.UIMapper.MapPositionUIToPositionBLL(position));
                 _context.PositionsTableBL.Delete(Mappers.UIMapper.MapPositionUIToPositionBLL(position));
             }
 			_selectedPositions.Clear();

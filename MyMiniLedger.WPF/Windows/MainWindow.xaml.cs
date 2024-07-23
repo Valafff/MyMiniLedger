@@ -87,7 +87,6 @@ namespace MyMiniLedger.WPF
 			if (sender != null)
 			{
 				((MainWindowModel)DataContext).PositionConstruct.OpenDate = sender.ToString();
-				//((MainWindowModel)DataContext).PositionConstruct.OpenDate = ((DateTime)((DatePicker)sender).SelectedDate).ToString("dd.MM.yyyy");
 			}
 		}
 
@@ -102,10 +101,6 @@ namespace MyMiniLedger.WPF
 					{
 						((MainWindowModel)DataContext).TempKindsMain.Add(item);
 					}
-					//if (cb_Category.SelectedItem.ToString() == item.Category.Category)
-					//{
-					//	((MainWindowModel)DataContext).TempKinds.Add(item);
-					//}
 				}
 			}
 

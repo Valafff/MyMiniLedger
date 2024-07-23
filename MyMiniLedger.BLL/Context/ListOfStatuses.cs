@@ -25,19 +25,6 @@ namespace MyMiniLedger.BLL.Context
 			_sourceForUpdate = new TableStatuses();
 		}
 
-
-        ////Получение всех данных
-        //public async Task<IEnumerable<StatusBLLModel>> GetAllAsync()
-        //{
-        //	var result = await _sourceForRead.GetAllAsync();
-        //	List<StatusBLLModel> tempResult = new List<StatusBLLModel>();
-        //	foreach (var item in result)
-        //	{
-        //		tempResult.Add(Mappers.MapperBL.MapStatusDALToStatusBLL(item));
-        //	}
-        //	return tempResult;
-        //}
-
         //Получение всех данных
         public IEnumerable<StatusBLLModel> GetAll()
         {
@@ -50,13 +37,6 @@ namespace MyMiniLedger.BLL.Context
             return tempResult;
         }
 
-        //      //Получение данных по Id
-        //      public async Task<StatusBLLModel> GetByIdAsync(int id, string t = "Id")
-        //{
-        //	var result = await _sourceForReadById.GetByIdAsync(id, t);
-        //	return Mappers.MapperBL.MapStatusDALToStatusBLL(result);
-        //}
-
         //Получение данных по Id
         public StatusBLLModel GetByIdAsync(int id, string t = "Id")
         {
@@ -64,23 +44,11 @@ namespace MyMiniLedger.BLL.Context
             return Mappers.MapperBL.MapStatusDALToStatusBLL(result);
         }
 
-        //      //Вставка данных
-        //      public async Task InsertAsync(StatusBLLModel entity)
-        //{
-        //	await _sourceForInsert.InsertAsync(Mappers.MapperBL.MapStatusBLLToStatusDAL(entity));
-        //}
-
         //Вставка данных
         public async Task Insert(StatusBLLModel entity)
         {
             _sourceForInsert.Insert(Mappers.MapperBL.MapStatusBLLToStatusDAL(entity));
         }
-
-        //      //Изменение данных
-        //      public async Task UpdateAsync(StatusBLLModel entity)
-        //{
-        //	await _sourceForUpdate.UpdateAsync(Mappers.MapperBL.MapStatusBLLToStatusDAL(entity));
-        //}
 
         //Изменение данных
         public async Task Update(StatusBLLModel entity)

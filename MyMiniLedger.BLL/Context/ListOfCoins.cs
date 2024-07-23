@@ -27,18 +27,6 @@ namespace MyMiniLedger.BLL.Context
             _sourceForDelete = new TableCoins();
         }
 
-        ////Получение всех данных
-        //public async Task<IEnumerable<CoinBLLModel>> GetAllAsync()
-        //{
-        //	var result = await _sourceForRead.GetAllAsync();
-        //	var temp = new List<CoinBLLModel>();
-        //	foreach (var item in result)
-        //	{
-        //		temp.Add(Mappers.MapperBL.MapCoinDALToCoinBLL(item));
-        //	}
-        //	return temp;
-        //}
-
         //Получение всех данных
         public IEnumerable<CoinBLLModel> GetAll()
         {
@@ -51,13 +39,6 @@ namespace MyMiniLedger.BLL.Context
             return temp;
         }
 
-        //      //Получение данных по Id
-        //      public async Task<CoinBLLModel> GetByIdAsync(int id, string t = "Id")
-        //{
-        //	var result = await _sourceForReadById.GetByIdAsync(id, t);
-        //	return Mappers.MapperBL.MapCoinDALToCoinBLL(result);
-        //}
-
         //Получение данных по Id
         public CoinBLLModel GetById(int id, string t = "Id")
         {
@@ -65,23 +46,11 @@ namespace MyMiniLedger.BLL.Context
             return Mappers.MapperBL.MapCoinDALToCoinBLL(result);
         }
 
-        //      //Вставка данных
-        //      public async Task InsertAsync(CoinBLLModel entity)
-        //{
-        //	await _sourceForInsert.InsertAsync(Mappers.MapperBL.MapCoinBLLToCoinDAL(entity));
-        //}
-
         //Вставка данных
         public void Insert(CoinBLLModel entity)
         {
             _sourceForInsert.Insert(Mappers.MapperBL.MapCoinBLLToCoinDAL(entity));
         }
-
-        //      //Изменение данных
-        //      public async Task UpdateAsync(CoinBLLModel entity)
-        //{
-        //	await _sourceForUpdate.UpdateAsync(Mappers.MapperBL.MapCoinBLLToCoinDAL(entity));
-        //}
 
         //Изменение данных
         public void Update(CoinBLLModel entity)
@@ -90,7 +59,6 @@ namespace MyMiniLedger.BLL.Context
         }
 
         //Реализовать удаление с записью Deleted
-
         //      //Реализовать полное удаление
         //      public async Task DeleteAsync(CoinBLLModel entity)
         //{

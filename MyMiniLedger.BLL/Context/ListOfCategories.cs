@@ -28,19 +28,6 @@ namespace MyMiniLedger.BLL.Context
             _sourceForDelete = new TableCategories();
         }
 
-        ////Получение всех данных
-        //public async Task<IEnumerable<CategoryBLLModel>> GetAllAsync()
-        //{
-        //	var result = await _sourceForRead.GetAllAsync(); 
-        //	List<CategoryBLLModel> enumerable = new List<CategoryBLLModel>();
-
-        //	foreach (var item in result)
-        //	{
-        //		enumerable.Add( Mappers.MapperBL.MapCategoryDALToCategoryBLL(item));
-        //	}
-        //	return enumerable.AsEnumerable();
-        //}
-
         //Получение всех данных
         public async Task<IEnumerable<CategoryBLLModel>> GetAll()
         {
@@ -54,13 +41,6 @@ namespace MyMiniLedger.BLL.Context
             return enumerable.AsEnumerable();
         }
 
-        //      //Получение данных по Id
-        //      public async Task <CategoryBLLModel> GetByIdAsync(int id, string t = "Id")
-        //{
-        //	var result =  await _sourceForReadById.GetByIdAsync(id, t);
-        //	return Mappers.MapperBL.MapCategoryDALToCategoryBLL(result);
-        //}
-
         //Получение данных по Id
         public CategoryBLLModel GetById(int id, string t = "Id")
         {
@@ -68,23 +48,11 @@ namespace MyMiniLedger.BLL.Context
             return Mappers.MapperBL.MapCategoryDALToCategoryBLL(result);
         }
 
-        //      //Вставка данных
-        //      public async Task InsertAsync(CategoryBLLModel entity)
-        //{
-        //	await _sourceForInsert.InsertAsync(Mappers.MapperBL.MapCategoryBLLToCategoryDAL(entity));
-        //}
-
         //Вставка данных
         public void Insert(CategoryBLLModel entity)
         {
             _sourceForInsert.Insert(Mappers.MapperBL.MapCategoryBLLToCategoryDAL(entity));
         }
-
-        //      //Изменение данных
-        //      public async Task UpdateAsync(CategoryBLLModel entity)
-        //{
-        //	await _sourceForUpdate.UpdateAsync(Mappers.MapperBL.MapCategoryBLLToCategoryDAL(entity));
-        //}
 
         //Изменение данных
         public void Update(CategoryBLLModel entity)

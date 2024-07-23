@@ -30,21 +30,6 @@ namespace MyMiniLedger.BLL.Context
 			_sourceForDelete = new TableKinds();
 		}
 
-        ////Получение всех данных
-        //public async Task <IEnumerable<KindBLLModel>> GetAllAsync()
-        //{
-
-        //	IEnumerable<CategoryModel> temp = await tempCatTable.GetAllAsync();
-        //	IEnumerable<KindModel> result = await _sourceForRead.GetAllAsync();
-
-        //	List<KindBLLModel> tempResult = new List<KindBLLModel>();
-        //	foreach (var item in result)
-        //	{
-        //		tempResult.Add( Mappers.MapperBL.MapKindDALToKindBLL(item, temp));
-        //	}
-        //	return tempResult;
-        //}
-
         //Получение всех данных
         public IEnumerable<KindBLLModel> GetAll()
         {
@@ -60,14 +45,6 @@ namespace MyMiniLedger.BLL.Context
             return tempResult;
         }
 
-        //      //Получение данных по Id
-        //      public async Task<KindBLLModel> GetByIdAsync(int id, string t = "Id")
-        //{
-        //	IEnumerable<CategoryModel> temp = await tempCatTable.GetAllAsync();
-        //	KindModel result = await _sourceForReadById.GetByIdAsync(id, t);
-        //	return Mappers.MapperBL.MapKindDALToKindBLL(result, temp);
-        //}
-
         //Получение данных по Id
         public KindBLLModel GetById(int id, string t = "Id")
         {
@@ -76,23 +53,11 @@ namespace MyMiniLedger.BLL.Context
             return Mappers.MapperBL.MapKindDALToKindBLL(result, temp);
         }
 
-        //      //Вставка данных
-        //      public async Task InsertAsync(KindBLLModel entity)
-        //{
-        //	await _sourceForInsert.InsertAsync(Mappers.MapperBL.MapKindBLLToKindDAL(entity));
-        //}
-
         //Вставка данных
         public void Insert(KindBLLModel entity)
         {
             _sourceForInsert.Insert(Mappers.MapperBL.MapKindBLLToKindDAL(entity));
         }
-
-        //      //Изменение данных
-        //      public async Task UpdateAsync(KindBLLModel entity)
-        //{
-        //	await _sourceForUpdate.UpdateAsync(Mappers.MapperBL.MapKindBLLToKindDAL(entity));
-        //}
 
         //Изменение данных
         public void Update(KindBLLModel entity)
