@@ -59,6 +59,7 @@ namespace MyMiniLedger.WPF.ViewTools
             {
                 if (item.Coin.CoinNotes.Contains(targetMarker))
                 {
+                    Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
                     var income = Math.Round(Convert.ToDecimal(item.Income), n);
                     var expense = Math.Round(Convert.ToDecimal(item.Expense), n);
                     var saldo = Math.Round(Convert.ToDecimal(item.Saldo), n);
@@ -76,7 +77,7 @@ namespace MyMiniLedger.WPF.ViewTools
         {
             if (_ps.Coin.CoinNotes.Contains(targetMarker))
             {
-                //Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+                Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
                 var income = Math.Round(Convert.ToDecimal(_ps.Income), n);
                 var expense = Math.Round(Convert.ToDecimal(_ps.Expense), n);
                 var saldo = Math.Round(Convert.ToDecimal(_ps.Saldo), n);

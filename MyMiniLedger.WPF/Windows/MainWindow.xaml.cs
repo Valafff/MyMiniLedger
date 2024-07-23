@@ -63,11 +63,14 @@ namespace MyMiniLedger.WPF
 			{
 				selectedBalance = new TotalBalance() { Balance = 0, CoinName = "[Валюта]" };
 			}
-
+			tb_CurrentIncome.Text = selectedBalance.TotalIncome.ToString();
+			tb_CurrentIncome.Foreground = Brushes.Green;
+			tb_CurrentExpence.Text = selectedBalance.TotalExpense.ToString();
+			tb_CurrentExpence.Foreground = Brushes.Red;
 			tb_CurrentBalance.Text = selectedBalance.Balance.ToString();
 			if (selectedBalance.Balance > 0)
 			{
-				tb_CurrentBalance.Foreground = Brushes.LawnGreen;
+				tb_CurrentBalance.Foreground = Brushes.Green;
 			}
 			else if (selectedBalance.Balance < 0)
 			{
