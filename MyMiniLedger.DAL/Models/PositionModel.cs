@@ -10,8 +10,8 @@ namespace MyMiniLedger.DAL.Models
 	{
         public  int Id { get; set; }
         public int PositionKey { get; set; }
-        public DateTime OpenDate { get; set; }
-        public DateTime CloseDate { get; set; }
+        public string? OpenDate { get; set; }
+        public string? CloseDate { get; set; }
         public int KindId { get; set; }
         public decimal Income { get; set; }
         public decimal Expense { get; set; }

@@ -52,11 +52,12 @@ namespace MyMiniLedger.WPF.WindowsModels
 
 			//Инициализация видов для определения связей
 			BLL.Context.ListOfKinds tempKind = new BLL.Context.ListOfKinds();
-			List<KindBLLModel> tempKindsAsync = tempKind.GetAllAsync().Result.ToList();
+            //List<KindBLLModel> tempKindsAsync = tempKind.GetAll().Result.ToList();
+            List<KindBLLModel> tempKindsAsync = tempKind.GetAll().ToList();
 
-			//Инициализация категорий
-			BLL.Context.ListOfCategories tempCat = new BLL.Context.ListOfCategories();
-			List<CategoryUIModel> tempCategoriesAsync = tempCat.GetAllAsync().Result.Select(cat => Mappers.UIMapper.MapCategoryBLLToCategoryUI(cat)).ToList();
+            //Инициализация категорий
+            BLL.Context.ListOfCategories tempCat = new BLL.Context.ListOfCategories();
+			List<CategoryUIModel> tempCategoriesAsync = tempCat.GetAll().Result.Select(cat => Mappers.UIMapper.MapCategoryBLLToCategoryUI(cat)).ToList();
 
 			//Определение количества ссылок по Id
 			for (int i = 0; i < tempCategoriesAsync.Count; i++)
@@ -79,8 +80,9 @@ namespace MyMiniLedger.WPF.WindowsModels
 				async execute =>
 				{
 					_selectedCategory.RefNumber = 0;
-					await _context.CategoriesTableBL.InsertAsync(Mappers.UIMapper.MapCategoryUIToCategoryBLL(_selectedCategory));
-					var updatedCat = (tempCat.GetAllAsync().Result.Select(cat => Mappers.UIMapper.MapCategoryBLLToCategoryUI(cat)).ToList()).Where(t => t.Category == _selectedCategory.Category);
+                    //await _context.CategoriesTableBL.Insert(Mappers.UIMapper.MapCategoryUIToCategoryBLL(_selectedCategory));
+                    _context.CategoriesTableBL.Insert(Mappers.UIMapper.MapCategoryUIToCategoryBLL(_selectedCategory));
+                    var updatedCat = (tempCat.GetAll().Result.Select(cat => Mappers.UIMapper.MapCategoryBLLToCategoryUI(cat)).ToList()).Where(t => t.Category == _selectedCategory.Category);
 					
 					var temp = _selectedCategory.Clone();
 					((CategoryUIModel)temp).Id = updatedCat.First().Id;
@@ -93,8 +95,9 @@ namespace MyMiniLedger.WPF.WindowsModels
 			//Полное удаление категории
 			DeleteCategory = new LambdaCommand(async execute =>
 			{
-				await _context.CategoriesTableBL.DeleteAsync(Mappers.UIMapper.MapCategoryUIToCategoryBLL(_selectedCategory));
-				var t = Categories.Where(t => t.Id == _selectedCategory.Id);
+                //await _context.CategoriesTableBL.Delete(Mappers.UIMapper.MapCategoryUIToCategoryBLL(_selectedCategory));
+                _context.CategoriesTableBL.Delete(Mappers.UIMapper.MapCategoryUIToCategoryBLL(_selectedCategory));
+                var t = Categories.Where(t => t.Id == _selectedCategory.Id);
 				Categories.Remove(t.First());
 				_selectedCategory.Id = 0;
 				SelectedCategory.Category = null;
@@ -105,8 +108,9 @@ namespace MyMiniLedger.WPF.WindowsModels
 			//Редактирование категории
 			UpdateCategory = new LambdaCommand(async execute =>
 			{
-				await _context.CategoriesTableBL.UpdateAsync(Mappers.UIMapper.MapCategoryUIToCategoryBLL(_selectedCategory));				
-				var t = Categories.Where(t => t.Id == _selectedCategory.Id);
+                //await _context.CategoriesTableBL.Update(Mappers.UIMapper.MapCategoryUIToCategoryBLL(_selectedCategory));
+                _context.CategoriesTableBL.Update(Mappers.UIMapper.MapCategoryUIToCategoryBLL(_selectedCategory));					
+                var t = Categories.Where(t => t.Id == _selectedCategory.Id);
 				Categories.Remove(t.First());
 				var temp = _selectedCategory.Clone();
 				Categories.Add((CategoryUIModel)temp);

@@ -63,15 +63,17 @@ namespace MyMiniLedger.WPF.WindowsModels
 
 			////Инициализация позиций для определения связей
 			BLL.Context.ListOfPositions tempPos = new BLL.Context.ListOfPositions();
-			List<PositionBLLModel> tempPosAsync = tempPos.GetAllAsync().Result.ToList();
+            //List<PositionBLLModel> tempPosAsync = tempPos.GetAll().Result.ToList();
+            List<PositionBLLModel> tempPosAsync = tempPos.GetAll().ToList();
 
-			////Инициализация видов
-			BLL.Context.ListOfKinds tempKind = new BLL.Context.ListOfKinds();
-			List<KindUIModel> tempKindsAsync = tempKind.GetAllAsync().Result.Select(k => Mappers.UIMapper.MapKindBLLToKindUI(k)).ToList();
+            ////Инициализация видов
+            BLL.Context.ListOfKinds tempKind = new BLL.Context.ListOfKinds();
+            //List<KindUIModel> tempKindsAsync = tempKind.GetAll().Result.Select(k => Mappers.UIMapper.MapKindBLLToKindUI(k)).ToList();
+            List<KindUIModel> tempKindsAsync = tempKind.GetAll().Select(k => Mappers.UIMapper.MapKindBLLToKindUI(k)).ToList();
 
-			//Инициализация категорий Для правильной инициализации комбобокса
-			BLL.Context.ListOfCategories tempCat = new BLL.Context.ListOfCategories();
-			List<CategoryUIModel> tempCategoriesAsync = tempCat.GetAllAsync().Result.Select(cat => Mappers.UIMapper.MapCategoryBLLToCategoryUI(cat)).ToList();
+            //Инициализация категорий Для правильной инициализации комбобокса
+            BLL.Context.ListOfCategories tempCat = new BLL.Context.ListOfCategories();
+			List<CategoryUIModel> tempCategoriesAsync = tempCat.GetAll().Result.Select(cat => Mappers.UIMapper.MapCategoryBLLToCategoryUI(cat)).ToList();
 			Categories = new ObservableCollection<CategoryUIModel>(tempCategoriesAsync);
 
 			//Определение количества ссылок по Id
@@ -95,11 +97,13 @@ namespace MyMiniLedger.WPF.WindowsModels
 				{
 					//Добавление
 					_selectedKind.Category = SelectedCategory;
-					await _context.KindsTableBL.InsertAsync(Mappers.UIMapper.MapKindUIToKindBLL(_selectedKind));
+                    //await _context.KindsTableBL.Insert(Mappers.UIMapper.MapKindUIToKindBLL(_selectedKind));
+                    _context.KindsTableBL.Insert(Mappers.UIMapper.MapKindUIToKindBLL(_selectedKind));
 
-					//Обновление списка UI
-					var updatedKind = (tempKind.GetAllAsync().Result.Select(k => Mappers.UIMapper.MapKindBLLToKindUI(k)).ToList()).Where(t => t.Kind == _selectedKind.Kind);
-					var temp = _selectedKind.Clone();
+                    //Обновление списка UI
+                    //var updatedKind = (tempKind.GetAll().Result.Select(k => Mappers.UIMapper.MapKindBLLToKindUI(k)).ToList()).Where(t => t.Kind == _selectedKind.Kind);
+                    var updatedKind = (tempKind.GetAll().Select(k => Mappers.UIMapper.MapKindBLLToKindUI(k)).ToList()).Where(t => t.Kind == _selectedKind.Kind);
+                    var temp = _selectedKind.Clone();
 					((KindUIModel)temp).Id = updatedKind.First().Id;
 					Kinds.Add((KindUIModel)temp);
 					UpdateKindEvent();
@@ -113,10 +117,11 @@ namespace MyMiniLedger.WPF.WindowsModels
 			//Полное удаление вида
 			DeleteKind = new LambdaCommand(async execute =>
 			{
-				//Удаление
-				await _context.KindsTableBL.DeleteAsync(Mappers.UIMapper.MapKindUIToKindBLL(_selectedKind));
-				//Обновление списка UI
-				var t = Kinds.Where(t => t.Id == _selectedKind.Id);
+                //Удаление
+                //await _context.KindsTableBL.Delete(Mappers.UIMapper.MapKindUIToKindBLL(_selectedKind));
+                _context.KindsTableBL.Delete(Mappers.UIMapper.MapKindUIToKindBLL(_selectedKind));
+                //Обновление списка UI
+                var t = Kinds.Where(t => t.Id == _selectedKind.Id);
 				Kinds.Remove(t.First());
 				_selectedKind.Id = 0;
 				_selectedKind.Kind = null;
@@ -127,11 +132,11 @@ namespace MyMiniLedger.WPF.WindowsModels
 			//Редактирование вида
 			UpdateKind = new LambdaCommand(async execute =>
 			{
-				//Изменение
-				await _context.KindsTableBL.UpdateAsync(Mappers.UIMapper.MapKindUIToKindBLL(_selectedKind));
-
-				//Обновление списка UI
-				var t = Kinds.Where(t => t.Id == _selectedKind.Id);
+                //Изменение
+                //await _context.KindsTableBL.Update(Mappers.UIMapper.MapKindUIToKindBLL(_selectedKind));
+                _context.KindsTableBL.Update(Mappers.UIMapper.MapKindUIToKindBLL(_selectedKind));
+                //Обновление списка UI
+                var t = Kinds.Where(t => t.Id == _selectedKind.Id);
 				Kinds.Remove(t.First());
 				var temp = _selectedKind.Clone();
 				Kinds.Add((KindUIModel)temp);

@@ -14,7 +14,7 @@ using System.Resources;
 using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
+using System.Windows;
 
 namespace MyMiniLedger.WPF.WindowsModels
 {
@@ -366,8 +366,9 @@ namespace MyMiniLedger.WPF.WindowsModels
             async execute =>
             {
                 //Перезапись позиции
-                SelectedPosition.CloseDate = (ViewTools.FormatterPositions.SetCloseDate(SelectedPosition.Status.StatusName)).ToString();
-                await _context.PositionsTableBL.UpdateAsync(Mappers.UIMapper.MapPositionUIToPositionBLL(SelectedPosition));
+                SelectedPosition.CloseDate = FormatterPositions.SetCloseDate(SelectedPosition.Status.StatusName);
+                //await _context.PositionsTableBL.Update(Mappers.UIMapper.MapPositionUIToPositionBLL(SelectedPosition));
+                _context.PositionsTableBL.Update(Mappers.UIMapper.MapPositionUIToPositionBLL(SelectedPosition));
                 UpdateEvent();
                 TempSelectedOpenDate = null;
                 double.TryParse(SelectedPosition.Income.ToString(), out double r1);
@@ -544,13 +545,14 @@ namespace MyMiniLedger.WPF.WindowsModels
                 {
                     List<PositionUIModel> filtredList = MAINPOSITIONSCOLLECTION.AsList().FindAll(f => f.ZeroParrentKey == sp.PositionKey);
                     BLL.Context.ListOfPositions tempPos = new BLL.Context.ListOfPositions();
-                    List<PositionUIModel> controlPosList = (tempPos.GetAllAsync().Result.Select(p => Mappers.UIMapper.MapPositionBLLToPositionUI(p)).ToList());
+                    //List<PositionUIModel> controlPosList = (tempPos.GetAll().Result.Select(p => Mappers.UIMapper.MapPositionBLLToPositionUI(p)).ToList());
+                    List<PositionUIModel> controlPosList = (tempPos.GetAll().Select(p => Mappers.UIMapper.MapPositionBLLToPositionUI(p)).ToList());
                     List<PositionUIModel> filtredControlList = controlPosList.AsList().FindAll(f => f.ZeroParrentKey == sp.PositionKey);
                     if (filtredList.Count != filtredControlList.Count)
                     {
-                        dontEditthis = true;
+                        dontEditthis = true;                       
                         MessageBox.Show("В текущей выборке отсутствует родитель комплексной позиции. Возможна потеря данных",
-                            "Отсутствует родитель позиции", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            "Отсутствует родитель позиции", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
 
                     _selectedPositions.Add(sp);
@@ -569,13 +571,14 @@ namespace MyMiniLedger.WPF.WindowsModels
                 {
                     var childs = MAINPOSITIONSCOLLECTION.AsList().FindAll(f => f.ZeroParrentKey == sp.ZeroParrentKey);
                     BLL.Context.ListOfPositions tempPos = new BLL.Context.ListOfPositions();
-                    List<PositionUIModel> controlPosList = (tempPos.GetAllAsync().Result.Select(p => Mappers.UIMapper.MapPositionBLLToPositionUI(p)).ToList());
+                    //List<PositionUIModel> controlPosList = (tempPos.GetAll().Result.Select(p => Mappers.UIMapper.MapPositionBLLToPositionUI(p)).ToList());
+                    List<PositionUIModel> controlPosList = (tempPos.GetAll().Select(p => Mappers.UIMapper.MapPositionBLLToPositionUI(p)).ToList());
                     List<PositionUIModel> filtredControlList = controlPosList.AsList().FindAll(f => f.ZeroParrentKey == sp.ZeroParrentKey);
                     if (childs.Count != filtredControlList.Count)
                     {
                         dontEditthis = true;
                         MessageBox.Show("В текущей выборке отсутствует родитель комплексной позиции. Возможна потеря данных",
-                            "Отсутствует родитель позиции", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            "Отсутствует родитель позиции", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                     var zeroParent = MAINPOSITIONSCOLLECTION.AsList().Find(f => f.PositionKey == sp.ZeroParrentKey);
                     if (zeroParent != null) childs.Add(zeroParent);

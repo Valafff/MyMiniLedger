@@ -11,7 +11,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -28,6 +27,7 @@ namespace MyMiniLedger.WPF.Windows.NewPositionWindow
 		{
 			InitializeComponent();
 			DataContext = _mainWindowModel;
+			Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.CurrentUICulture;
 			dp_OpenDate.SelectedDate = DateTime.Now;
 
 			(DataContext as MainWindowModel).UpdateDatePickerEvent += UpdateDatePicker;
@@ -227,7 +227,8 @@ namespace MyMiniLedger.WPF.Windows.NewPositionWindow
 
 		void UpdateDatePicker()
 		{
-			dp_OpenDate.SelectedDate = DateTime.Today;
+            Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.CurrentUICulture;
+            dp_OpenDate.SelectedDate = DateTime.Today;
 		}
 	}
 }

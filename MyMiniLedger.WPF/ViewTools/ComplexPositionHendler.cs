@@ -35,11 +35,12 @@ namespace MyMiniLedger.WPF.ViewTools
 				_editPosition.ParrentKey = _editPosition.PositionKey;
 
 			}
-			//await Console.Out.WriteLineAsync($"ZeroParrentKey {_editPosition.ZeroParrentKey}");
-			//await Console.Out.WriteLineAsync($"ParrentKey {_editPosition.ParrentKey}");
-			//await Console.Out.WriteLineAsync($"maxParrentKey {maxPositionKey}");
-			await _context.PositionsTableBL.InsertAsync(Mappers.UIMapper.MapPositionUIToPositionBLL(_editPosition));
-		}
+            //await Console.Out.WriteLineAsync($"ZeroParrentKey {_editPosition.ZeroParrentKey}");
+            //await Console.Out.WriteLineAsync($"ParrentKey {_editPosition.ParrentKey}");
+            //await Console.Out.WriteLineAsync($"maxParrentKey {maxPositionKey}");
+            //await _context.PositionsTableBL.Insert(Mappers.UIMapper.MapPositionUIToPositionBLL(_editPosition));
+            _context.PositionsTableBL.Insert(Mappers.UIMapper.MapPositionUIToPositionBLL(_editPosition));
+        }
 
 		public async Task<PositionUIModel> DeleteComplexPosition(Context _context, ObservableCollection<PositionUIModel> _selectedPositions, PositionUIModel _deletingPosition)
 		{
@@ -70,11 +71,13 @@ namespace MyMiniLedger.WPF.ViewTools
 					{
 						position.ZeroParrentKey = nextPosition;
 					}
-					await _context.PositionsTableBL.UpdateAsync(Mappers.UIMapper.MapPositionUIToPositionBLL(position));
-				}
+                    //await _context.PositionsTableBL.Update(Mappers.UIMapper.MapPositionUIToPositionBLL(position));
+                    _context.PositionsTableBL.Update(Mappers.UIMapper.MapPositionUIToPositionBLL(position));
+                }
 				_selectedPositions.Remove(_deletingPosition);
-				await _context.PositionsTableBL.DeleteAsync(Mappers.UIMapper.MapPositionUIToPositionBLL(_deletingPosition));
-			}
+                //await _context.PositionsTableBL.Delete(Mappers.UIMapper.MapPositionUIToPositionBLL(_deletingPosition));
+                _context.PositionsTableBL.Delete(Mappers.UIMapper.MapPositionUIToPositionBLL(_deletingPosition));
+            }
 			//Удаление промежуточной или последней позиции
 			else
 			{
@@ -88,12 +91,14 @@ namespace MyMiniLedger.WPF.ViewTools
 					else if (position.ParrentKey == _deletingPosition.PositionKey)
 					{
 						position.ParrentKey = _deletingPosition.ParrentKey;
-						await _context.PositionsTableBL.UpdateAsync(Mappers.UIMapper.MapPositionUIToPositionBLL(position));
-					}			
+                        //await _context.PositionsTableBL.Update(Mappers.UIMapper.MapPositionUIToPositionBLL(position));
+                        _context.PositionsTableBL.Update(Mappers.UIMapper.MapPositionUIToPositionBLL(position));
+                    }			
 				}
 				_selectedPositions.Remove(_deletingPosition);
-				await _context.PositionsTableBL.DeleteAsync(Mappers.UIMapper.MapPositionUIToPositionBLL(_deletingPosition));
-			}
+                //await _context.PositionsTableBL.Delete(Mappers.UIMapper.MapPositionUIToPositionBLL(_deletingPosition));
+                _context.PositionsTableBL.Delete(Mappers.UIMapper.MapPositionUIToPositionBLL(_deletingPosition));
+            }
 			return newSelectedPosition;
 		}
 
@@ -101,8 +106,9 @@ namespace MyMiniLedger.WPF.ViewTools
 		{
 			foreach (var position in _selectedPositions)
 			{
-				await _context.PositionsTableBL.DeleteAsync(Mappers.UIMapper.MapPositionUIToPositionBLL(position));
-			}
+                //await _context.PositionsTableBL.Delete(Mappers.UIMapper.MapPositionUIToPositionBLL(position));
+                _context.PositionsTableBL.Delete(Mappers.UIMapper.MapPositionUIToPositionBLL(position));
+            }
 			_selectedPositions.Clear();
 		}
 

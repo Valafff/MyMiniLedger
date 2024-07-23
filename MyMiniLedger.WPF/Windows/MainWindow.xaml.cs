@@ -19,7 +19,7 @@ namespace MyMiniLedger.WPF
 		public MainWindow()
 		{
 			InitializeComponent();
-			datePiker_Start.SelectedDate = new DateTime(DateTime.Now.Year, 1, 1);
+            datePiker_Start.SelectedDate = new DateTime(DateTime.Now.Year, 1, 1);
 			datePiker_End.SelectedDate = DateTime.Now;
 			dp_OpenDate.SelectedDate = DateTime.Now;
 
@@ -57,7 +57,7 @@ namespace MyMiniLedger.WPF
 			((MainWindowModel)DataContext).SelectedPosition = (PositionUIModel)(((DataGrid)sender).CurrentItem);
 
             ComplexPositionBalanceCalculator calculator = new ComplexPositionBalanceCalculator();
-			var selectedBalance = calculator.GetTotalBalnce((DataContext as MainWindowModel).Positions, ((MainWindowModel)DataContext).SelectedPosition);
+			var selectedBalance = calculator.GetTotalBalance((DataContext as MainWindowModel).Positions, ((MainWindowModel)DataContext).SelectedPosition);
 
 			if (selectedBalance == null)
 			{
@@ -78,13 +78,16 @@ namespace MyMiniLedger.WPF
 				tb_CurrentBalance.Foreground= Brushes.Black;
 			}
 			tb_CurrentCoin.Text = selectedBalance.CoinName;
+
+			//Не позваляет DatePicker сползти в некорректный формат
+            Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.CurrentUICulture;
         }
 		private void dp_OpenDate_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (sender != null)
 			{
-				//((MainWindowModel)DataContext).PositionConstruct.OpenDate = sender.ToString();
-				((MainWindowModel)DataContext).PositionConstruct.OpenDate = ((DateTime)((DatePicker)sender).SelectedDate).ToString("dd.MM.yyyy");
+				((MainWindowModel)DataContext).PositionConstruct.OpenDate = sender.ToString();
+				//((MainWindowModel)DataContext).PositionConstruct.OpenDate = ((DateTime)((DatePicker)sender).SelectedDate).ToString("dd.MM.yyyy");
 			}
 		}
 

@@ -51,14 +51,16 @@ namespace MyMiniLedger.WPF.WindowsModels
 
 			////Инициализация позиций для определения связей
 			BLL.Context.ListOfPositions tempPos = new BLL.Context.ListOfPositions();
-			List<PositionBLLModel> tempPosAsync = tempPos.GetAllAsync().Result.ToList();
+            //List<PositionBLLModel> tempPosAsync = tempPos.GetAll().Result.ToList();
+            List<PositionBLLModel> tempPosAsync = tempPos.GetAll().ToList();
 
-			////Инициализация монет
-			BLL.Context.ListOfCoins tempCoin = new BLL.Context.ListOfCoins();
-			List<CoinUIModel> tempCoinsAsync = tempCoin.GetAllAsync().Result.Select(c => Mappers.UIMapper.MapCoinBLLToCoinUI(c)).ToList();
+            ////Инициализация монет
+            BLL.Context.ListOfCoins tempCoin = new BLL.Context.ListOfCoins();
+			//List<CoinUIModel> tempCoinsAsync = tempCoin.GetAll().Result.Select(c => Mappers.UIMapper.MapCoinBLLToCoinUI(c)).ToList();
+            List<CoinUIModel> tempCoinsAsync = tempCoin.GetAll().Select(c => Mappers.UIMapper.MapCoinBLLToCoinUI(c)).ToList();
 
-			//Определение количества ссылок по Id
-			for (int i = 0; i < tempCoinsAsync.Count; i++)
+            //Определение количества ссылок по Id
+            for (int i = 0; i < tempCoinsAsync.Count; i++)
 			{
 				for (int j = 0; j < tempPosAsync.Count; j++)
 				{
@@ -76,10 +78,12 @@ namespace MyMiniLedger.WPF.WindowsModels
 				async execute =>
 				{
 					_selectedCoin.RefNumber = 0;
-					await _context.CoinsTableBL.InsertAsync(Mappers.UIMapper.MapCoinUIToCoinBLL(_selectedCoin));
-					
-					var updatedCoin = (tempCoin.GetAllAsync().Result.Select(c => Mappers.UIMapper.MapCoinBLLToCoinUI(c)).ToList()).Where(t => t.ShortName == _selectedCoin.ShortName);
-					var temp = _selectedCoin.Clone();
+                    //await _context.CoinsTableBL.Insert(Mappers.UIMapper.MapCoinUIToCoinBLL(_selectedCoin));
+                    _context.CoinsTableBL.Insert(Mappers.UIMapper.MapCoinUIToCoinBLL(_selectedCoin));
+
+                    //var updatedCoin = (tempCoin.GetAll().Result.Select(c => Mappers.UIMapper.MapCoinBLLToCoinUI(c)).ToList()).Where(t => t.ShortName == _selectedCoin.ShortName);
+                    var updatedCoin = (tempCoin.GetAll().Select(c => Mappers.UIMapper.MapCoinBLLToCoinUI(c)).ToList()).Where(t => t.ShortName == _selectedCoin.ShortName);
+                    var temp = _selectedCoin.Clone();
 					((CoinUIModel)temp).Id = updatedCoin.First().Id;
 					Coins.Add((CoinUIModel)temp);
 					TempCoin = (CoinUIModel)temp;
@@ -92,9 +96,10 @@ namespace MyMiniLedger.WPF.WindowsModels
 			//	//Полное удаление монеты
 			DeleteCoin = new LambdaCommand(async execute =>
 			{
-				await _context.CoinsTableBL.DeleteAsync(Mappers.UIMapper.MapCoinUIToCoinBLL(_selectedCoin));
+                //await _context.CoinsTableBL.Delete(Mappers.UIMapper.MapCoinUIToCoinBLL(_selectedCoin));
+                _context.CoinsTableBL.Delete(Mappers.UIMapper.MapCoinUIToCoinBLL(_selectedCoin));
 
-				IEnumerable<CoinUIModel>?  TempDeletedCoin = Coins.Where(c => c.Id == _selectedCoin.Id);
+                IEnumerable<CoinUIModel>?  TempDeletedCoin = Coins.Where(c => c.Id == _selectedCoin.Id);
 
 				Coins.Remove(TempDeletedCoin.First());
 				_selectedCoin.Id = 0;
@@ -108,9 +113,10 @@ namespace MyMiniLedger.WPF.WindowsModels
 			//	//Редактирование монеты
 			UpdateCoin = new LambdaCommand(async execute =>
 			{
-				await _context.CoinsTableBL.UpdateAsync(Mappers.UIMapper.MapCoinUIToCoinBLL(_selectedCoin));
-				
-				var t = Coins.Where(c => c.Id == _selectedCoin.Id);
+                //await _context.CoinsTableBL.Update(Mappers.UIMapper.MapCoinUIToCoinBLL(_selectedCoin));
+                _context.CoinsTableBL.Update(Mappers.UIMapper.MapCoinUIToCoinBLL(_selectedCoin));
+
+                var t = Coins.Where(c => c.Id == _selectedCoin.Id);
 				Coins.Remove(t.First());
 				var temp = _selectedCoin.Clone();
 				Coins.Add((CoinUIModel)temp);

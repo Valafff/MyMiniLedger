@@ -11,26 +11,50 @@ namespace MyMiniLedger.DAL.SQL
 {
 	public class TableStatuses : ICreate<StatusModel>, IUpdate<StatusModel>, IReadAll<StatusModel>, IReadById<StatusModel>
 	{
-		public async Task<IEnumerable<StatusModel>> GetAllAsync()
-		{
-			return await SQLService<StatusModel>.GetAllAsync("Statuses");
-		}
+        //public async Task<IEnumerable<StatusModel>> GetAllAsync()
+        //{
+        //	return await SQLService<StatusModel>.GetAll("Statuses");
+        //}
 
-		public async Task<StatusModel> GetByIdAsync(int id, string t = "Id")
-		{
-			return await SQLService<StatusModel>.GetByNumber("Statuses", t, id);
-		}
+        public IEnumerable<StatusModel> GetAll()
+        {
+            return SQLService<StatusModel>.GetAll("Statuses");
+        }
 
-		public async Task InsertAsync(StatusModel entity)
-		{
-			string sql = $"insert into Statuses (StatusName, StatusNotes) values (N'{entity.StatusName}', N'{entity.StatusNotes}') ";
-			await SQLService<StatusModel>.UpdateInsertDeleteAsync(sql);
-		}
+        //public async Task<StatusModel> GetByIdAsync(int id, string t = "Id")
+        //{
+        //	return await SQLService<StatusModel>.GetByNumber("Statuses", t, id);
+        //}
 
-		public async Task UpdateAsync(StatusModel entity)
-		{
-			string sql = $"update Statuses set StatusName = N'{entity.StatusName}', StatusNotes = N'{entity.StatusNotes}' where  id = {entity.Id}";
-			await SQLService<StatusModel>.UpdateInsertDeleteAsync(sql);
-		}
-	}
+        public StatusModel GetById(int id, string t = "Id")
+        {
+            return SQLService<StatusModel>.GetByNumber("Statuses", t, id);
+        }
+
+        //public async Task InsertAsync(StatusModel entity)
+        //{
+        //	string sql = $"insert into Statuses (StatusName, StatusNotes) values (N'{entity.StatusName}', N'{entity.StatusNotes}') ";
+        //	await SQLService<StatusModel>.UpdateInsertDeleteAsync(sql);
+        //}
+
+        public void Insert(StatusModel entity)
+        {
+            //string sql = $"insert into Statuses (StatusName, StatusNotes) values (N'{entity.StatusName}', N'{entity.StatusNotes}') ";
+            string sql = $"insert into Statuses (StatusName, StatusNotes) values ('{entity.StatusName}', '{entity.StatusNotes}') ";
+            SQLService<StatusModel>.UpdateInsertDelete(sql);
+        }
+
+        //public async Task UpdateAsync(StatusModel entity)
+        //{
+        //	string sql = $"update Statuses set StatusName = N'{entity.StatusName}', StatusNotes = N'{entity.StatusNotes}' where  id = {entity.Id}";
+        //	await SQLService<StatusModel>.UpdateInsertDeleteAsync(sql);
+        //}
+
+        public void Update(StatusModel entity)
+        {
+            //string sql = $"update Statuses set StatusName = N'{entity.StatusName}', StatusNotes = N'{entity.StatusNotes}' where  id = {entity.Id}";
+            string sql = $"update Statuses set StatusName = '{entity.StatusName}', StatusNotes = '{entity.StatusNotes}' where  id = {entity.Id}";
+            SQLService<StatusModel>.UpdateInsertDelete(sql);
+        }
+    }
 }

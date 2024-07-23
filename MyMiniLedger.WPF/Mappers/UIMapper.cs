@@ -80,21 +80,23 @@ namespace MyMiniLedger.WPF.Mappers
 		{
 			//Приведение к текущему часовому поясу
 			//TimeZoneInfo userTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Russian Standard Time");
-			if (_pos.CloseDate == "")
-			{
-				_pos.CloseDate = new DateTime(1900, 01, 01).ToString();
-			}
+			//if (_pos.CloseDate == "")
+			//{
+			//	_pos.CloseDate = new DateTime(1900, 01, 01).ToString();
+			//}
 			return new BLL.Models.PositionBLLModel()
 			{
 
 				Id = _pos.Id,
 				PositionKey = _pos.PositionKey,
-				//OpenDate = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(Convert.ToDateTime(_pos.OpenDate), "Russian Standard Time"),
-				//CloseDate = TimeZoneInfo.ConvertTime(Convert.ToDateTime(_pos.CloseDate), userTimeZone),
-				//Конвертирует со сдвигом часовых поясов UTC
-				OpenDate = Convert.ToDateTime(_pos.OpenDate),
-				CloseDate = Convert.ToDateTime(_pos.CloseDate),
-				Kind = MapKindUIToKindBLL(_pos.Kind),
+                //OpenDate = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(Convert.ToDateTime(_pos.OpenDate), "Russian Standard Time"),
+                //CloseDate = TimeZoneInfo.ConvertTime(Convert.ToDateTime(_pos.CloseDate), userTimeZone),
+                //Конвертирует со сдвигом часовых поясов UTC
+                //OpenDate = Convert.ToDateTime(_pos.OpenDate),
+                //CloseDate = Convert.ToDateTime(_pos.CloseDate),
+                OpenDate = _pos.OpenDate,
+                CloseDate = _pos.CloseDate,
+                Kind = MapKindUIToKindBLL(_pos.Kind),
 				Income = Convert.ToDecimal(_pos.Income),
 				Expense = Convert.ToDecimal(_pos.Expense),
 				Saldo = Convert.ToDecimal(_pos.Saldo),
