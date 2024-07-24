@@ -8,8 +8,8 @@
 //#define TestBLLContext
 
 #if OnOffDAL
-using Azure;
 using Dapper;
+using ImportedClasses;
 using MyMiniLedger.BLL.Context;
 using MyMiniLedger.BLL.Mappers;
 using MyMiniLedger.BLL.Models;
@@ -17,16 +17,86 @@ using MyMiniLedger.DAL.Config;
 using MyMiniLedger.DAL.Models;
 using MyMiniLedger.DAL.Services;
 using MyMiniLedger.DAL.SQL;
-using static Azure.Core.HttpHeader;
 
 //Обернуть в на вышестоящие уровни
 DataConfig.Init("config.json");
 
+DB_Provider provider = new DB_Provider();
+
+List<impoetedPosition> oldPositions = new List<impoetedPosition>();
+provider.openConnection();
+oldPositions = provider.GetAllPositions();
+provider.closeConnection();
+
+//Сервисы
 TableCategories tc = new TableCategories();
 TableCoins tcoins = new TableCoins();
 TableKinds tkinds = new TableKinds();
 TablePositions tpos = new TablePositions();
 TableStatuses tst = new TableStatuses();
+
+List<CategoryModel> listCategories = new List<CategoryModel>();
+List<CoinModel> listCoins = new List<CoinModel>();
+List<KindModel> listKinds = new List<KindModel>();
+List<PositionModel> listPositions = new List<PositionModel>();
+List<StatusModel> listStatuses = new List<StatusModel>();
+
+foreach (var oldPos in oldPositions)
+{
+    if (!listCategories.Any(c => c.Category == oldPos.category))
+    {
+        CategoryModel temp = new CategoryModel() { Category = oldPos.category };
+        listCategories.Add(temp);
+        tc.Insert(temp);
+    }
+    if (!listCoins.Any(c => c.ShortName == oldPos.currCoin))
+    {
+        CoinModel temp = new CoinModel() { ShortName = oldPos.currCoin };
+        listCoins.Add(temp);
+        tcoins.Insert(temp);
+    }
+    if (!listKinds.Any(k => k.Kind == oldPos.kind))
+    {
+        List<CategoryModel> tempCats = tc.GetAll().ToList();
+        KindModel temp = new KindModel() { CategoryId = tempCats.First(c => c.Category == oldPos.category).Id, Kind = oldPos.kind };
+        listKinds.Add(temp);
+        tkinds.Insert(temp);
+    }
+}
+
+listCategories.Clear();
+listCoins.Clear();
+listKinds.Clear();
+//listCategories = tc.GetAll().ToList();
+listCoins = tcoins.GetAll().ToList();
+listKinds = tkinds.GetAll().ToList();
+
+
+foreach (var oldPos in oldPositions)
+{
+    PositionModel tempPos = new PositionModel()
+    {
+        PositionKey = (int)oldPos.myKey,
+        OpenDate = oldPos.openDate.ToString("dd.MM.yyyy H:mm:ss"),
+        CloseDate = oldPos.closeDate.Year != 9999 ? oldPos.closeDate.ToString("dd.MM.yyyy H:mm:ss") : string.Empty,
+        KindId = listKinds.First(k => k.Kind == oldPos.kind).Id,
+        Income = oldPos.income,
+        Expense = oldPos.expense,
+        Saldo = oldPos.saldo,
+        CoinId = listCoins.First(c => c.ShortName == oldPos.currCoin).Id,
+        StatusId = oldPos.status == "закрыта" ? 1 : 2,
+        Tag = oldPos.tag,
+        Notes = oldPos.notes,
+        AdditionalPositionData = string.Empty
+    };
+    tpos.Insert(tempPos);
+}
+
+
+
+
+
+
 
 
 
@@ -115,8 +185,8 @@ Console.WriteLine($"{data4.Id}   {data4.PositionKey}	{data4.OpenDate}	{data4.Clo
 //	Console.WriteLine(category.CategoryId + " " + category.Kind);
 //}
 
-var testpos = new PositionModel() { PositionKey = 100, OpenDate = DateTime.Now, CloseDate = DateTime.Now, KindId = 1, Income = 555.321M , Expense = 5.00001M, Saldo = 555.9874655555M, CoinId = 2, StatusId = 4, Tag = "Тест15", Notes = "Тест15" };
-await tpos.InsertAsync(testpos);
+//var testpos = new PositionModel() { PositionKey = 100, OpenDate = DateTime.Now, CloseDate = DateTime.Now, KindId = 1, Income = 555.321M , Expense = 5.00001M, Saldo = 555.9874655555M, CoinId = 2, StatusId = 4, Tag = "Тест15", Notes = "Тест15" };
+//await tpos.InsertAsync(testpos);
 
 #endif
 
