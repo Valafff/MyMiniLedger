@@ -20,6 +20,23 @@
         <KeyBinding Key="N" Modifiers="Ctrl" Command="{Binding OpenNewPositionWindow}" />
     </Window.InputBindings>
 
+    <!--<Window.Resources>
+        <DataTemplate x:Key="HeaderTemplate">
+            <TextBlock Text="{Binding}" TextWrapping="Wrap"  TextAlignment="Center"/>
+            --><!--Обозначаем наличие привязки в ячеке(шапке?) таблицы, выравниванием текст в ячейках по центру и задаем перенос текста--><!--
+        </DataTemplate>
+        <Style TargetType="DataGridCell">
+            --><!--Ограничиваем применение стиля (только для шапки DataGridColumnHeader)-->
+            <!--<Setter Property="HorizontalContentAlignment" Value="Center"/>
+            --><!--Задаем выравнивание по центру ячейки--><!--
+            <Setter Property="Padding" Value="2"/>-->
+            <!--Задаем отступ в ячейке--><!--
+            <Setter Property="TextWrapping" Value="NoWrap"/>
+            <Setter Property="Foreground" Value="Red"/>
+            --><!--Применяем в стиле шаблон отображения текстовых данных HeaderTemplate--><!--
+        </Style>
+    </Window.Resources>-->
+
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="Файл">
@@ -197,7 +214,8 @@
                       CanUserAddRows="False"
                       CanUserDeleteRows="False"
                       SelectionChanged="DataGrid_SelectionChanged_MainWindow"
-                      PreviewKeyDown="DataGrid_PreviewKeyDown">
+                      PreviewKeyDown="DataGrid_PreviewKeyDown"
+                      RowHeight="20">
 
                 <DataGrid.ItemContainerStyle>
                     <Style TargetType="DataGridRow">
@@ -206,7 +224,6 @@
                 </DataGrid.ItemContainerStyle>
 
                 <DataGrid.Columns>
-                    <!--<DataGridTextColumn Header="Id" Binding="{Binding Path=Id}" IsReadOnly="True"/>-->
                     <DataGridTextColumn Header="Номер поз." Binding="{Binding Path=PositionKey, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsReadOnly="True" Width="*"/>
                     <DataGridTextColumn Header="Дата откр. поз." Binding="{Binding Path=OpenDate, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsReadOnly="True" Width="*"/>
                     <DataGridTextColumn Header="Дата закр. поз." Binding="{Binding Path=CloseDate, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsReadOnly="True" Width="*"/>
@@ -219,7 +236,7 @@
                     <DataGridTextColumn Header="Статус" Binding="{Binding Path=Status.StatusName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsReadOnly="True" Width="*"/>
                     <DataGridTextColumn Header="Тэг" Binding="{Binding Path=Tag, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsReadOnly="True" Width="*"/>
                     <DataGridTextColumn Header="Примечания" Binding="{Binding Path=Notes, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsReadOnly="True" Width="*"/>
-                </DataGrid.Columns>
+                    </DataGrid.Columns>
             </DataGrid>
             <Grid Grid.Row="2">
                 <Grid.ColumnDefinitions>
@@ -227,7 +244,9 @@
                     <ColumnDefinition Width="2*"/>
                     <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
-
+                <ScrollViewer>
+                    
+               
                 <StackPanel Grid.Column="0">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Данные о позиции № " FontSize="18" FontWeight="Bold"/>
@@ -262,11 +281,14 @@
                         <TextBlock Text="Тег: " FontSize="18"/>
                         <TextBlock Text="{Binding SelectedPosition.Tag}" FontSize="18"/>
                     </StackPanel>
+
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Примечания: " FontSize="18"/>
-                        <TextBlock Text="{Binding SelectedPosition.Notes}" FontSize="18"/>
+                        <TextBlock Text="{Binding SelectedPosition.Notes}" FontSize="18" TextWrapping="Wrap" />
+
                     </StackPanel>
                 </StackPanel>
+                </ScrollViewer>
 
                 <StackPanel Grid.Column="1">
                     <StackPanel Orientation="Horizontal">
