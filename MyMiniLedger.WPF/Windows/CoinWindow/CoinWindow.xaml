@@ -66,12 +66,12 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <Button Grid.Column="0" Margin="2,2,2,2" x:Name="bt_AddNewCoin" Command="{Binding Path=AddToCoin}">
-                <TextBlock TextAlignment="Center">Добавить<LineBreak/>новую валюту/монту</TextBlock >
+                <TextBlock TextAlignment="Center">Добавить<LineBreak/>новую валюту/монету</TextBlock >
             </Button>
             <Button Grid.Column="1" Margin="2,2,2,2" Command="{Binding Path=UpdateCoin}" >
-                <TextBlock TextAlignment="Center">Редактировать<LineBreak/>валюту/монту</TextBlock >
+                <TextBlock TextAlignment="Center">Редактировать<LineBreak/>валюту/монету</TextBlock >
             </Button>
-            <Button Grid.Column="2" x:Name="bt_DelCoin" Content="Удалить валюту/монту" Margin="2,2,2,2" Command="{Binding Path=DeleteCoin}"/>
+            <Button Grid.Column="2" x:Name="bt_DelCoin" Content="Удалить валюту/монету" Margin="2,2,2,2" Command="{Binding Path=DeleteCoin}"/>
             <Button Grid.Column="3" Content="Выход" Margin="2,2,2,2" Click="ButtonExit_Click"/>
         </Grid>
         <Grid Grid.Row="2">

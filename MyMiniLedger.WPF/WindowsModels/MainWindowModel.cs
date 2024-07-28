@@ -399,6 +399,8 @@ namespace MyMiniLedger.WPF.WindowsModels
             updatedPos = ViewTools.FormatterPositions.EditPosFromTableByStatus(updatedPos.AsList(), "Closed", "Закрыта");
             updatedPos = ViewTools.FormatterPositions.EditDecemalPosFromTableByMarker(updatedPos.AsList(), "fiat", "0.00");
 
+            EndDate = EndDate.Add(new TimeOnly(23, 59, 59, 0).ToTimeSpan());
+            
             Positions.Clear();
             foreach (var item in updatedPos)
             {
