@@ -1,8 +1,10 @@
 ﻿using Dapper;
 using MyMiniLedger.WPF.Models;
 using MyMiniLedger.WPF.ViewTools;
+using MyMiniLedger.WPF.Windows;
 using MyMiniLedger.WPF.Windows.EditContinuePosition;
 using MyMiniLedger.WPF.WindowsModels;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -16,17 +18,31 @@ namespace MyMiniLedger.WPF
 	/// </summary>
 	public partial class MainWindow : Window
 	{
+		public bool Valid = false;
 		public MainWindow()
 		{
 			InitializeComponent();
-            datePiker_Start.SelectedDate = new DateTime(DateTime.Now.Year, 1, 1);
-			datePiker_End.SelectedDate = DateTime.Now;
-			dp_OpenDate.SelectedDate = DateTime.Now;
+			StringBuilder pass = new StringBuilder();
+			MainPasswordWindow passForm = new MainPasswordWindow(ref pass, this);
+			passForm.ShowDialog();
+			if (!Valid)
+			{
+				Close();
+			}
+			else
+			{
+				MainWindowModel MainModel = new MainWindowModel(pass.ToString());
+				DataContext = MainModel;
+				datePiker_Start.SelectedDate = new DateTime(DateTime.Now.Year, 1, 1);
+				datePiker_End.SelectedDate = DateTime.Now;
+				dp_OpenDate.SelectedDate = DateTime.Now;
 
-			(DataContext as MainWindowModel).UpdateCoinsIndexEvent += UpdateSelectedCoin;
-			(DataContext as MainWindowModel).UpdateCategoriesIndexEvent += UpdateSelectedCategory;
-			(DataContext as MainWindowModel).UpdateKindsIndexEvent += UpdateSelectedKind;
-			(DataContext as MainWindowModel).UpdateDatePickerEvent += UpdateDatePicker;
+				(DataContext as MainWindowModel).UpdateCoinsIndexEvent += UpdateSelectedCoin;
+				(DataContext as MainWindowModel).UpdateCategoriesIndexEvent += UpdateSelectedCategory;
+				(DataContext as MainWindowModel).UpdateKindsIndexEvent += UpdateSelectedKind;
+				(DataContext as MainWindowModel).UpdateDatePickerEvent += UpdateDatePicker;
+			}
+
 		}
 
 		//Удаление позиции
@@ -56,7 +72,7 @@ namespace MyMiniLedger.WPF
 		{
 			((MainWindowModel)DataContext).SelectedPosition = (PositionUIModel)(((DataGrid)sender).CurrentItem);
 
-            ComplexPositionBalanceCalculator calculator = new ComplexPositionBalanceCalculator();
+			ComplexPositionBalanceCalculator calculator = new ComplexPositionBalanceCalculator();
 			var selectedBalance = calculator.GetTotalBalance((DataContext as MainWindowModel).Positions, ((MainWindowModel)DataContext).SelectedPosition);
 
 			if (selectedBalance == null)
@@ -78,13 +94,13 @@ namespace MyMiniLedger.WPF
 			}
 			else
 			{
-				tb_CurrentBalance.Foreground= Brushes.Black;
+				tb_CurrentBalance.Foreground = Brushes.Black;
 			}
 			tb_CurrentCoin.Text = selectedBalance.CoinName;
 
 			//Не позваляет DatePicker сползти в некорректный формат
-            Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.CurrentUICulture;
-        }
+			Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.CurrentUICulture;
+		}
 		private void dp_OpenDate_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (sender != null)

@@ -84,6 +84,7 @@ namespace MyMiniLedger.WPF.WindowsModels
             set => SetField(ref _endDate, value);
         }
 
+        public string password = string.Empty;
 
         public ObservableCollection<PositionUIModel> Positions { get; set; }
         public ObservableCollection<CategoryUIModel> Categories { get; set; }
@@ -117,10 +118,11 @@ namespace MyMiniLedger.WPF.WindowsModels
         public ObservableCollection<string> tempCategories { get; set; } = new ObservableCollection<string>();
 
 
-        public MainWindowModel()
+        public MainWindowModel(string _pass)
         {
+            password = _pass;
             //ToDo В файле сделать базовые настройки строк, дат, пользователя 
-            cf = new BLL.InitConfigBLL("config.json");
+            cf = new BLL.InitConfigBLL("config.json", password);
 
             ////Тестовое открытие формы при запуске приложения
             //new CategoryWindow().Show();

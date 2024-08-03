@@ -12,9 +12,9 @@
         WindowStartupLocation="CenterScreen">
 
 
-    <Window.DataContext>
+    <!--<Window.DataContext>
         <wm:MainWindowModel/>
-    </Window.DataContext>
+    </Window.DataContext>-->
 
     <Window.InputBindings>
         <KeyBinding Key="N" Modifiers="Ctrl" Command="{Binding OpenNewPositionWindow}" />

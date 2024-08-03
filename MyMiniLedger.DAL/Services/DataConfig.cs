@@ -1,5 +1,4 @@
-﻿//using Microsoft.Data.SqlClient;
-using Microsoft.Data.Sqlite;
+﻿using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,11 +9,17 @@ namespace MyMiniLedger.DAL.Services
 {
     public static class DataConfig
     {
-        //public static SqlConnection _DBconnection;
         public static SqliteConnection _DBconnection;
-        public static void Init(string path)
+        public static void Init(string path, string _pass)
         {
             string connString = Config.Config.GetFromConfig(path).ToString();
+
+			var modConnString = new SqliteConnectionStringBuilder(connString)
+			{
+				Mode = SqliteOpenMode.ReadWriteCreate,
+				Password = _pass
+			}.ToString();
+		
             if (string.IsNullOrEmpty(connString))
             {
                 throw new ArgumentException($"Ошибка конфигурационного файла config.json");
@@ -23,8 +28,7 @@ namespace MyMiniLedger.DAL.Services
             {
                 if (_DBconnection == null)
                 {
-                    //_DBconnection = new SqlConnection(connString);
-                    _DBconnection = new SqliteConnection(connString);
+                    _DBconnection = new SqliteConnection(modConnString);
                 }
             }
         }
