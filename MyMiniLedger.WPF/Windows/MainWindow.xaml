@@ -41,10 +41,14 @@
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="Файл">
                 <MenuItem Header="Записать новую позицию CTRL+N" Command="{Binding Path=OpenNewPositionWindow}"/>
+                <Separator/>
                 <MenuItem Header="Редактировать/добавить валюту" Command="{Binding Path=OpenCoinWindow}"/>
                 <MenuItem Header="Редактировать/добавить категорию" Command="{Binding Path=OpenCategoryWindow}"/>
                 <MenuItem Header="Редактировать/добавить вид" Command="{Binding Path=OpenKindWindow}"/>
-                <MenuItem Header="Создать резервную копию БД"/>
+                <Separator/>
+                <MenuItem Header="Указать путь к БД..." Click="MenuItem_Click_DB_Path_editing"/>
+                <MenuItem Header="Создать резервную копию БД" Click="MenuItem_Click_newBackup"/>
+                <Separator/>
                 <MenuItem Header="Выход " Click="MenuItem_Click_Close"/>
             </MenuItem>
             <!--<TextBox TextWrapping="Wrap" Text="Поиск по" Width="120"/>

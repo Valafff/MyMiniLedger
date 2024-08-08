@@ -9,6 +9,13 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using Microsoft.Win32;
+using MyMiniLedger.DAL;
+using MyMiniLedger.DAL.Config;
+using System.IO;
+using System.Text.Json;
+
+
 
 namespace MyMiniLedger.WPF
 {
@@ -314,6 +321,42 @@ namespace MyMiniLedger.WPF
 			(ecw.DataContext as EditContinuePositionWindowsModel).UpdateEvent += (DataContext as MainWindowModel).UpdatePositionsCollection;
 			ecw.ShowDialog();
 		}
+
+		private void MenuItem_Click_DB_Path_editing(object sender, RoutedEventArgs e)
+		{
+			string path = string.Empty;
+			OpenFileDialog fd = new OpenFileDialog();
+			if (fd.ShowDialog().Value)
+			{
+				try
+				{
+					Console.WriteLine(fd.FileName);
+					path = fd.FileName;
+
+					var newConfig = Config.GetFromConfig();
+					newConfig.DataSource = path;
+					using var toFile = new FileStream("config.json", FileMode.Open, FileAccess.Write);
+					JsonSerializer.Serialize(toFile,newConfig);
+					Console.WriteLine(newConfig.DataSource);
+				}
+				catch (Exception)
+				{
+					MessageBox.Show("Путь к файлу БД задан неверно!");
+				}
+
+
+            }
+			else
+			{
+                MessageBox.Show("Путь к файлу БД не указан!");
+            }
+		}
+
+		private void MenuItem_Click_newBackup(object sender, RoutedEventArgs e)
+		{
+			
+		}
+
 	}
 
 }
