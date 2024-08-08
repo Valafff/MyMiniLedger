@@ -11,8 +11,31 @@ namespace MyMiniLedger.DAL.Services
 	{
         private static SqliteConnection _DBconnection = DataConfig._DBconnection;
 
-        //Получить всё из таблицы
-        public static  IEnumerable<T> GetAll(string tableName)
+		//Для проверки доступа к бд - ввод пароля
+		public static IEnumerable<T> GetAllForPass(string tableName)
+		{
+			try
+			{
+				if (_DBconnection != null)
+				{
+					_DBconnection.Dispose();
+					_DBconnection = DataConfig._DBconnection;
+				}
+				_DBconnection.Open();
+				string sql = $"select * from {tableName}";
+				IEnumerable<T> result = _DBconnection.Query<T>(sql);
+				_DBconnection.Close();
+				return result;
+			}
+			catch (Exception)
+			{
+				Console.WriteLine($"GetAll table {tableName} error");
+				return null;
+			}
+		}
+
+		//Получить всё из таблицы
+		public static  IEnumerable<T> GetAll(string tableName)
         {
             try
             {

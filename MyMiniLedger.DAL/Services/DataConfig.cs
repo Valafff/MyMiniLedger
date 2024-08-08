@@ -32,5 +32,14 @@ namespace MyMiniLedger.DAL.Services
                 }
             }
         }
+
+        public static void ResetConnection()
+        {
+            if (_DBconnection != null)
+            {
+                _DBconnection.Dispose();
+                _DBconnection = null;
+            }
+        }
     }
 }

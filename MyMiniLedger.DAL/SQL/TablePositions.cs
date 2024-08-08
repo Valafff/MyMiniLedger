@@ -11,7 +11,13 @@ namespace MyMiniLedger.DAL.SQL
 {
     public class TablePositions : ICreate<PositionModel>, IUpdate<PositionModel>, IReadAll<PositionModel>, IReadById<PositionModel>, IDeleteHard<PositionModel>
     {
-        public IEnumerable<PositionModel> GetAll()
+        //Для валидации пароля
+		public IEnumerable<PositionModel> GetAllForPass()
+		{
+			return SQLService<PositionModel>.GetAllForPass("Positions");
+		}
+
+		public IEnumerable<PositionModel> GetAll()
         {
             return SQLService<PositionModel>.GetAll("Positions");
         }
@@ -64,5 +70,9 @@ namespace MyMiniLedger.DAL.SQL
             string sql = $"delete from Positions where Id = {entity.Id}";
             SQLService<PositionModel>.UpdateInsertDelete(sql);
         }
+
+
+
+
     }
 }

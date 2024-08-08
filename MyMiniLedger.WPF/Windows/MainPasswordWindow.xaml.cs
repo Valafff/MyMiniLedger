@@ -16,6 +16,9 @@ using MyMiniLedger.DAL;
 using MyMiniLedger.DAL.SQL;
 using MyMiniLedger.DAL.Services;
 using MyMiniLedger.DAL.Config;
+using System.IO;
+using System.Text.Json;
+using Microsoft.Win32;
 
 namespace MyMiniLedger.WPF.Windows
 {
@@ -30,17 +33,19 @@ namespace MyMiniLedger.WPF.Windows
 		public MainPasswordWindow(ref StringBuilder _password, MainWindow _mw)
 		{
 			InitializeComponent();
+			PassBox.Focus();
 			Password = _password;
 			MW = _mw;
 		}
 
 		private void bt_Ok_Click(object sender, RoutedEventArgs e)
 		{
+			Password.Clear();
 			Password.Append(PassBox.Password);
-
+			DataConfig.ResetConnection();
 			DataConfig.Init("config.json", Password.ToString());
 			TablePositions positions = new TablePositions();
-			var x = positions.GetAll();
+			var x = positions.GetAllForPass();
 			if (x != null)
 			{
 				MW.Valid = true;
@@ -50,7 +55,7 @@ namespace MyMiniLedger.WPF.Windows
 			else
 			{
 				PassBox.Clear();
-				MessageBox.Show("Введен неверный пароль", "Ввод пароля", MessageBoxButton.OK, MessageBoxImage.Error);
+				MessageBox.Show("Введен неверный пароль или ошибка чтения БД", "Ввод пароля", MessageBoxButton.OK, MessageBoxImage.Error);
 			}
 
 		}
@@ -66,6 +71,42 @@ namespace MyMiniLedger.WPF.Windows
 			if (!passOk)
 			{
 				MW.Valid = false;
+			}
+		}
+
+		private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.Key == Key.Enter)
+			{
+                bt_Ok_Click(sender, e);
+			}
+		}
+
+		private void bt_ResetPathToBD_Click(object sender, RoutedEventArgs e)
+		{
+			string path = string.Empty;
+			OpenFileDialog fd = new OpenFileDialog();
+			if (fd.ShowDialog().Value)
+			{
+				try
+				{
+					Console.WriteLine(fd.FileName);
+					path = fd.FileName;
+
+					var newConfig = Config.GetFromConfig();
+					newConfig.DataSource = path;
+					using var toFile = new FileStream("config.json", FileMode.Truncate, FileAccess.Write);
+					JsonSerializer.Serialize(toFile, newConfig);
+					MessageBox.Show("Задан новый путь к БД");
+				}
+				catch (Exception)
+				{
+					MessageBox.Show("Путь к файлу БД задан неверно!");
+				}
+			}
+			else
+			{
+				MessageBox.Show("Путь к файлу БД не указан!");
 			}
 		}
 	}

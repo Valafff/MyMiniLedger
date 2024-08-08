@@ -336,8 +336,9 @@ namespace MyMiniLedger.WPF
 
 					var newConfig = Config.GetFromConfig();
 					newConfig.DataSource = path;
-					using var toFile = new FileStream("config.json", FileMode.Open, FileAccess.Write);
-					JsonSerializer.Serialize(toFile,newConfig);
+					using var toFile = new FileStream("config.json", FileMode.Truncate, FileAccess.Write);
+					JsonSerializer.Serialize(toFile, newConfig);
+					MessageBox.Show("Задан новый путь к БД");
 				}
 				catch (Exception)
 				{
@@ -362,7 +363,6 @@ namespace MyMiniLedger.WPF
 				if (result == CommonFileDialogResult.Ok)
 				{
 					targetPath = dialog.FileName + $"\\MyMiniLedger_backup_{DateTime.Now.ToString("dd.MM.yyyy_HH.mm.ss")}.db";
-					Console.WriteLine(targetPath);
 					File.Copy(sourcePath, targetPath);
 					MessageBox.Show("Резервная копия создана", "Резервная копия", MessageBoxButton.OK, MessageBoxImage.Information);
 				}
