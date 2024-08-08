@@ -10,10 +10,11 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using Microsoft.Win32;
-using MyMiniLedger.DAL;
 using MyMiniLedger.DAL.Config;
 using System.IO;
 using System.Text.Json;
+using Microsoft.WindowsAPICodePack.Dialogs;
+
 
 
 
@@ -337,14 +338,11 @@ namespace MyMiniLedger.WPF
 					newConfig.DataSource = path;
 					using var toFile = new FileStream("config.json", FileMode.Open, FileAccess.Write);
 					JsonSerializer.Serialize(toFile,newConfig);
-					Console.WriteLine(newConfig.DataSource);
 				}
 				catch (Exception)
 				{
 					MessageBox.Show("Путь к файлу БД задан неверно!");
 				}
-
-
             }
 			else
 			{
@@ -354,7 +352,25 @@ namespace MyMiniLedger.WPF
 
 		private void MenuItem_Click_newBackup(object sender, RoutedEventArgs e)
 		{
-			
+			try
+			{
+				string sourcePath = Config.GetFromConfig().DataSource;
+				string targetPath = string.Empty;
+				var dialog = new CommonOpenFileDialog();
+				dialog.IsFolderPicker = true;
+				CommonFileDialogResult result = dialog.ShowDialog();
+				if (result == CommonFileDialogResult.Ok)
+				{
+					targetPath = dialog.FileName + $"\\MyMiniLedger_backup_{DateTime.Now.ToString("dd.MM.yyyy_HH.mm.ss")}.db";
+					Console.WriteLine(targetPath);
+					File.Copy(sourcePath, targetPath);
+					MessageBox.Show("Резервная копия создана", "Резервная копия", MessageBoxButton.OK, MessageBoxImage.Information);
+				}
+			}
+			catch (Exception)
+			{
+                Console.WriteLine("Не удалось создать резервную копию БД");
+            }
 		}
 
 	}
