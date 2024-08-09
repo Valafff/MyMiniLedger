@@ -207,6 +207,7 @@ namespace MyMiniLedger.WPF.WindowsModels
                     var maxId = (tempPos.GetAll().Select(p => Mappers.UIMapper.MapPositionBLLToPositionUI(p)).ToList()).Max(p => p.Id);
                     var updatedPos = (tempPos.GetById(maxId));
 
+                    Thread.CurrentThread.CurrentCulture = CultureInfo.CurrentUICulture; //fix 09.08.2024
                     PositionUIModel temp = new PositionUIModel();
                     temp = Mappers.UIMapper.MapPositionBLLToPositionUI(updatedPos);
                     temp = ViewTools.FormatterPositions.EditPosFromTableByStatus(temp, "Open", "Открыта");
