@@ -1,1 +1,2 @@
-Пароль к БД: 123
+Russian language only!
+Pass to DB: 123
