@@ -18,7 +18,7 @@ namespace ImportedClasses
         OleDbConnection DBConnection;
 
         //Подключение
-        public bool openConnection(string pass = "Добавить пароль", string path = "oldDB.mdb")
+        public bool openConnection(string pass = "!!!ВВЕДИ ПАРОЛЬ ОТ БД!!!", string path = "oldDB.mdb")
         {
             try
             {

@@ -21,8 +21,8 @@ using MyMiniLedger.DAL.SQL;
 //Обернуть на вышестоящие уровни
 DataConfig.Init("config.json", "123");
 
+//подключение к старой БД
 DB_Provider provider = new DB_Provider();
-
 List<impoetedPosition> oldPositions = new List<impoetedPosition>();
 provider.openConnection();
 oldPositions = provider.GetAllPositions();
@@ -71,7 +71,7 @@ listKinds.Clear();
 listCoins = tcoins.GetAll().ToList();
 listKinds = tkinds.GetAll().ToList();
 
-
+//Запись в новую БД
 foreach (var oldPos in oldPositions)
 {
     PositionModel tempPos = new PositionModel()

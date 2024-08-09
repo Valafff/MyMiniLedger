@@ -18,7 +18,4 @@ namespace MyMiniLedger.DAL.Config
 			return config;
 		}
 	}
-
-
-
 }
