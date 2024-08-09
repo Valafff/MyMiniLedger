@@ -18,8 +18,8 @@ using MyMiniLedger.DAL.Models;
 using MyMiniLedger.DAL.Services;
 using MyMiniLedger.DAL.SQL;
 
-//Обернуть в на вышестоящие уровни
-DataConfig.Init("config.json");
+//Обернуть на вышестоящие уровни
+DataConfig.Init("config.json", "123");
 
 DB_Provider provider = new DB_Provider();
 
