@@ -91,6 +91,10 @@ namespace MyMiniLedger.WPF
 				tb_CurrentExpence.Text = selectedBalance.TotalExpense.ToString("N10", new CultureInfo("ru-RU"));
 				tb_CurrentExpence.Foreground = Brushes.Red;
 				tb_CurrentBalance.Text = selectedBalance.Balance.ToString("N10", new CultureInfo("ru-RU"));
+
+				tb_IncomeInfo.Text = Double.Parse(tb_IncomeInfo.Text).ToString("N10", new CultureInfo("ru-RU"));
+				tb_ExpenseInfo.Text = Double.Parse(tb_ExpenseInfo.Text).ToString("N10", new CultureInfo("ru-RU"));
+				tb_SaldoInfo.Text = Double.Parse(tb_SaldoInfo.Text).ToString("N10", new CultureInfo("ru-RU"));
 			}
 			else
 			{
@@ -99,6 +103,10 @@ namespace MyMiniLedger.WPF
 				tb_CurrentExpence.Text = selectedBalance.TotalExpense.ToString("N2", new CultureInfo("ru-RU"));
 				tb_CurrentExpence.Foreground = Brushes.Red;
 				tb_CurrentBalance.Text = selectedBalance.Balance.ToString("N2", new CultureInfo("ru-RU"));
+
+				tb_IncomeInfo.Text = Double.Parse(tb_IncomeInfo.Text).ToString("N2", new CultureInfo("ru-RU"));
+				tb_ExpenseInfo.Text = Double.Parse(tb_ExpenseInfo.Text).ToString("N2", new CultureInfo("ru-RU"));
+				tb_SaldoInfo.Text = Double.Parse(tb_SaldoInfo.Text).ToString("N2", new CultureInfo("ru-RU"));
 			}
 
 			if (selectedBalance.Balance > 0)
