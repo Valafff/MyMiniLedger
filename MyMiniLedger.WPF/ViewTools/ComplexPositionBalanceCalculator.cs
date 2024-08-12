@@ -100,6 +100,7 @@ namespace MyMiniLedger.WPF.ViewTools
                         }
                     }
                     temp.Balance = temp.TotalIncome - temp.TotalExpense;
+                    if(_selectedPosition.Coin.CoinNotes != null) { temp.Cointype = _selectedPosition.Coin.CoinNotes; }
                     return temp;
                 }
                 return null;

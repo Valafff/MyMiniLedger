@@ -14,6 +14,7 @@ using MyMiniLedger.DAL.Config;
 using System.IO;
 using System.Text.Json;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using System.Globalization;
 
 
 
@@ -83,11 +84,23 @@ namespace MyMiniLedger.WPF
 			{
 				selectedBalance = new TotalBalance() { Balance = 0, CoinName = "[Валюта]" };
 			}
-			tb_CurrentIncome.Text = selectedBalance.TotalIncome.ToString();
-			tb_CurrentIncome.Foreground = Brushes.Green;
-			tb_CurrentExpence.Text = selectedBalance.TotalExpense.ToString();
-			tb_CurrentExpence.Foreground = Brushes.Red;
-			tb_CurrentBalance.Text = selectedBalance.Balance.ToString();
+			if (selectedBalance.Cointype.Contains("crypto"))
+			{
+				tb_CurrentIncome.Text = selectedBalance.TotalIncome.ToString("N10", new CultureInfo("ru-RU"));
+				tb_CurrentIncome.Foreground = Brushes.Green;
+				tb_CurrentExpence.Text = selectedBalance.TotalExpense.ToString("N10", new CultureInfo("ru-RU"));
+				tb_CurrentExpence.Foreground = Brushes.Red;
+				tb_CurrentBalance.Text = selectedBalance.Balance.ToString("N10", new CultureInfo("ru-RU"));
+			}
+			else
+			{
+				tb_CurrentIncome.Text = selectedBalance.TotalIncome.ToString("N2", new CultureInfo("ru-RU"));
+				tb_CurrentIncome.Foreground = Brushes.Green;
+				tb_CurrentExpence.Text = selectedBalance.TotalExpense.ToString("N2", new CultureInfo("ru-RU"));
+				tb_CurrentExpence.Foreground = Brushes.Red;
+				tb_CurrentBalance.Text = selectedBalance.Balance.ToString("N2", new CultureInfo("ru-RU"));
+			}
+
 			if (selectedBalance.Balance > 0)
 			{
 				tb_CurrentBalance.Foreground = Brushes.Green;

@@ -15,6 +15,13 @@ namespace MyMiniLedger.WPF.Models
 			set => SetField(ref _coinName, value);
 		}
 
+		private string _cointype;
+		public string Cointype
+		{
+			get => _cointype;
+			set => SetField(ref _cointype, value);
+		}
+
 		private double _totalIncome;
 		public double TotalIncome
 		{
