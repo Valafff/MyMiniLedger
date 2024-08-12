@@ -214,13 +214,14 @@ namespace MyMiniLedger.WPF.WindowsModels
                     temp = ViewTools.FormatterPositions.EditPosFromTableByStatus(temp, "Closed", "Закрыта");
                     temp = ViewTools.FormatterPositions.EditDecemalPosFromTableByMarker(temp, "fiat", "0.00");
                     temp = ViewTools.FormatterPositions.EditDecemalPosFromTableByMarker(temp, "crypto", "0.00000000", CRYPTOSYMBOLSAFTERDELIMETR);
-
                     Positions.Insert(0, temp);
+
                     PositionConstruct.Income = "0";
                     PositionConstruct.Expense = "0";
                     PositionConstruct.Tag = "";
                     PositionConstruct.Notes = "";
                     PositionConstruct.OpenDate = DateTime.Today.ToString("dd.MM.yyyy H:mm:ss");
+
                     UpdateDatePickerEvent();
                 },
             canExecute => PositionConstruct.Kind is not null && PositionConstruct.Income != null && PositionConstruct.Expense != null

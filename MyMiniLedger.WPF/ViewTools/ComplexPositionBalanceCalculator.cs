@@ -90,7 +90,8 @@ namespace MyMiniLedger.WPF.ViewTools
             {
                 if (_selectedPosition != null)
                 {
-                    TotalBalance temp = new TotalBalance() { CoinName = _selectedPosition.Coin.ShortName };
+                    //Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
+					TotalBalance temp = new TotalBalance() { CoinName = _selectedPosition.Coin.ShortName };
                     foreach (var position in _selectedPositions)
                     {
                         if (position.Coin.ShortName == _selectedPosition.Coin.ShortName)
@@ -99,7 +100,7 @@ namespace MyMiniLedger.WPF.ViewTools
                             temp.TotalExpense += Double.Parse(position.Expense);
                         }
                     }
-                    temp.Balance = temp.TotalIncome - temp.TotalExpense;
+					temp.Balance = temp.TotalIncome - temp.TotalExpense;
                     if(_selectedPosition.Coin.CoinNotes != null) { temp.Cointype = _selectedPosition.Coin.CoinNotes; }
                     return temp;
                 }

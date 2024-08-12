@@ -367,8 +367,9 @@ namespace MyMiniLedger.WPF.WindowsModels
             {
                 //Перезапись позиции
                 SelectedPosition.CloseDate = FormatterPositions.SetCloseDate(SelectedPosition.Status.StatusName);
-                //await _context.PositionsTableBL.Update(Mappers.UIMapper.MapPositionUIToPositionBLL(SelectedPosition));
                 _context.PositionsTableBL.Update(Mappers.UIMapper.MapPositionUIToPositionBLL(SelectedPosition));
+
+                Thread.CurrentThread.CurrentCulture = CultureInfo.CurrentUICulture; //fix 12.08.2024 Важен порядок установки до работы с БД работает некорректно. Важно вставлять после записи чтения из БД
                 UpdateEvent();
                 TempSelectedOpenDate = null;
                 double.TryParse(SelectedPosition.Income.ToString(), out double r1);
