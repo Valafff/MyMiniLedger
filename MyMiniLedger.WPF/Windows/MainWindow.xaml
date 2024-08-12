@@ -265,42 +265,42 @@
                     <StackPanel Grid.Column="0" Grid.Row="0">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Данные о позиции № " FontSize="18" FontWeight="Bold"/>
-                            <TextBlock Text="{Binding SelectedPosition.PositionKey}" FontSize="18" FontWeight="Bold"/>
+                            <TextBox Text="{Binding SelectedPosition.PositionKey}" FontSize="18" FontWeight="Bold" IsReadOnly="True" BorderThickness="0"/>
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Номер позиции: " FontSize="18"/>
-                            <TextBlock Text="{Binding SelectedPosition.PositionKey}" FontSize="18"/>
+                            <TextBox Text="{Binding SelectedPosition.PositionKey}" FontSize="18" IsReadOnly="True" BorderThickness="0"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Дата открытия: " FontSize="18"/>
-                            <TextBlock Text="{Binding SelectedPosition.OpenDate}" FontSize="18"/>
+                            <TextBox Text="{Binding SelectedPosition.OpenDate}" FontSize="18" IsReadOnly="True" BorderThickness="0"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Дата закрытия: " FontSize="18"/>
-                            <TextBlock Text="{Binding SelectedPosition.CloseDate}" FontSize="18"/>
+                            <TextBox Text="{Binding SelectedPosition.CloseDate}" FontSize="18" IsReadOnly="True" BorderThickness="0"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Категория: " FontSize="18"/>
-                            <TextBlock Text="{Binding SelectedPosition.Kind.Category.Category}" FontSize="18"/>
+                            <TextBox Text="{Binding SelectedPosition.Kind.Category.Category}" FontSize="18" IsReadOnly="True" BorderThickness="0"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Вид: " FontSize="18"/>
-                            <TextBlock Text="{Binding SelectedPosition.Kind.Kind}" FontSize="18"/>
+                            <TextBox Text="{Binding SelectedPosition.Kind.Kind}" FontSize="18" IsReadOnly="True" BorderThickness="0"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Статус: " FontSize="18"/>
-                            <TextBlock Text="{Binding SelectedPosition.Status.StatusName}" FontSize="18" FontWeight="Bold"/>
+                            <TextBox Text="{Binding SelectedPosition.Status.StatusName}" FontSize="18" FontWeight="Bold" IsReadOnly="True" BorderThickness="0"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Тег: " FontSize="18"/>
-                            <TextBlock Text="{Binding SelectedPosition.Tag}" FontSize="18"/>
+                            <TextBox Text="{Binding SelectedPosition.Tag}" FontSize="18" IsReadOnly="True" BorderThickness="0"/>
                         </StackPanel>
                     </StackPanel>
                     <DockPanel Grid.Row="1">
                         <TextBlock Grid.Column="0" Text="Примечания: " FontSize="18"/>
                         <ScrollViewer>
-                            <TextBox Grid.Column="1" Text="{Binding SelectedPosition.Notes}" FontSize="18" TextWrapping="Wrap" BorderBrush="White" IsReadOnly="True"/>
+                            <TextBox Grid.Column="1" Text="{Binding SelectedPosition.Notes}" FontSize="18" TextWrapping="Wrap" IsReadOnly="True" BorderThickness="0"/>
                         </ScrollViewer>
                     </DockPanel>
                 </Grid>
@@ -312,23 +312,23 @@
 
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Номер позиции: " FontSize="18"/>
-                        <TextBlock Text="{Binding SelectedPosition.PositionKey}" FontSize="18"/>
+                        <TextBox Text="{Binding SelectedPosition.PositionKey}" FontSize="18" IsReadOnly="True" BorderThickness="0"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Валюта: " FontSize="18"/>
-                        <TextBlock Text="{Binding SelectedPosition.Coin.ShortName}" FontSize="18"/>
+                        <TextBox Text="{Binding SelectedPosition.Coin.ShortName}" FontSize="18" IsReadOnly="True" BorderThickness="0"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Приход: " FontSize="18"/>
-                        <TextBlock Text="{Binding SelectedPosition.Income}" FontSize="18"/>
+                        <TextBox Text="{Binding SelectedPosition.Income}" FontSize="18" IsReadOnly="True" BorderThickness="0"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Расход: " FontSize="18"/>
-                        <TextBlock Text="{Binding SelectedPosition.Expense}" FontSize="18"/>
+                        <TextBox Text="{Binding SelectedPosition.Expense}" FontSize="18" IsReadOnly="True" BorderThickness="0"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Сальдо: " FontSize="18"/>
-                        <TextBlock Text="{Binding SelectedPosition.Saldo}" FontSize="18"/>
+                        <TextBox Text="{Binding SelectedPosition.Saldo}" FontSize="18" IsReadOnly="True" BorderThickness="0"/>
                     </StackPanel>
                 </StackPanel>
 
