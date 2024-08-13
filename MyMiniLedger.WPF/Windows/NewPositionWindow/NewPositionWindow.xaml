@@ -4,6 +4,7 @@
         xmlns:wm="clr-namespace:MyMiniLedger.WPF.WindowsModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:local="clr-namespace:MyMiniLedger.WPF.Windows.NewPositionWindow"
         mc:Ignorable="d"
         Title= "{Binding Path=EditContinuePosition}" Height="260" Width="1200"
@@ -60,29 +61,43 @@
                     </Style>
                 </DatePicker.Resources>-->
             </DatePicker>
-            
+
             <ComboBox Grid.Row="1" Grid.Column="1"
                       x:Name="cb_Category"
-                      ItemsSource="{Binding tempCategories}"
+                      ItemsSource="{Binding StringCategories}"
                       SelectedIndex="0"
-                      SelectionChanged="ComboBox_Category_SelectionChanged"/>
-          
+                      SelectedItem="{Binding SelectedCategory, UpdateSourceTrigger=PropertyChanged}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectionChanged">
+                        <i:InvokeCommandAction Command="{Binding Cb_CategorySelectionChanged}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+
+            </ComboBox>
+               
+
+
             <ComboBox Grid.Row="1" Grid.Column="2"
                       x:Name="cb_Kind"
-                      ItemsSource="{Binding Path=TempKinds, UpdateSourceTrigger=PropertyChanged}"
-                      TextSearch.TextPath="Kind" 
-                      SelectedIndex="0"
+                      ItemsSource="{Binding Path=StringKinds, UpdateSourceTrigger=PropertyChanged}"
+                      SelectedItem="{Binding Path = SelectedKind,  UpdateSourceTrigger=PropertyChanged}"
+                      TextSearch.TextPath="" 
                       IsEditable="true" 
-                      SelectedItem="{Binding Path=PositionConstruct.Kind,  UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                      TextBoxBase.TextChanged="cb_Kind_TextChanged"
-                      SelectionChanged="cb_Kind_SelectionChanged">
-                <ComboBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding Path=Kind, UpdateSourceTrigger=PropertyChanged}"/>
-                    </DataTemplate>
-                </ComboBox.ItemTemplate>
+                      Text="{Binding TextKind, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}">
+
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="PreviewKeyDown">
+                        <i:InvokeCommandAction Command="{Binding Cb_KindTextChange}"/>
+                    </i:EventTrigger>
+
+                    <i:EventTrigger EventName="SelectionChanged">
+                        <i:InvokeCommandAction Command="{Binding Cb_KindSelected}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
             </ComboBox>
-           
+
+
+
             <TextBox Grid.Row="1" Grid.Column="3"
                      x:Name="tb_Income" 
                      Text="{Binding Path=PositionConstruct.Income, UpdateSourceTrigger=PropertyChanged}"

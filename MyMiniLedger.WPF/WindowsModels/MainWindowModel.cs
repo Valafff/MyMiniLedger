@@ -16,6 +16,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Documents;
+using System.Windows.Media.TextFormatting;
 
 namespace MyMiniLedger.WPF.WindowsModels
 {
@@ -24,7 +26,9 @@ namespace MyMiniLedger.WPF.WindowsModels
     public delegate void UpdateKindsIndexDelegate();
     public delegate void UpdateDatePicker();
 
-    public class MainWindowModel : BaseNotify
+	public delegate void MainLockDelegate();
+
+	public class MainWindowModel : BaseNotify
     {
         const int CRYPTOSYMBOLSAFTERDELIMETR = 10;
         const int FIATSYMBOLSAFTERDELIMETR = 2;
@@ -34,7 +38,11 @@ namespace MyMiniLedger.WPF.WindowsModels
         public event UpdateKindsIndexDelegate UpdateKindsIndexEvent;
         public event UpdateDatePicker UpdateDatePickerEvent;
 
-        public InitConfigBLL cf { get; set; }
+		public event MainLockDelegate MainLockEvent;
+
+        bool block = false;
+
+		public InitConfigBLL cf { get; set; }
         private readonly Context _context;
         private string _title = "МиниДомашняяБухгалтерия";
         public string Title
@@ -84,23 +92,44 @@ namespace MyMiniLedger.WPF.WindowsModels
             set => SetField(ref _endDate, value);
         }
 
-        public string password = string.Empty;
+        //Определение выбранной позиции в cb_Category
+        private string? _selectedCategory;
+        public string? SelectedCategory
+        {
+            get => _selectedCategory;
+            set => SetField(ref _selectedCategory, value);
+        }
+
+		private string? _selectedKind;
+		public string? SelectedKind
+		{
+			get => _selectedKind;
+			set => SetField(ref _selectedKind, value);
+		}
+
+		private string? _textKind;
+		public string? TextKind
+		{
+			get => _textKind;
+			set => SetField(ref _textKind, value);
+		}
+
+
+		public string password = string.Empty;
 
         public ObservableCollection<PositionUIModel> Positions { get; set; }
         public ObservableCollection<CategoryUIModel> Categories { get; set; }
         public ObservableCollection<CoinUIModel> Coins { get; set; }
         public ObservableCollection<KindUIModel> Kinds { get; set; }
 
-        //Для ограниченного выбора при фильтрации в комбобоксе отдельного окна
-        public ObservableCollection<KindUIModel> TempKinds { get; set; }
-        //Для ограниченного выбора при фильтрации в комбобоксе главного окна
-        public ObservableCollection<KindUIModel> TempKindsMain { get; set; }
+		public ObservableCollection<string> StringCategories { get; set; } = new ObservableCollection<string>();
+        public ObservableCollection<string> StringKinds { get; set; } = new ObservableCollection<string>();
 
-        public ObservableCollection<StatusUIModel> StatusesForService { get; set; }
+		public ObservableCollection<StatusUIModel> StatusesForService { get; set; }
         public ObservableCollection<StatusUIModel> StatusesForUser { get; set; }
 
-        //Объявление команд
-        public LambdaCommand OpenCategoryWindow { get; set; }
+		//Объявление команд
+		public LambdaCommand OpenCategoryWindow { get; set; }
         public LambdaCommand OpenKindWindow { get; set; }
         public LambdaCommand OpenCoinWindow { get; set; }
         public LambdaCommand OpenNewPositionWindow { get; set; }
@@ -110,28 +139,28 @@ namespace MyMiniLedger.WPF.WindowsModels
         public LambdaCommand InsertNewPosition { get; set; }
         public LambdaCommand DeletePosition { get; set; }
 
-
-        public LambdaCommand RefreshPositions { get; set; }
+		public LambdaCommand RefreshPositions { get; set; }
         public LambdaCommand SearchByDateRange { get; set; }
         public int MaxPosKey;
 
-        public ObservableCollection<string> tempCategories { get; set; } = new ObservableCollection<string>();
+        //Категории и виды
+		public LambdaCommand Cb_KindTextChange { get; set; }
+		public LambdaCommand Cb_CategorySelectionChanged { get; set; }
 
 
         public MainWindowModel(string _pass)
         {
-            password = _pass;
+            MainLockEvent += SetBlock;
+
+			password = _pass;
             //ToDo В файле сделать базовые настройки строк, дат, пользователя 
             cf = new BLL.InitConfigBLL("config.json", password);
-
-            ////Тестовое открытие формы при запуске приложения
-            //new CategoryWindow().Show();
 
             _context = new BLL.Context.Context();
             //Инициализация позиций
             BLL.Context.ListOfPositions tempPos = new BLL.Context.ListOfPositions();
 
-            List<PositionUIModel> tempPositions = new List<PositionUIModel>();
+			List<PositionUIModel> tempPositions = new List<PositionUIModel>();
             tempPositions = tempPos.GetAll().Select(pos => Mappers.UIMapper.MapPositionBLLToPositionUI(pos)).ToList();
 
             //Удаление Deleted позиций
@@ -145,23 +174,22 @@ namespace MyMiniLedger.WPF.WindowsModels
             tempPositions.Sort();
 
             Positions = new ObservableCollection<PositionUIModel>(tempPositions);
-            //Positions = Positions.AsList().Sort();
 
             //Инициализация категорий
             Categories = CategoriesInicialization();
+			SetStringCaregories(StringCategories, Categories);
+            SelectedCategory = StringCategories.FirstOrDefault();
 
-            //Инициализация монет
-            Coins = CoinsInicialization();
+			//Инициализация монет
+			Coins = CoinsInicialization();
 
             //Инициализация видов
             Kinds = KindsInicialization();
-            TempKinds = KindsInicialization();
-            TempKindsMain = KindsInicialization();
+			SetStringKinds(StringKinds, Kinds, SelectedCategory);
+			SelectedKind = StringKinds.FirstOrDefault();
 
-            setTempCaregories(tempCategories, Categories);
-
-            //Инициализация статусов
-            BLL.Context.ListOfStatuses tempStat = new BLL.Context.ListOfStatuses();
+			//Инициализация статусов
+			BLL.Context.ListOfStatuses tempStat = new BLL.Context.ListOfStatuses();
             List<StatusUIModel> tempStatuses = tempStat.GetAll().Select(stat => Mappers.UIMapper.MapStatusBLLToStatusUI(stat)).ToList();
             StatusesForService = new ObservableCollection<StatusUIModel>(tempStatuses);
 
@@ -194,8 +222,11 @@ namespace MyMiniLedger.WPF.WindowsModels
             InsertNewPosition = new LambdaCommand(
                 async execute =>
                 {
-                    //Добавление новой позиции
-                    PositionConstruct.CloseDate = ViewTools.FormatterPositions.SetCloseDate(PositionConstruct.Status.StatusName);
+					//Добавление новой позиции
+                    //Инициализация вида и категории
+					PositionConstruct.Kind = Kinds.FirstOrDefault(k => k.Kind == SelectedKind);
+					//Форматирование времени
+					PositionConstruct.CloseDate = ViewTools.FormatterPositions.SetCloseDate(PositionConstruct.Status.StatusName);
                     //dp_OpenDate_SelectedDateChanged задает время в виде string конвертирую его в datetime и прибавляю настоящее время
                     DateTime t = DateTime.ParseExact(PositionConstruct.OpenDate, "dd.MM.yyyy H:mm:ss", CultureInfo.InvariantCulture);
                     t += DateTime.Now.TimeOfDay;
@@ -262,7 +293,40 @@ namespace MyMiniLedger.WPF.WindowsModels
             },
             canExecute => SelectedPosition is not null);
 
-        }
+            //Категории и виды
+			Cb_CategorySelectionChanged = new LambdaCommand(execute =>
+			{
+				//Console.WriteLine("Cb_CategorySelectionChanged");
+				StringKinds.Clear();
+				SetStringKinds(StringKinds, Kinds, SelectedCategory);
+				SelectedKind = StringKinds.FirstOrDefault();
+				Console.WriteLine(SelectedKind);
+			},
+		  canExecute => !block);
+
+			Cb_KindTextChange = new LambdaCommand(execute =>
+			{
+				MainLockEvent();
+				if (TextKind != null && TextKind != "")
+				{
+					if (!StringKinds.Contains(SelectedKind))
+					{
+						SetStringKinds(StringKinds, Kinds);
+					}
+				}
+				else
+				{
+					SetStringKinds(StringKinds, Kinds);
+				}
+
+				if (Kinds.Any(k => k.Kind == TextKind))
+				{
+					SelectedCategory = (Kinds.First(k => k.Kind == TextKind)).Category.Category;
+				}
+				block = false;
+			},
+			canExecute => true);
+		}
 
         void setStatusesForUser(ObservableCollection<StatusUIModel> _input)
         {
@@ -304,19 +368,12 @@ namespace MyMiniLedger.WPF.WindowsModels
             var tc = CategoriesInicialization();
             foreach (var cat in tc) { Categories.Add(cat); }
 
-            tempCategories.Clear();
-            setTempCaregories(tempCategories, Categories);
+            StringCategories.Clear();
+			SetStringCaregories(StringCategories, Categories);
             UpdateCategoriesIndexEvent();
         }
 
-        //Инициализация временных категорий для добавления новой позиции
-        public void setTempCaregories(ObservableCollection<string> t, ObservableCollection<CategoryUIModel> _cat)
-        {
-            foreach (var stat in _cat)
-            {
-                t.Add(stat.Category);
-            }
-        }
+
 
         //Инициализация видов
         public ObservableCollection<KindUIModel> KindsInicialization()
@@ -330,12 +387,13 @@ namespace MyMiniLedger.WPF.WindowsModels
         public void UpdateKinds()
         {
             Kinds.Clear();
-            TempKinds.Clear();
-            TempKindsMain.Clear();
+            //TempKinds.Clear();
+            //TempKindsMain.Clear();
 
             var tk = KindsInicialization();
-            foreach (var k in tk) { Kinds.Add(k); TempKinds.Add(k); TempKindsMain.Add(k); }
-            UpdateKindsIndexEvent();
+            //foreach (var k in tk) { Kinds.Add(k); TempKinds.Add(k); TempKindsMain.Add(k); }
+			foreach (var k in tk) { Kinds.Add(k); }
+			UpdateKindsIndexEvent();
         }
 
         //Инициализация монет
@@ -414,6 +472,44 @@ namespace MyMiniLedger.WPF.WindowsModels
                 {
                     Positions.Insert(i, item);
                     i++;
+                }
+            }
+        }
+
+		void SetBlock()
+		{
+			block = true;
+		}
+
+		//Инициализация временных категорий для добавления новой позиции
+		public void SetStringCaregories(ObservableCollection<string> _output, ObservableCollection<CategoryUIModel> _input)
+		{
+			_output.Clear();
+			foreach (var stat in _input)
+			{
+				_output.Add(stat.Category);
+			}
+		}
+
+		//Добавление всех категорий из входящей коллекции
+		public void SetStringKinds(ObservableCollection<string> _output, ObservableCollection<KindUIModel> _input)
+		{
+			_output.Clear();
+			foreach (var stat in _input)
+			{
+				_output.Add(stat.Kind);
+			}
+		}
+
+        //Добавление видов по string категории
+        public void SetStringKinds(ObservableCollection<string> _output, ObservableCollection<KindUIModel> _input, string _category)
+        {
+            _output.Clear();
+            foreach (var stat in _input)
+            {
+                if (stat.Category.Category == _category)
+                {
+                    _output.Add(stat.Kind);
                 }
             }
         }

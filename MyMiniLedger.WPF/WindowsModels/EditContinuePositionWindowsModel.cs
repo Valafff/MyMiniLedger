@@ -229,11 +229,10 @@ namespace MyMiniLedger.WPF.WindowsModels
 
             StringCategories = new ObservableCollection<string>();
 
-            Kinds = new ObservableCollection<KindUIModel>();  //Изначально подгруженные виды
+			StringKinds = new ObservableCollection<string>();
 
-            StringKinds = new ObservableCollection<string>();
+			Kinds = new ObservableCollection<KindUIModel>();  //Изначально подгруженные виды
 
-            //TempKinds = new ObservableCollection<KindUIModel>(); // Не подгружаются
 
             Coins = new ObservableCollection<CoinUIModel>(); //Изначально подгруженные монеты
 

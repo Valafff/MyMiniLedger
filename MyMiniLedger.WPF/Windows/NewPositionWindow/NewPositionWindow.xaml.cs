@@ -33,63 +33,6 @@ namespace MyMiniLedger.WPF.Windows.NewPositionWindow
 			(DataContext as MainWindowModel).UpdateDatePickerEvent += UpdateDatePicker;
 		}
 
-		//Работа с автоматизированным вводом категории и вида для интерфейса юзера (в конструкт вид передается как объект уже с категорией) начало
-		private void ComboBox_Category_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-			((MainWindowModel)DataContext).TempKinds.Clear();
-			foreach (var item in ((MainWindowModel)DataContext).Kinds.AsList())
-			{
-				if (((System.Windows.Controls.ComboBox)sender).SelectedItem != null)
-				{
-					if (((System.Windows.Controls.ComboBox)sender).SelectedItem.ToString() == item.Category.Category)
-					{
-						((MainWindowModel)DataContext).TempKinds.Add(item);
-					}
-				}
-			}
-
-			if (cb_Kind != null)
-			{
-				cb_Kind.SelectedIndex = 0;
-			}
-
-			//Как-то, но работает требуется при первоначальной инициализации
-			if (((MainWindowModel)DataContext).TempKinds.Count > 0)
-			{
-				((MainWindowModel)DataContext).PositionConstruct.Kind = ((MainWindowModel)DataContext).TempKinds[0];
-			}
-
-		}
-
-		private void cb_Kind_TextChanged(object sender, TextChangedEventArgs e)
-		{
-			if (cb_Kind.Text != "" & cb_Kind.Text != null)
-			{
-				foreach (var item in ((MainWindowModel)DataContext).TempKinds)
-				{
-					if (item.Kind == cb_Kind.Text)
-					{
-						return;
-					}
-				}
-				((MainWindowModel)DataContext).TempKinds.Clear();
-				foreach (var item in ((MainWindowModel)DataContext).Kinds.AsList())
-				{
-					((MainWindowModel)DataContext).TempKinds.Add(item);
-				}
-			}
-		}
-
-		private void cb_Kind_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-			if (cb_Kind.SelectedIndex >= 0)
-			{
-				var temp = ((MainWindowModel)DataContext).TempKinds[cb_Kind.SelectedIndex];
-				cb_Category.SelectedItem = temp.Category.Category;
-			}
-		}
-		//Работа с автоматизированным вводом категории и вида для интерфейса юзера (в конструкт вид передается как объект уже с категорией) конец
-
 		private void cb_Coin_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (((CoinUIModel)cb_Coin.SelectedItem) != null)
@@ -226,6 +169,7 @@ namespace MyMiniLedger.WPF.Windows.NewPositionWindow
             Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.CurrentUICulture;
             dp_OpenDate.SelectedDate = DateTime.Today;
 		}
+
 	}
 }
 

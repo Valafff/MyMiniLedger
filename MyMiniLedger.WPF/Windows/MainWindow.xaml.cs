@@ -17,8 +17,6 @@ using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Globalization;
 
 
-
-
 namespace MyMiniLedger.WPF
 {
 	public partial class MainWindow : Window
@@ -133,61 +131,6 @@ namespace MyMiniLedger.WPF
 				((MainWindowModel)DataContext).PositionConstruct.OpenDate = sender.ToString();
 			}
 		}
-
-		private void ComboBox_Category_SelectionChanged_MainWindow(object sender, SelectionChangedEventArgs e)
-		{
-			((MainWindowModel)DataContext).TempKindsMain.Clear();
-			foreach (var item in ((MainWindowModel)DataContext).Kinds.AsList())
-			{
-				if (cb_Category.SelectedItem != null)
-				{
-					if (((System.Windows.Controls.ComboBox)sender).SelectedItem.ToString() == item.Category.Category)
-					{
-						((MainWindowModel)DataContext).TempKindsMain.Add(item);
-					}
-				}
-			}
-
-			if (cb_Kind != null)
-			{
-				cb_Kind.SelectedIndex = 0;
-			}
-
-			if (((MainWindowModel)DataContext).TempKindsMain.Count > 0)
-			{
-				((MainWindowModel)DataContext).PositionConstruct.Kind = ((MainWindowModel)DataContext).TempKindsMain[0];
-			}
-		}
-
-		private void cb_Kind_TextChanged_MainWindow(object sender, TextChangedEventArgs e)
-		{
-			if (cb_Kind.Text != "" & cb_Kind.Text != null)
-			{
-				foreach (var item in ((MainWindowModel)DataContext).TempKindsMain)
-				{
-					if (item.Kind == cb_Kind.Text)
-					{
-						return;
-					}
-				}
-				((MainWindowModel)DataContext).TempKindsMain.Clear();
-				foreach (var item in ((MainWindowModel)DataContext).Kinds.AsList())
-				{
-					((MainWindowModel)DataContext).TempKindsMain.Add(item);
-
-				}
-			}
-		}
-
-		private void cb_Kind_SelectionChanged_MainWindow(object sender, SelectionChangedEventArgs e)
-		{
-			if (cb_Kind.SelectedIndex >= 0)
-			{
-				var temp = ((MainWindowModel)DataContext).TempKindsMain[cb_Kind.SelectedIndex];
-				cb_Category.SelectedItem = temp.Category.Category;
-			}
-		}
-
 
 		//Работа с заполнением полей income
 		//Обработка ввода корректных символов и проверка на правильность написания десятичной дроби
