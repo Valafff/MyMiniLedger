@@ -123,60 +123,62 @@
             </Grid>
         </Grid>
 
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="0.4*"/>
-                <RowDefinition Height="2.0*"/>
-                <RowDefinition Height="1.2*"/>
-            </Grid.RowDefinitions>
-
-            <GroupBox Header="Создание новой позиции">
-                <Grid Grid.Row="0">
+        <TabControl>
+            <TabItem Header="Главная панель">
+                <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
+                        <RowDefinition Height="0.4*"/>
+                        <RowDefinition Height="2.0*"/>
+                        <RowDefinition Height="1.2*"/>
                     </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
 
-                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Дата открытия позиции" VerticalAlignment="Center"/>
-                    <TextBlock Grid.Row="0" Grid.Column="1" Text="Категория"  VerticalAlignment="Center"/>
-                    <TextBlock Grid.Row="0" Grid.Column="2" Text="Вид"  VerticalAlignment="Center"/>
-                    <TextBlock Grid.Row="0" Grid.Column="3" Text="Приход"  VerticalAlignment="Center"/>
-                    <TextBlock Grid.Row="0" Grid.Column="4" Text="Расход" VerticalAlignment="Center"/>
-                    <TextBlock Grid.Row="0" Grid.Column="5" Text="Валюта"  VerticalAlignment="Center"/>
-                    <TextBlock Grid.Row="0" Grid.Column="6" Text="Статус"  VerticalAlignment="Center"/>
-                    <TextBlock Grid.Row="0" Grid.Column="7" Text="Тег"  VerticalAlignment="Center"/>
-                    <TextBlock Grid.Row="0" Grid.Column="8" Text="Примечания"  VerticalAlignment="Center"/>
+                    <GroupBox Header="Создание новой позиции">
+                        <Grid Grid.Row="0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
 
-                    <DatePicker  Grid.Row="1" Grid.Column="0" x:Name="dp_OpenDate" SelectedDateChanged="dp_OpenDate_SelectedDateChanged" />
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Дата открытия позиции" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="Категория"  VerticalAlignment="Center"/>
+                            <TextBlock Grid.Row="0" Grid.Column="2" Text="Вид"  VerticalAlignment="Center"/>
+                            <TextBlock Grid.Row="0" Grid.Column="3" Text="Приход"  VerticalAlignment="Center"/>
+                            <TextBlock Grid.Row="0" Grid.Column="4" Text="Расход" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Row="0" Grid.Column="5" Text="Валюта"  VerticalAlignment="Center"/>
+                            <TextBlock Grid.Row="0" Grid.Column="6" Text="Статус"  VerticalAlignment="Center"/>
+                            <TextBlock Grid.Row="0" Grid.Column="7" Text="Тег"  VerticalAlignment="Center"/>
+                            <TextBlock Grid.Row="0" Grid.Column="8" Text="Примечания"  VerticalAlignment="Center"/>
 
-                    <ComboBox Grid.Row="1" Grid.Column="1"
+                            <DatePicker  Grid.Row="1" Grid.Column="0" x:Name="dp_OpenDate" SelectedDateChanged="dp_OpenDate_SelectedDateChanged" />
+
+                            <ComboBox Grid.Row="1" Grid.Column="1"
                       x:Name="cb_Category"
                       ItemsSource="{Binding StringCategories}"
                       SelectedIndex="0"
                       SelectedItem="{Binding SelectedCategory, UpdateSourceTrigger=PropertyChanged}">
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="SelectionChanged">
-                                <i:InvokeCommandAction Command="{Binding Cb_CategorySelectionChanged}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="SelectionChanged">
+                                        <i:InvokeCommandAction Command="{Binding Cb_CategorySelectionChanged}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
 
-                    </ComboBox>
+                            </ComboBox>
 
 
 
-                    <ComboBox Grid.Row="1" Grid.Column="2"
+                            <ComboBox Grid.Row="1" Grid.Column="2"
                       x:Name="cb_Kind"
                       ItemsSource="{Binding Path=StringKinds, UpdateSourceTrigger=PropertyChanged}"
                       SelectedItem="{Binding Path = SelectedKind,  UpdateSourceTrigger=PropertyChanged}"
@@ -184,101 +186,144 @@
                       IsEditable="true" 
                       Text="{Binding TextKind, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}">
 
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="PreviewKeyDown">
-                                <i:InvokeCommandAction Command="{Binding Cb_KindTextChange}"/>
-                            </i:EventTrigger>
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="PreviewKeyDown">
+                                        <i:InvokeCommandAction Command="{Binding Cb_KindTextChange}"/>
+                                    </i:EventTrigger>
 
-                            <i:EventTrigger EventName="SelectionChanged">
-                                <i:InvokeCommandAction Command="{Binding Cb_KindSelected}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
-                    </ComboBox>
+                                    <i:EventTrigger EventName="SelectionChanged">
+                                        <i:InvokeCommandAction Command="{Binding Cb_KindSelected}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </ComboBox>
 
-                    <TextBox  Grid.Row="1" Grid.Column="3"
+                            <TextBox  Grid.Row="1" Grid.Column="3"
                 x:Name="tb_Income" 
                 Text="{Binding Path=PositionConstruct.Income, UpdateSourceTrigger=PropertyChanged}"
                 PreviewTextInput="tb_Income_PreviewTextInput_MainWindow"
                 PreviewKeyDown="tb_Income_PreviewKeyDown_MainWindow"
                 TextChanged="tb_Income_TextChanged_MainWindow"/>
 
-                    <TextBox Grid.Row="1" Grid.Column="4" 
+                            <TextBox Grid.Row="1" Grid.Column="4" 
                 x:Name="tb_Expense"  
                 Text="{Binding Path=PositionConstruct.Expense, UpdateSourceTrigger=PropertyChanged}"
                 PreviewTextInput="tb_Expense_PreviewTextInput_MainWindow"
                 PreviewKeyDown="tb_Expense_PreviewKeyDown_MainWindow"
                 TextChanged="tb_Expense_TextChanged_MainWindow"/>
 
-                    <ComboBox Grid.Row="1" Grid.Column="5" x:Name="cb_Coin" ItemsSource="{Binding Path=Coins, UpdateSourceTrigger=PropertyChanged }" SelectedIndex="0" SelectionChanged ="cb_Coin_SelectionChanged_MainWindow">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Path=ShortName}"/>
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
+                            <ComboBox Grid.Row="1" Grid.Column="5" x:Name="cb_Coin" ItemsSource="{Binding Path=Coins, UpdateSourceTrigger=PropertyChanged }" SelectedIndex="0" SelectionChanged ="cb_Coin_SelectionChanged_MainWindow">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Path=ShortName}"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
 
-                    <ComboBox Grid.Row="1" Grid.Column="6" x:Name="cb_Status" ItemsSource="{Binding Path=StatusesForUser, UpdateSourceTrigger=PropertyChanged}" SelectedIndex="0" SelectionChanged="tb_Status_SelectionChanged_MainWindow">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Path=StatusName, UpdateSourceTrigger=PropertyChanged}"/>
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
+                            <ComboBox Grid.Row="1" Grid.Column="6" x:Name="cb_Status" ItemsSource="{Binding Path=StatusesForUser, UpdateSourceTrigger=PropertyChanged}" SelectedIndex="0" SelectionChanged="tb_Status_SelectionChanged_MainWindow">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Path=StatusName, UpdateSourceTrigger=PropertyChanged}"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
 
-                    <TextBox Grid.Row="1" Grid.Column="7" Text="{Binding Path=PositionConstruct.Tag, UpdateSourceTrigger=PropertyChanged}"/>
+                            <TextBox Grid.Row="1" Grid.Column="7" Text="{Binding Path=PositionConstruct.Tag, UpdateSourceTrigger=PropertyChanged}"/>
 
-                    <TextBox Grid.Row="1"  Grid.Column="8" TextWrapping="Wrap"  VerticalScrollBarVisibility="Auto" Text="{Binding Path=PositionConstruct.Notes, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                            <TextBox Grid.Row="1"  Grid.Column="8" TextWrapping="Wrap"  VerticalScrollBarVisibility="Auto" Text="{Binding Path=PositionConstruct.Notes, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
 
-                    <Button Grid.Row="0"  Grid.Column="9" Content="Записать позицию" Grid.RowSpan="2"  Margin="10,5,5,5" Command="{Binding Path=InsertNewPosition}"/>
+                            <Button Grid.Row="0"  Grid.Column="9" Content="Записать позицию" Grid.RowSpan="2"  Margin="10,5,5,5" Command="{Binding Path=InsertNewPosition}"/>
 
-                </Grid>
-            </GroupBox>
+                        </Grid>
+                    </GroupBox>
 
-            <DataGrid Grid.Row="1" ItemsSource="{Binding Path=Positions, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                    <DataGrid x:Name="mainDataGrid" Grid.Row="1" ItemsSource="{Binding Path=Positions, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                       AutoGenerateColumns="False" 
                       CanUserAddRows="False"
                       CanUserDeleteRows="False"
                       SelectionChanged="DataGrid_SelectionChanged_MainWindow"
                       PreviewKeyDown="DataGrid_PreviewKeyDown"
-                      RowHeight="20">
+                      RowHeight="20" Sorting="DataGrid_Sorting">
 
-                <DataGrid.ItemContainerStyle>
-                    <Style TargetType="DataGridRow">
-                        <EventSetter x:Name="Row_DoubleClick" Event="MouseDoubleClick" Handler="Row_DoubleClick"/>
-                    </Style>
-                </DataGrid.ItemContainerStyle>
+                        <DataGrid.ItemContainerStyle>
+                            <Style TargetType="DataGridRow">
+                                <EventSetter x:Name="Row_DoubleClick" Event="MouseDoubleClick" Handler="Row_DoubleClick"/>
+                            </Style>
+                        </DataGrid.ItemContainerStyle>
 
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Номер поз." Binding="{Binding Path=PositionKey, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsReadOnly="True" Width="*"/>
-                    <DataGridTextColumn Header="Дата откр. поз." Binding="{Binding Path=OpenDate, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsReadOnly="True" Width="*"/>
-                    <DataGridTextColumn Header="Дата закр. поз." Binding="{Binding Path=CloseDate, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsReadOnly="True" Width="*"/>
-                    <DataGridTextColumn Header="Категория" Binding="{Binding Path=Kind.Category.Category, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsReadOnly="True" Width="*"/>
-                    <DataGridTextColumn Header="Вид" Binding="{Binding Path=Kind.Kind, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsReadOnly="True" Width="*"/>
-                    <DataGridTextColumn Header="Приход" Binding="{Binding Path=Income, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsReadOnly="True" Width="*"/>
-                    <DataGridTextColumn Header="Расход" Binding="{Binding Path=Expense, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsReadOnly="True" Width="*"/>
-                    <DataGridTextColumn Header="Сальдо" Binding="{Binding Path=Saldo, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsReadOnly="True" Width="*"/>
-                    <DataGridTextColumn Header="Валюта" Binding="{Binding Path=Coin.ShortName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsReadOnly="True" Width="*"/>
-                    <DataGridTextColumn Header="Статус" Binding="{Binding Path=Status.StatusName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsReadOnly="True" Width="*"/>
-                    <DataGridTextColumn Header="Тэг" Binding="{Binding Path=Tag, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsReadOnly="True" Width="*"/>
-                    <DataGridTextColumn Header="Примечания" Binding="{Binding Path=Notes, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsReadOnly="True" Width="*"/>
-                </DataGrid.Columns>
-            </DataGrid>
-            <Grid Grid.Row="2">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*"/>
-                    <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="1*"/>
-                </Grid.ColumnDefinitions>
-                <Grid Grid.Column="0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="5*"/>
-                        <RowDefinition Height="4*"/>
-                    </Grid.RowDefinitions>
-                    <ScrollViewer>
-                        <StackPanel Grid.Column="0" Grid.Row="0">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Номер поз." Binding="{Binding Path=PositionKey, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsReadOnly="True" Width="*"/>
+                            <DataGridTextColumn Header="Дата откр. поз." Binding="{Binding Path=OpenDate, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsReadOnly="True" Width="*"/>
+                            <DataGridTextColumn Header="Дата закр. поз." Binding="{Binding Path=CloseDate, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsReadOnly="True" Width="*"/>
+                            <DataGridTextColumn Header="Категория" Binding="{Binding Path=Kind.Category.Category, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsReadOnly="True" Width="*"/>
+                            <DataGridTextColumn Header="Вид" Binding="{Binding Path=Kind.Kind, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsReadOnly="True" Width="*"/>
+                            <DataGridTextColumn Header="Приход" Binding="{Binding Path=Income, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsReadOnly="True" Width="*"/>
+                            <DataGridTextColumn Header="Расход" Binding="{Binding Path=Expense, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsReadOnly="True" Width="*"/>
+                            <DataGridTextColumn Header="Сальдо" Binding="{Binding Path=Saldo, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsReadOnly="True" Width="*"/>
+                            <DataGridTextColumn Header="Валюта" Binding="{Binding Path=Coin.ShortName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsReadOnly="True" Width="*"/>
+                            <DataGridTextColumn Header="Статус" Binding="{Binding Path=Status.StatusName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsReadOnly="True" Width="*"/>
+                            <DataGridTextColumn Header="Тэг" Binding="{Binding Path=Tag, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsReadOnly="True" Width="*"/>
+                            <DataGridTextColumn Header="Примечания" Binding="{Binding Path=Notes, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsReadOnly="True" Width="*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid Grid.Column="0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="5*"/>
+                                <RowDefinition Height="4*"/>
+                            </Grid.RowDefinitions>
+                            <ScrollViewer>
+                                <StackPanel Grid.Column="0" Grid.Row="0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Данные о позиции № " FontSize="18" FontWeight="Bold"/>
+                                        <TextBox Text="{Binding SelectedPosition.PositionKey}" FontSize="18" FontWeight="Bold" IsReadOnly="True" BorderThickness="0"/>
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Номер позиции: " FontSize="18"/>
+                                        <TextBox Text="{Binding SelectedPosition.PositionKey}" FontSize="18" IsReadOnly="True" BorderThickness="0"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Дата открытия: " FontSize="18"/>
+                                        <TextBox Text="{Binding SelectedPosition.OpenDate}" FontSize="18" IsReadOnly="True" BorderThickness="0"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Дата закрытия: " FontSize="18"/>
+                                        <TextBox Text="{Binding SelectedPosition.CloseDate}" FontSize="18" IsReadOnly="True" BorderThickness="0"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Категория: " FontSize="18"/>
+                                        <TextBox Text="{Binding SelectedPosition.Kind.Category.Category}" FontSize="18" IsReadOnly="True" BorderThickness="0"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Вид: " FontSize="18"/>
+                                        <TextBox Text="{Binding SelectedPosition.Kind.Kind}" FontSize="18" IsReadOnly="True" BorderThickness="0"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Статус: " FontSize="18"/>
+                                        <TextBox Text="{Binding SelectedPosition.Status.StatusName}" FontSize="18" FontWeight="Bold" IsReadOnly="True" BorderThickness="0"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Тег: " FontSize="18"/>
+                                        <TextBox Text="{Binding SelectedPosition.Tag}" FontSize="18" IsReadOnly="True" BorderThickness="0"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </ScrollViewer>
+                            <DockPanel Grid.Row="1">
+                                <TextBlock Grid.Column="0" Text="Примечания: " FontSize="18"/>
+                                <ScrollViewer>
+                                    <TextBox Grid.Column="1" Text="{Binding SelectedPosition.Notes}" FontSize="18" TextWrapping="Wrap" IsReadOnly="True" BorderThickness="0"/>
+                                </ScrollViewer>
+                            </DockPanel>
+                        </Grid>
+
+                        <StackPanel Grid.Column="1">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Данные о позиции № " FontSize="18" FontWeight="Bold"/>
-                                <TextBox Text="{Binding SelectedPosition.PositionKey}" FontSize="18" FontWeight="Bold" IsReadOnly="True" BorderThickness="0"/>
+                                <TextBlock Text="Данные по расходам " FontSize="18" FontWeight="Bold"/>
                             </StackPanel>
 
                             <StackPanel Orientation="Horizontal">
@@ -286,75 +331,37 @@
                                 <TextBox Text="{Binding SelectedPosition.PositionKey}" FontSize="18" IsReadOnly="True" BorderThickness="0"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Дата открытия: " FontSize="18"/>
-                                <TextBox Text="{Binding SelectedPosition.OpenDate}" FontSize="18" IsReadOnly="True" BorderThickness="0"/>
+                                <TextBlock Text="Валюта: " FontSize="18"/>
+                                <TextBox Text="{Binding SelectedPosition.Coin.ShortName}" FontSize="18" IsReadOnly="True" BorderThickness="0"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Дата закрытия: " FontSize="18"/>
-                                <TextBox Text="{Binding SelectedPosition.CloseDate}" FontSize="18" IsReadOnly="True" BorderThickness="0"/>
+                                <TextBlock Text="Приход: " FontSize="18"/>
+                                <TextBox x:Name="tb_IncomeInfo" Text="{Binding SelectedPosition.Income}" FontSize="18" IsReadOnly="True" BorderThickness="0"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Категория: " FontSize="18"/>
-                                <TextBox Text="{Binding SelectedPosition.Kind.Category.Category}" FontSize="18" IsReadOnly="True" BorderThickness="0"/>
+                                <TextBlock Text="Расход: " FontSize="18"/>
+                                <TextBox x:Name="tb_ExpenseInfo" Text="{Binding SelectedPosition.Expense}" FontSize="18" IsReadOnly="True" BorderThickness="0"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Вид: " FontSize="18"/>
-                                <TextBox Text="{Binding SelectedPosition.Kind.Kind}" FontSize="18" IsReadOnly="True" BorderThickness="0"/>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Статус: " FontSize="18"/>
-                                <TextBox Text="{Binding SelectedPosition.Status.StatusName}" FontSize="18" FontWeight="Bold" IsReadOnly="True" BorderThickness="0"/>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Тег: " FontSize="18"/>
-                                <TextBox Text="{Binding SelectedPosition.Tag}" FontSize="18" IsReadOnly="True" BorderThickness="0"/>
+                                <TextBlock Text="Сальдо: " FontSize="18"/>
+                                <TextBox x:Name="tb_SaldoInfo" Text="{Binding SelectedPosition.Saldo}" FontSize="18" IsReadOnly="True" BorderThickness="0"/>
                             </StackPanel>
                         </StackPanel>
-                    </ScrollViewer>
-                    <DockPanel Grid.Row="1">
-                        <TextBlock Grid.Column="0" Text="Примечания: " FontSize="18"/>
-                        <ScrollViewer>
-                            <TextBox Grid.Column="1" Text="{Binding SelectedPosition.Notes}" FontSize="18" TextWrapping="Wrap" IsReadOnly="True" BorderThickness="0"/>
-                        </ScrollViewer>
-                    </DockPanel>
+
+                        <StackPanel Grid.Column="2">
+                            <Button Content="Создать новую позицию" Margin="5,10,5,5" Height="30" Command="{Binding Path=OpenNewPositionWindow}"/>
+                            <Button Content="Редактировать/Продолжить позицию"  Margin="5,5,5,5" Height="30"  Command="{Binding Path=OpenEditContinueWindow}"/>
+                            <Button Content="Удалить позицию"  Margin="5,5,5,5" Height="30" Command="{Binding Path=DeletePosition}"/>
+                            <Button Content="Принудительно обновить данные"  Margin="5,5,5,5" Height="30" Command="{Binding Path=RefreshPositions}"/>
+                            <Button Content="Завершить работу" Margin="5,5,5,10" Height="30" Click="MenuItem_Click_Close"/>
+                        </StackPanel>
+                    </Grid>
                 </Grid>
-
-                <StackPanel Grid.Column="1">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Данные по расходам " FontSize="18" FontWeight="Bold"/>
-                    </StackPanel>
-
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Номер позиции: " FontSize="18"/>
-                        <TextBox Text="{Binding SelectedPosition.PositionKey}" FontSize="18" IsReadOnly="True" BorderThickness="0"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Валюта: " FontSize="18"/>
-                        <TextBox Text="{Binding SelectedPosition.Coin.ShortName}" FontSize="18" IsReadOnly="True" BorderThickness="0"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Приход: " FontSize="18"/>
-                        <TextBox x:Name="tb_IncomeInfo" Text="{Binding SelectedPosition.Income}" FontSize="18" IsReadOnly="True" BorderThickness="0"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Расход: " FontSize="18"/>
-                        <TextBox x:Name="tb_ExpenseInfo" Text="{Binding SelectedPosition.Expense}" FontSize="18" IsReadOnly="True" BorderThickness="0"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Сальдо: " FontSize="18"/>
-                        <TextBox x:Name="tb_SaldoInfo" Text="{Binding SelectedPosition.Saldo}" FontSize="18" IsReadOnly="True" BorderThickness="0"/>
-                    </StackPanel>
-                </StackPanel>
-
-                <StackPanel Grid.Column="2">
-                    <Button Content="Создать новую позицию" Margin="5,10,5,5" Height="30" Command="{Binding Path=OpenNewPositionWindow}"/>
-                    <Button Content="Редактировать/Продолжить позицию"  Margin="5,5,5,5" Height="30"  Command="{Binding Path=OpenEditContinueWindow}"/>
-                    <Button Content="Удалить позицию"  Margin="5,5,5,5" Height="30" Command="{Binding Path=DeletePosition}"/>
-                    <Button Content="Принудительно обновить данные"  Margin="5,5,5,5" Height="30" Command="{Binding Path=RefreshPositions}"/>
-                    <Button Content="Завершить работу" Margin="5,5,5,10" Height="30" Click="MenuItem_Click_Close"/>
-                </StackPanel>
-            </Grid>
-        </Grid>
+            </TabItem>
+            <TabItem Header="Валюты">
+                
+            </TabItem>
+        </TabControl>
     </DockPanel>
 
 </Window>

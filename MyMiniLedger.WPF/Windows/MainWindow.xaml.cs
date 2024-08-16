@@ -15,6 +15,9 @@ using System.IO;
 using System.Text.Json;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Globalization;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using MyMiniLedger.BLL.Models;
 
 
 namespace MyMiniLedger.WPF
@@ -304,11 +307,11 @@ namespace MyMiniLedger.WPF
 				{
 					MessageBox.Show("Путь к файлу БД задан неверно!");
 				}
-            }
+			}
 			else
 			{
-                MessageBox.Show("Путь к файлу БД не указан!");
-            }
+				MessageBox.Show("Путь к файлу БД не указан!");
+			}
 		}
 
 		private void MenuItem_Click_newBackup(object sender, RoutedEventArgs e)
@@ -329,10 +332,256 @@ namespace MyMiniLedger.WPF
 			}
 			catch (Exception)
 			{
-                Console.WriteLine("Не удалось создать резервную копию БД");
-            }
+				Console.WriteLine("Не удалось создать резервную копию БД");
+			}
 		}
 
+		//Корректировка сортировки т.к. основная часть полей datagrid - string
+		private void DataGrid_Sorting(object sender, DataGridSortingEventArgs e)
+		{
+			e.Handled = true;
+			if (e.Column.Header.ToString() == "Номер поз.")
+			{
+				if (e.Column.SortDirection == null || e.Column.SortDirection == ListSortDirection.Descending)
+				{
+					mainDataGrid.ItemsSource = new ObservableCollection<PositionUIModel>(
+						from item in (DataContext as MainWindowModel).Positions
+						orderby item.PositionKey ascending
+						select item);
+					e.Column.SortDirection = ListSortDirection.Ascending;
+				}
+				else
+				{
+					mainDataGrid.ItemsSource = new ObservableCollection<PositionUIModel>(
+						from item in (DataContext as MainWindowModel).Positions
+						orderby item.PositionKey descending
+						select item);
+					e.Column.SortDirection = ListSortDirection.Descending;
+				}
+			}
+
+			if (e.Column.Header.ToString() == "Дата откр. поз.")
+			{
+				if (e.Column.SortDirection == null || e.Column.SortDirection == ListSortDirection.Descending)
+				{
+					mainDataGrid.ItemsSource = new ObservableCollection<PositionUIModel>(
+						from item in (DataContext as MainWindowModel).Positions
+						orderby DateTime.Parse(item.OpenDate) ascending
+						select item);
+					e.Column.SortDirection = ListSortDirection.Ascending;
+				}
+				else
+				{
+					mainDataGrid.ItemsSource = new ObservableCollection<PositionUIModel>(
+						from item in (DataContext as MainWindowModel).Positions
+						orderby DateTime.Parse(item.OpenDate) descending
+						select item);
+					e.Column.SortDirection = ListSortDirection.Descending;
+				}
+			}
+
+			if (e.Column.Header.ToString() == "Дата закр. поз.") //ToDo Сделать корректную сортировку с пустыми полями
+			{
+				if (e.Column.SortDirection == null || e.Column.SortDirection == ListSortDirection.Descending)
+				{
+					mainDataGrid.ItemsSource = new ObservableCollection<PositionUIModel>(
+						from item in (DataContext as MainWindowModel).Positions
+						orderby item.CloseDate ascending
+						select item);
+					e.Column.SortDirection = ListSortDirection.Ascending;
+				}
+				else
+				{
+					mainDataGrid.ItemsSource = new ObservableCollection<PositionUIModel>(
+						from item in (DataContext as MainWindowModel).Positions
+						orderby item.CloseDate descending
+						select item);
+					e.Column.SortDirection = ListSortDirection.Descending;
+				}
+			}
+
+			if (e.Column.Header.ToString() == "Категория")
+			{
+				if (e.Column.SortDirection == null || e.Column.SortDirection == ListSortDirection.Descending)
+				{
+					mainDataGrid.ItemsSource = new ObservableCollection<PositionUIModel>(
+						from item in (DataContext as MainWindowModel).Positions
+						orderby item.Kind.Category.Category ascending
+						select item);
+					e.Column.SortDirection = ListSortDirection.Ascending;
+				}
+				else
+				{
+					mainDataGrid.ItemsSource = new ObservableCollection<PositionUIModel>(
+						from item in (DataContext as MainWindowModel).Positions
+						orderby item.Kind.Category.Category descending
+						select item);
+					e.Column.SortDirection = ListSortDirection.Descending;
+				}
+			}
+
+			if (e.Column.Header.ToString() == "Вид")
+			{
+				if (e.Column.SortDirection == null || e.Column.SortDirection == ListSortDirection.Descending)
+				{
+					mainDataGrid.ItemsSource = new ObservableCollection<PositionUIModel>(
+						from item in (DataContext as MainWindowModel).Positions
+						orderby item.Kind.Kind ascending
+						select item);
+					e.Column.SortDirection = ListSortDirection.Ascending;
+				}
+				else
+				{
+					mainDataGrid.ItemsSource = new ObservableCollection<PositionUIModel>(
+						from item in (DataContext as MainWindowModel).Positions
+						orderby item.Kind.Kind descending
+						select item);
+					e.Column.SortDirection = ListSortDirection.Descending;
+				}
+			}
+
+			if (e.Column.Header.ToString() == "Приход")
+			{
+				if (e.Column.SortDirection == null || e.Column.SortDirection == ListSortDirection.Descending)
+				{
+					mainDataGrid.ItemsSource = new ObservableCollection<PositionUIModel>(
+						from item in (DataContext as MainWindowModel).Positions
+						orderby Double.Parse(item.Income) ascending
+						select item);
+					e.Column.SortDirection = ListSortDirection.Ascending;
+				}
+				else
+				{
+					mainDataGrid.ItemsSource = new ObservableCollection<PositionUIModel>(
+						from item in (DataContext as MainWindowModel).Positions
+						orderby Double.Parse(item.Income) descending
+						select item);
+					e.Column.SortDirection = ListSortDirection.Descending;
+				}
+			}
+
+			if (e.Column.Header.ToString() == "Расход")
+			{
+				if (e.Column.SortDirection == null || e.Column.SortDirection == ListSortDirection.Descending)
+				{
+					mainDataGrid.ItemsSource = new ObservableCollection<PositionUIModel>(
+						from item in (DataContext as MainWindowModel).Positions
+						orderby Double.Parse(item.Expense) ascending
+						select item);
+					e.Column.SortDirection = ListSortDirection.Ascending;
+				}
+				else
+				{
+					mainDataGrid.ItemsSource = new ObservableCollection<PositionUIModel>(
+						from item in (DataContext as MainWindowModel).Positions
+						orderby Double.Parse(item.Expense) descending
+						select item);
+					e.Column.SortDirection = ListSortDirection.Descending;
+				}
+			}
+
+			if (e.Column.Header.ToString() == "Сальдо")
+			{
+				if (e.Column.SortDirection == null || e.Column.SortDirection == ListSortDirection.Descending)
+				{
+					mainDataGrid.ItemsSource = new ObservableCollection<PositionUIModel>(
+						from item in (DataContext as MainWindowModel).Positions
+						orderby Double.Parse(item.Saldo) ascending
+						select item);
+					e.Column.SortDirection = ListSortDirection.Ascending;
+				}
+				else
+				{
+					mainDataGrid.ItemsSource = new ObservableCollection<PositionUIModel>(
+						from item in (DataContext as MainWindowModel).Positions
+						orderby Double.Parse(item.Saldo) descending
+						select item);
+					e.Column.SortDirection = ListSortDirection.Descending;
+				}
+			}
+
+			if (e.Column.Header.ToString() == "Валюта")
+			{
+				if (e.Column.SortDirection == null || e.Column.SortDirection == ListSortDirection.Descending)
+				{
+					mainDataGrid.ItemsSource = new ObservableCollection<PositionUIModel>(
+						from item in (DataContext as MainWindowModel).Positions
+						orderby item.Coin.ShortName ascending
+						select item);
+					e.Column.SortDirection = ListSortDirection.Ascending;
+				}
+				else
+				{
+					mainDataGrid.ItemsSource = new ObservableCollection<PositionUIModel>(
+						from item in (DataContext as MainWindowModel).Positions
+						orderby item.Coin.ShortName descending
+						select item);
+					e.Column.SortDirection = ListSortDirection.Descending;
+				}
+			}
+
+			if (e.Column.Header.ToString() == "Статус")
+			{
+				if (e.Column.SortDirection == null || e.Column.SortDirection == ListSortDirection.Descending)
+				{
+					mainDataGrid.ItemsSource = new ObservableCollection<PositionUIModel>(
+						from item in (DataContext as MainWindowModel).Positions
+						orderby item.Status.StatusName ascending
+						select item);
+					e.Column.SortDirection = ListSortDirection.Ascending;
+				}
+				else
+				{
+					mainDataGrid.ItemsSource = new ObservableCollection<PositionUIModel>(
+						from item in (DataContext as MainWindowModel).Positions
+						orderby item.Status.StatusName descending
+						select item);
+					e.Column.SortDirection = ListSortDirection.Descending;
+				}
+			}
+
+			if (e.Column.Header.ToString() == "Тэг")
+			{
+				if (e.Column.SortDirection == null || e.Column.SortDirection == ListSortDirection.Descending)
+				{
+					mainDataGrid.ItemsSource = new ObservableCollection<PositionUIModel>(
+						from item in (DataContext as MainWindowModel).Positions
+						orderby item.Tag ascending
+						select item);
+					e.Column.SortDirection = ListSortDirection.Ascending;
+				}
+				else
+				{
+					mainDataGrid.ItemsSource = new ObservableCollection<PositionUIModel>(
+						from item in (DataContext as MainWindowModel).Positions
+						orderby item.Tag descending
+						select item);
+					e.Column.SortDirection = ListSortDirection.Descending;
+				}
+			}
+
+			if (e.Column.Header.ToString() == "Примечания")
+			{
+				if (e.Column.SortDirection == null || e.Column.SortDirection == ListSortDirection.Descending)
+				{
+					mainDataGrid.ItemsSource = new ObservableCollection<PositionUIModel>(
+						from item in (DataContext as MainWindowModel).Positions
+						orderby item.Notes ascending
+						select item);
+					e.Column.SortDirection = ListSortDirection.Ascending;
+				}
+				else
+				{
+					mainDataGrid.ItemsSource = new ObservableCollection<PositionUIModel>(
+						from item in (DataContext as MainWindowModel).Positions
+						orderby item.Notes descending
+						select item);
+					e.Column.SortDirection = ListSortDirection.Descending;
+				}
+			}
+		}
 	}
 
 }
+
+
