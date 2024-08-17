@@ -364,7 +364,7 @@
                         <RowDefinition Height="1*"/>
                         <RowDefinition Height="3*"/>
                     </Grid.RowDefinitions>
-                    <GridSplitter Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Bottom"  Height="6"  BorderBrush="Coral" BorderThickness="6"/>
+                    <GridSplitter Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Bottom"  Height="6"  BorderBrush="Green" BorderThickness="6"/>
                     <GroupBox Grid.Row="0" Header="Сводная таблица балансов ФИАТ" x:Name="BalancesTab">
                         <DataGrid x:Name="summaryFiatDataGrid" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False">
                             <DataGrid.Columns>

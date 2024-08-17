@@ -129,7 +129,7 @@ namespace MyMiniLedger.WPF
 				tb_CurrentCoin.Text = selectedBalance.CoinName;
 			}
 
-			//Не позваляет DatePicker сползти в некорректный формат
+			//Не позволяет DatePicker сползти в некорректный формат
 			Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.CurrentUICulture;
 
 		}
