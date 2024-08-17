@@ -7,12 +7,13 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace MyMiniLedger.WPF.WindowsModels
 {
 	public delegate void UpdateKindDelegate();
 
-	public class KindWindowModel: BaseNotify
+	public class KindWindowModel : BaseNotify
 	{
 		//При срабатывании события происходит выполнение метода в MainWindowModel там-же какскадом срабатывает выбор 0го индекса в комбобоксе
 		public event UpdateKindDelegate UpdateKindEvent;
@@ -53,8 +54,8 @@ namespace MyMiniLedger.WPF.WindowsModels
 		public LambdaCommand DeleteKind { get; set; }
 		public LambdaCommand UpdateKind { get; set; }
 
-        public KindWindowModel()
-        {
+		public KindWindowModel()
+		{
 
 			SelectedKind = new KindUIModel();
 			SelectedCategory = new CategoryUIModel();
@@ -63,16 +64,16 @@ namespace MyMiniLedger.WPF.WindowsModels
 
 			////Инициализация позиций для определения связей
 			BLL.Context.ListOfPositions tempPos = new BLL.Context.ListOfPositions();
-            //List<PositionBLLModel> tempPosAsync = tempPos.GetAll().Result.ToList();
-            List<PositionBLLModel> tempPosAsync = tempPos.GetAll().ToList();
+			//List<PositionBLLModel> tempPosAsync = tempPos.GetAll().Result.ToList();
+			List<PositionBLLModel> tempPosAsync = tempPos.GetAll().ToList();
 
-            ////Инициализация видов
-            BLL.Context.ListOfKinds tempKind = new BLL.Context.ListOfKinds();
-            //List<KindUIModel> tempKindsAsync = tempKind.GetAll().Result.Select(k => Mappers.UIMapper.MapKindBLLToKindUI(k)).ToList();
-            List<KindUIModel> tempKindsAsync = tempKind.GetAll().Select(k => Mappers.UIMapper.MapKindBLLToKindUI(k)).ToList();
+			////Инициализация видов
+			BLL.Context.ListOfKinds tempKind = new BLL.Context.ListOfKinds();
+			//List<KindUIModel> tempKindsAsync = tempKind.GetAll().Result.Select(k => Mappers.UIMapper.MapKindBLLToKindUI(k)).ToList();
+			List<KindUIModel> tempKindsAsync = tempKind.GetAll().Select(k => Mappers.UIMapper.MapKindBLLToKindUI(k)).ToList();
 
-            //Инициализация категорий Для правильной инициализации комбобокса
-            BLL.Context.ListOfCategories tempCat = new BLL.Context.ListOfCategories();
+			//Инициализация категорий Для правильной инициализации комбобокса
+			BLL.Context.ListOfCategories tempCat = new BLL.Context.ListOfCategories();
 			List<CategoryUIModel> tempCategoriesAsync = tempCat.GetAll().Result.Select(cat => Mappers.UIMapper.MapCategoryBLLToCategoryUI(cat)).ToList();
 			Categories = new ObservableCollection<CategoryUIModel>(tempCategoriesAsync);
 
@@ -97,13 +98,13 @@ namespace MyMiniLedger.WPF.WindowsModels
 				{
 					//Добавление
 					_selectedKind.Category = SelectedCategory;
-                    //await _context.KindsTableBL.Insert(Mappers.UIMapper.MapKindUIToKindBLL(_selectedKind));
-                    _context.KindsTableBL.Insert(Mappers.UIMapper.MapKindUIToKindBLL(_selectedKind));
+					//await _context.KindsTableBL.Insert(Mappers.UIMapper.MapKindUIToKindBLL(_selectedKind));
+					_context.KindsTableBL.Insert(Mappers.UIMapper.MapKindUIToKindBLL(_selectedKind));
 
-                    //Обновление списка UI
-                    //var updatedKind = (tempKind.GetAll().Result.Select(k => Mappers.UIMapper.MapKindBLLToKindUI(k)).ToList()).Where(t => t.Kind == _selectedKind.Kind);
-                    var updatedKind = (tempKind.GetAll().Select(k => Mappers.UIMapper.MapKindBLLToKindUI(k)).ToList()).Where(t => t.Kind == _selectedKind.Kind);
-                    var temp = _selectedKind.Clone();
+					//Обновление списка UI
+					//var updatedKind = (tempKind.GetAll().Result.Select(k => Mappers.UIMapper.MapKindBLLToKindUI(k)).ToList()).Where(t => t.Kind == _selectedKind.Kind);
+					var updatedKind = (tempKind.GetAll().Select(k => Mappers.UIMapper.MapKindBLLToKindUI(k)).ToList()).Where(t => t.Kind == _selectedKind.Kind);
+					var temp = _selectedKind.Clone();
 					((KindUIModel)temp).Id = updatedKind.First().Id;
 					Kinds.Add((KindUIModel)temp);
 					UpdateKindEvent();
@@ -111,38 +112,42 @@ namespace MyMiniLedger.WPF.WindowsModels
 				canExecute => SelectedKind is not null &&
 				SelectedKind.Kind != null &&
 				//Подумать над возможностью добавлять одинаковые названия видов при отличающихся категориях
-				Kinds.Any(k => k.Kind == _selectedKind.Kind ) == false
+				SelectedKind.Kind != string.Empty
 				);
 
 			//Полное удаление вида
 			DeleteKind = new LambdaCommand(async execute =>
 			{
-                //Удаление
-                //await _context.KindsTableBL.Delete(Mappers.UIMapper.MapKindUIToKindBLL(_selectedKind));
-                _context.KindsTableBL.Delete(Mappers.UIMapper.MapKindUIToKindBLL(_selectedKind));
-                //Обновление списка UI
-                var t = Kinds.Where(t => t.Id == _selectedKind.Id);
-				Kinds.Remove(t.First());
-				_selectedKind.Id = 0;
-				_selectedKind.Kind = null;
-				UpdateKindEvent();
+				//Удаление
+				var result = MessageBox.Show("Подтвердите удаление вида", "Удаление вида", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+				if (result == MessageBoxResult.Yes)
+				{
+					_context.KindsTableBL.Delete(Mappers.UIMapper.MapKindUIToKindBLL(SelectedKind));
+					//Обновление списка UI
+					var t = Kinds.Where(t => t.Id == SelectedKind.Id);
+					Kinds.Remove(t.First());
+					SelectedKind.Id = 0;
+					SelectedKind.Kind = null;
+					UpdateKindEvent();
+				}
 			},
-			canExecute => SelectedKind is not null && SelectedKind.Kind != null && SelectedKind.Id != 0 && _selectedKind.RefNumber == 0);
+			canExecute => SelectedKind is not null && SelectedKind.Kind != null && SelectedKind.Id != 0 && SelectedKind.RefNumber == 0);
 
 			//Редактирование вида
 			UpdateKind = new LambdaCommand(async execute =>
 			{
-                //Изменение
-                //await _context.KindsTableBL.Update(Mappers.UIMapper.MapKindUIToKindBLL(_selectedKind));
-                _context.KindsTableBL.Update(Mappers.UIMapper.MapKindUIToKindBLL(_selectedKind));
-                //Обновление списка UI
-                var t = Kinds.Where(t => t.Id == _selectedKind.Id);
-				Kinds.Remove(t.First());
-				var temp = _selectedKind.Clone();
-				Kinds.Add((KindUIModel)temp);
+				_context.KindsTableBL.Update(Mappers.UIMapper.MapKindUIToKindBLL(SelectedKind));
+				foreach (var kind in Kinds)
+				{
+					if (kind.Id == SelectedKind.Id)
+					{
+						kind.Kind = SelectedKind.Kind;
+						kind.RefNumber = SelectedKind.RefNumber;
+					}
+				}
 				UpdateKindEvent();
 			},
-			canExecute => DeleteKind is not null && SelectedKind.Kind != null && SelectedKind.Id != 0 && Kinds.Any(k => k.Kind == _selectedKind.Kind) == false);
+			canExecute => DeleteKind is not null && SelectedKind.Kind != null && SelectedKind.Id != 0 && SelectedKind.Kind != string.Empty);
 		}
 	}
 }

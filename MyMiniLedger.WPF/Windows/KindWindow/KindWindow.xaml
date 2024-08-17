@@ -7,7 +7,7 @@
         xmlns:local="clr-namespace:MyMiniLedger.WPF.Windows.KindWindow"
 
         mc:Ignorable="d"
-        Title="{Binding Path=Title}" Height="300" Width="550"
+        Title="{Binding Path=Title}" Height="700" Width="550"
         WindowStartupLocation="CenterScreen">
 
     <Window.DataContext>
@@ -18,7 +18,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="1*"/>
-            <RowDefinition Height="3*"/>
+            <RowDefinition Height="8*"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" >
             <Grid.ColumnDefinitions>

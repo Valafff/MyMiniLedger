@@ -95,25 +95,32 @@ namespace MyMiniLedger.WPF.WindowsModels
 			//Полное удаление категории
 			DeleteCategory = new LambdaCommand(async execute =>
 			{
-                //await _context.CategoriesTableBL.Delete(Mappers.UIMapper.MapCategoryUIToCategoryBLL(_selectedCategory));
-                _context.CategoriesTableBL.Delete(Mappers.UIMapper.MapCategoryUIToCategoryBLL(_selectedCategory));
-                var t = Categories.Where(t => t.Id == _selectedCategory.Id);
-				Categories.Remove(t.First());
-				_selectedCategory.Id = 0;
-				SelectedCategory.Category = null;
-				UpdateCategoryEvent();
+				var  result = MessageBox.Show("Подтвердите удаление категории", "Удаление категории", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+				if (result == MessageBoxResult.Yes)
+				{
+					_context.CategoriesTableBL.Delete(Mappers.UIMapper.MapCategoryUIToCategoryBLL(_selectedCategory));
+					var t = Categories.Where(t => t.Id == _selectedCategory.Id);
+					Categories.Remove(t.First());
+					_selectedCategory.Id = 0;
+					SelectedCategory.Category = null;
+					UpdateCategoryEvent();
+				}
 			},
 			canExecute => SelectedCategory is not null && SelectedCategory.Category != null && SelectedCategory.Id != 0 && _selectedCategory.RefNumber == 0);
 
 			//Редактирование категории
 			UpdateCategory = new LambdaCommand(async execute =>
 			{
-                //await _context.CategoriesTableBL.Update(Mappers.UIMapper.MapCategoryUIToCategoryBLL(_selectedCategory));
-                _context.CategoriesTableBL.Update(Mappers.UIMapper.MapCategoryUIToCategoryBLL(_selectedCategory));					
-                var t = Categories.Where(t => t.Id == _selectedCategory.Id);
-				Categories.Remove(t.First());
-				var temp = _selectedCategory.Clone();
-				Categories.Add((CategoryUIModel)temp);
+				_context.CategoriesTableBL.Update(Mappers.UIMapper.MapCategoryUIToCategoryBLL(_selectedCategory));
+				var t = Categories.Where(t => t.Id == _selectedCategory.Id);
+				foreach (var cat in Categories)
+				{
+					if (cat.Id == SelectedCategory.Id)
+					{
+						cat.Category = SelectedCategory.Category;
+						cat.RefNumber = SelectedCategory.RefNumber;
+					}
+				}
 				UpdateCategoryEvent();
 			},
 			canExecute => SelectedCategory is not null && SelectedCategory.Category != null && SelectedCategory.Id != 0 && Categories.Any(c => c.Category == _selectedCategory.Category) == false);

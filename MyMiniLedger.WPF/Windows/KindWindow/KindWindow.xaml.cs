@@ -27,6 +27,7 @@ namespace MyMiniLedger.WPF.Windows.KindWindow
 			InitializeComponent();
 			MainWindow = _mainWindowModel;
 			(DataContext as KindWindowModel).UpdateKindEvent += MainWindow.UpdateKinds;
+			(DataContext as KindWindowModel).UpdateKindEvent += MainWindow.UpdatePositionsCollection;
 		}
 
 		private void ButtonExit_Click(object sender, RoutedEventArgs e)

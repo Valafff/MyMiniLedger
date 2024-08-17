@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MyMiniLedger.WPF.Windows.CoinWindow"
        mc:Ignorable="d"
-       Title="{Binding Path=Title}" Height="300" Width="650"
+       Title="{Binding Path=Title}" Height="700" Width="650"
        WindowStartupLocation="CenterScreen">
 
     <Window.DataContext>
@@ -18,7 +18,7 @@
             <RowDefinition Height="1*"/>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="0.5*"/>
-            <RowDefinition Height="3*"/>
+            <RowDefinition Height="12*"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" >
             <Grid.ColumnDefinitions>

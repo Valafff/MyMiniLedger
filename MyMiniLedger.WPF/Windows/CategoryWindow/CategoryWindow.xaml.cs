@@ -18,6 +18,7 @@ namespace MyMiniLedger.WPF.Windows.CategoryWindow
 			MainWindow = _mainWindowModel;
 			InitializeComponent();
 			(DataContext as CategoryWindowModel).UpdateCategoryEvent += MainWindow.UpdateCategories;
+			(DataContext as CategoryWindowModel).UpdateCategoryEvent += MainWindow.UpdatePositionsCollection;
 		}
 
 		private void CategoriesList_MouseDoubleClick(object sender, MouseButtonEventArgs e)

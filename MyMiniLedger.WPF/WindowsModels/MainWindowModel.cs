@@ -296,11 +296,9 @@ namespace MyMiniLedger.WPF.WindowsModels
             //Категории и виды
 			Cb_CategorySelectionChanged = new LambdaCommand(execute =>
 			{
-				//Console.WriteLine("Cb_CategorySelectionChanged");
 				StringKinds.Clear();
 				SetStringKinds(StringKinds, Kinds, SelectedCategory);
 				SelectedKind = StringKinds.FirstOrDefault();
-				Console.WriteLine(SelectedKind);
 			},
 		  canExecute => !block);
 
@@ -371,9 +369,8 @@ namespace MyMiniLedger.WPF.WindowsModels
             StringCategories.Clear();
 			SetStringCaregories(StringCategories, Categories);
             UpdateCategoriesIndexEvent();
+            UpdateKinds();
         }
-
-
 
         //Инициализация видов
         public ObservableCollection<KindUIModel> KindsInicialization()
@@ -387,12 +384,18 @@ namespace MyMiniLedger.WPF.WindowsModels
         public void UpdateKinds()
         {
             Kinds.Clear();
-            //TempKinds.Clear();
-            //TempKindsMain.Clear();
 
             var tk = KindsInicialization();
             //foreach (var k in tk) { Kinds.Add(k); TempKinds.Add(k); TempKindsMain.Add(k); }
 			foreach (var k in tk) { Kinds.Add(k); }
+            if (SelectedKind != null || SelectedKind != string.Empty)
+            {
+				SetStringKinds(StringKinds, Kinds, SelectedCategory);
+			}
+            else
+            {
+				SetStringKinds(StringKinds, Kinds);
+			}
 			UpdateKindsIndexEvent();
         }
 
@@ -512,6 +515,6 @@ namespace MyMiniLedger.WPF.WindowsModels
                     _output.Add(stat.Kind);
                 }
             }
-        }
+        }   
     }
 }

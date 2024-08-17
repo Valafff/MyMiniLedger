@@ -7,7 +7,7 @@
         xmlns:local="clr-namespace:MyMiniLedger.WPF.Windows.CategoryWindow"
                 
         mc:Ignorable="d"
-        Title="{Binding Path=Title}" Height="300" Width="450"
+        Title="{Binding Path=Title}" Height="700" Width="450"
         WindowStartupLocation="CenterScreen">
 
     <Window.DataContext>
@@ -18,8 +18,8 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
-            <RowDefinition Height="1*"/>
-            <RowDefinition Height="3*"/>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="12*"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" >
             <TextBox x:Name="tb_EditCategory" Text="{Binding Path=SelectedCategory.Category, UpdateSourceTrigger=PropertyChanged}"/>
