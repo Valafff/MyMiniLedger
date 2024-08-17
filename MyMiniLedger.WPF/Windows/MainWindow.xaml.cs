@@ -18,6 +18,7 @@ using System.Globalization;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using MyMiniLedger.BLL.Models;
+using System.Windows.Data;
 
 
 namespace MyMiniLedger.WPF
@@ -579,6 +580,33 @@ namespace MyMiniLedger.WPF
 					e.Column.SortDirection = ListSortDirection.Descending;
 				}
 			}
+		}
+
+		private void TabItem_GotFocus(object sender, RoutedEventArgs e)
+		{
+			ComplexPositionBalanceCalculator calculator = new ComplexPositionBalanceCalculator();
+			ObservableCollection<TotalBalance> balances = new ObservableCollection<TotalBalance>();
+			foreach (var item in (DataContext as MainWindowModel).Coins)
+			{
+				var t = calculator.GetTotalBalanceByCoin((DataContext as MainWindowModel).Positions, item.ShortName);
+				balances.Add(t);
+			}
+			//var summaryDataGrid = new DataGrid()
+			//{
+			//	Columns = { new DataGridTextColumn() { Header = "Монета/Валюта", Binding = new Binding("CoinName") },
+			//			new DataGridTextColumn() { Header = "Суммарный приход", Binding = new Binding("TotalIncome")},
+			//			new DataGridTextColumn() { Header = "Суммарный расход", Binding = new Binding("TotalExpense") },
+			//			new DataGridTextColumn() { Header = "Баланс", Binding = new Binding("Balance") }},
+			//	AutoGenerateColumns = false,
+			//	IsReadOnly = true,
+			//	CanUserAddRows = false,
+			//	CanUserDeleteRows = false		
+			//};
+
+			summaryDataGrid.ItemsSource = balances;
+
+			BalancesTab.Content = summaryDataGrid;
+
 		}
 	}
 

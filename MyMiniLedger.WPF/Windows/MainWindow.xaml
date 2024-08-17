@@ -358,7 +358,33 @@
                     </Grid>
                 </Grid>
             </TabItem>
-            <TabItem Header="Валюты">
+            <TabItem Header="Балансы" GotFocus="TabItem_GotFocus">
+                <GroupBox Header="Сводная таблица балансов" x:Name="BalancesTab">
+                    <DataGrid x:Name="summaryDataGrid" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False" CanUserDeleteRows="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Монета/Валюта" Binding="{Binding Path=CoinName}"/>
+                            <DataGridTextColumn Header="Суммарный приход" Binding="{Binding Path=TotalIncome, ConverterCulture=ru, StringFormat={}{0:N10}}"/>
+                            <DataGridTextColumn Header="Суммарный расход" Binding="{Binding Path=TotalExpense, ConverterCulture=ru, StringFormat={}{0:N10}}"/>
+                            <DataGridTextColumn Header="Баланс" Binding="{Binding Path=Balance, ConverterCulture=ru, StringFormat={}{0:N10}}"/>
+                        </DataGrid.Columns>
+
+
+                    </DataGrid>
+                    
+                </GroupBox>
+
+
+                <!--var dataGrid = new DataGrid()
+			{
+				Columns = { new DataGridTextColumn() { Header = "Монета/Валюта", Binding = new Binding("CoinName") },
+						new DataGridTextColumn() { Header = "Суммарный приход", Binding = new Binding("TotalIncome")},
+						new DataGridTextColumn() { Header = "Суммарный расход", Binding = new Binding("TotalExpense") },
+						new DataGridTextColumn() { Header = "Баланс", Binding = new Binding("Balance") }},
+				AutoGenerateColumns = false,
+				IsReadOnly = true,
+				CanUserAddRows = false,
+				CanUserDeleteRows = false		
+			};-->
                 
             </TabItem>
         </TabControl>
