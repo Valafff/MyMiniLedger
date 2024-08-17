@@ -87,7 +87,7 @@ namespace MyMiniLedger.WPF.ViewTools
 		public TotalBalance GetTotalBalance(ObservableCollection<PositionUIModel> _selectedPositions, PositionUIModel _selectedPosition)
 		{
 			try
-			{
+			{				
 				if (_selectedPosition != null)
 				{
 					//Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;

@@ -77,56 +77,61 @@ namespace MyMiniLedger.WPF
 
 		private void DataGrid_SelectionChanged_MainWindow(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
 		{
-			((MainWindowModel)DataContext).SelectedPosition = (PositionUIModel)(((DataGrid)sender).CurrentItem);
+			//При обновлении позиций UpdatePositionsCollection в модели, старые позиции очищаются. Выполняется проверка, чтобы не нарваться на null
+			if (((MainWindowModel)DataContext).Positions != null && ((MainWindowModel)DataContext).Positions.Count() != 0)
+			{
+				((MainWindowModel)DataContext).SelectedPosition = (PositionUIModel)(((DataGrid)sender).CurrentItem);
 
-			ComplexPositionBalanceCalculator calculator = new ComplexPositionBalanceCalculator();
-			var selectedBalance = calculator.GetTotalBalance((DataContext as MainWindowModel).Positions, ((MainWindowModel)DataContext).SelectedPosition);
+				ComplexPositionBalanceCalculator calculator = new ComplexPositionBalanceCalculator();
+				var selectedBalance = calculator.GetTotalBalance((DataContext as MainWindowModel).Positions, ((MainWindowModel)DataContext).SelectedPosition);
 
-			if (selectedBalance == null)
-			{
-				selectedBalance = new TotalBalance() { Balance = 0, CoinName = "[Валюта]" };
-			}
-			if (selectedBalance.Cointype.Contains("crypto"))
-			{
-				tb_CurrentIncome.Text = selectedBalance.TotalIncome.ToString("N10", new CultureInfo("ru-RU"));
-				tb_CurrentIncome.Foreground = Brushes.Green;
-				tb_CurrentExpence.Text = selectedBalance.TotalExpense.ToString("N10", new CultureInfo("ru-RU"));
-				tb_CurrentExpence.Foreground = Brushes.Red;
-				tb_CurrentBalance.Text = selectedBalance.Balance.ToString("N10", new CultureInfo("ru-RU"));
+				if (selectedBalance == null)
+				{
+					selectedBalance = new TotalBalance() { Balance = 0, CoinName = "[Валюта]" };
+				}
+				if (selectedBalance.Cointype.Contains("crypto"))
+				{
+					tb_CurrentIncome.Text = selectedBalance.TotalIncome.ToString("N10", new CultureInfo("ru-RU"));
+					tb_CurrentIncome.Foreground = Brushes.Green;
+					tb_CurrentExpence.Text = selectedBalance.TotalExpense.ToString("N10", new CultureInfo("ru-RU"));
+					tb_CurrentExpence.Foreground = Brushes.Red;
+					tb_CurrentBalance.Text = selectedBalance.Balance.ToString("N10", new CultureInfo("ru-RU"));
 
-				tb_IncomeInfo.Text = Double.Parse(tb_IncomeInfo.Text).ToString("N10", new CultureInfo("ru-RU"));
-				tb_ExpenseInfo.Text = Double.Parse(tb_ExpenseInfo.Text).ToString("N10", new CultureInfo("ru-RU"));
-				tb_SaldoInfo.Text = Double.Parse(tb_SaldoInfo.Text).ToString("N10", new CultureInfo("ru-RU"));
-			}
-			else
-			{
-				tb_CurrentIncome.Text = selectedBalance.TotalIncome.ToString("N2", new CultureInfo("ru-RU"));
-				tb_CurrentIncome.Foreground = Brushes.Green;
-				tb_CurrentExpence.Text = selectedBalance.TotalExpense.ToString("N2", new CultureInfo("ru-RU"));
-				tb_CurrentExpence.Foreground = Brushes.Red;
-				tb_CurrentBalance.Text = selectedBalance.Balance.ToString("N2", new CultureInfo("ru-RU"));
+					tb_IncomeInfo.Text = Double.Parse(tb_IncomeInfo.Text).ToString("N10", new CultureInfo("ru-RU"));
+					tb_ExpenseInfo.Text = Double.Parse(tb_ExpenseInfo.Text).ToString("N10", new CultureInfo("ru-RU"));
+					tb_SaldoInfo.Text = Double.Parse(tb_SaldoInfo.Text).ToString("N10", new CultureInfo("ru-RU"));
+				}
+				else
+				{
+					tb_CurrentIncome.Text = selectedBalance.TotalIncome.ToString("N2", new CultureInfo("ru-RU"));
+					tb_CurrentIncome.Foreground = Brushes.Green;
+					tb_CurrentExpence.Text = selectedBalance.TotalExpense.ToString("N2", new CultureInfo("ru-RU"));
+					tb_CurrentExpence.Foreground = Brushes.Red;
+					tb_CurrentBalance.Text = selectedBalance.Balance.ToString("N2", new CultureInfo("ru-RU"));
 
-				tb_IncomeInfo.Text = Double.Parse(tb_IncomeInfo.Text).ToString("N2", new CultureInfo("ru-RU"));
-				tb_ExpenseInfo.Text = Double.Parse(tb_ExpenseInfo.Text).ToString("N2", new CultureInfo("ru-RU"));
-				tb_SaldoInfo.Text = Double.Parse(tb_SaldoInfo.Text).ToString("N2", new CultureInfo("ru-RU"));
-			}
+					tb_IncomeInfo.Text = Double.Parse(tb_IncomeInfo.Text).ToString("N2", new CultureInfo("ru-RU"));
+					tb_ExpenseInfo.Text = Double.Parse(tb_ExpenseInfo.Text).ToString("N2", new CultureInfo("ru-RU"));
+					tb_SaldoInfo.Text = Double.Parse(tb_SaldoInfo.Text).ToString("N2", new CultureInfo("ru-RU"));
+				}
 
-			if (selectedBalance.Balance > 0)
-			{
-				tb_CurrentBalance.Foreground = Brushes.Green;
+				if (selectedBalance.Balance > 0)
+				{
+					tb_CurrentBalance.Foreground = Brushes.Green;
+				}
+				else if (selectedBalance.Balance < 0)
+				{
+					tb_CurrentBalance.Foreground = Brushes.Red;
+				}
+				else
+				{
+					tb_CurrentBalance.Foreground = Brushes.Black;
+				}
+				tb_CurrentCoin.Text = selectedBalance.CoinName;
 			}
-			else if (selectedBalance.Balance < 0)
-			{
-				tb_CurrentBalance.Foreground = Brushes.Red;
-			}
-			else
-			{
-				tb_CurrentBalance.Foreground = Brushes.Black;
-			}
-			tb_CurrentCoin.Text = selectedBalance.CoinName;
 
 			//Не позваляет DatePicker сползти в некорректный формат
 			Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.CurrentUICulture;
+
 		}
 		private void dp_OpenDate_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
 		{
