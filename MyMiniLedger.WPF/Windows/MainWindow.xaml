@@ -359,33 +359,33 @@
                 </Grid>
             </TabItem>
             <TabItem Header="Балансы" GotFocus="TabItem_GotFocus">
-                <GroupBox Header="Сводная таблица балансов" x:Name="BalancesTab">
-                    <DataGrid x:Name="summaryDataGrid" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False" CanUserDeleteRows="False">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Монета/Валюта" Binding="{Binding Path=CoinName}"/>
-                            <DataGridTextColumn Header="Суммарный приход" Binding="{Binding Path=TotalIncome, ConverterCulture=ru, StringFormat={}{0:N10}}"/>
-                            <DataGridTextColumn Header="Суммарный расход" Binding="{Binding Path=TotalExpense, ConverterCulture=ru, StringFormat={}{0:N10}}"/>
-                            <DataGridTextColumn Header="Баланс" Binding="{Binding Path=Balance, ConverterCulture=ru, StringFormat={}{0:N10}}"/>
-                        </DataGrid.Columns>
-
-
-                    </DataGrid>
-                    
-                </GroupBox>
-
-
-                <!--var dataGrid = new DataGrid()
-			{
-				Columns = { new DataGridTextColumn() { Header = "Монета/Валюта", Binding = new Binding("CoinName") },
-						new DataGridTextColumn() { Header = "Суммарный приход", Binding = new Binding("TotalIncome")},
-						new DataGridTextColumn() { Header = "Суммарный расход", Binding = new Binding("TotalExpense") },
-						new DataGridTextColumn() { Header = "Баланс", Binding = new Binding("Balance") }},
-				AutoGenerateColumns = false,
-				IsReadOnly = true,
-				CanUserAddRows = false,
-				CanUserDeleteRows = false		
-			};-->
-                
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="3*"/>
+                    </Grid.RowDefinitions>
+                    <GridSplitter Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Bottom"  Height="6"  BorderBrush="Coral" BorderThickness="6"/>
+                    <GroupBox Grid.Row="0" Header="Сводная таблица балансов ФИАТ" x:Name="BalancesTab">
+                        <DataGrid x:Name="summaryFiatDataGrid" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn x:Name="summaryCoin" Header="Монета/Валюта" Binding="{Binding Path=CoinName}"/>
+                                <DataGridTextColumn x:Name="summaryIncome" Header="Суммарный приход" Binding="{Binding Path=TotalIncome, ConverterCulture=ru, StringFormat={}{0:N2}}" Foreground="Green"/>
+                                <DataGridTextColumn x:Name="summaryExpense" Header="Суммарный расход" Binding="{Binding Path=TotalExpense, ConverterCulture=ru, StringFormat={}{0:N2}}" Foreground="Red"/>
+                                <DataGridTextColumn x:Name="summaryBalance" Header="Баланс" Binding="{Binding Path=Balance, ConverterCulture=ru, StringFormat={}{0:N2}}" FontWeight="Bold" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </GroupBox>
+                    <GroupBox Grid.Row="1" Header="Сводная таблица балансов КРИПТА">
+                        <DataGrid x:Name="summaryCryptoDataGrid" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Монета/Валюта" Binding="{Binding Path=CoinName}"/>
+                                <DataGridTextColumn Header="Суммарный приход" Binding="{Binding Path=TotalIncome, ConverterCulture=ru, StringFormat={}{0:N10}}" Foreground="Green"/>
+                                <DataGridTextColumn Header="Суммарный расход" Binding="{Binding Path=TotalExpense, ConverterCulture=ru, StringFormat={}{0:N10}}" Foreground="Red"/>
+                                <DataGridTextColumn Header="Баланс" Binding="{Binding Path=Balance, ConverterCulture=ru, StringFormat={}{0:N10}}" FontWeight="Bold" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </GroupBox>
+                </Grid>
             </TabItem>
         </TabControl>
     </DockPanel>

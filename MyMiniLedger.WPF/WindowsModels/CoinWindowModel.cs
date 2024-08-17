@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace MyMiniLedger.WPF.WindowsModels
 {
@@ -14,7 +15,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 
 	public class CoinWindowModel : BaseNotify
 	{
-		//При срабатывании события происходит выполнение метода в MainWindowModel там-же какскадом срабатывает выбор 0го индекса в комбобоксе
+		//При срабатывании события происходит выполнение метода в MainWindowModel там-же каскадом срабатывает выбор 0го индекса в комбобоксе
 		public event UpdateCoinsDelegate UpdateCoinsEvent;
 
 		private readonly Context _context;
@@ -46,6 +47,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 		{
 
 			SelectedCoin = new CoinUIModel();
+			SelectedCoin.FullName = string.Empty;
 
 			_context = new BLL.Context.Context();
 
@@ -90,43 +92,49 @@ namespace MyMiniLedger.WPF.WindowsModels
 					//Выполнение события(подпись на событие в CoinWindow.xaml.cs
 					UpdateCoinsEvent();
 				},
-				canExecute => SelectedCoin is not null && SelectedCoin.ShortName != null && Coins.Any(c => c.ShortName == _selectedCoin.ShortName) == false
+				canExecute => SelectedCoin is not null && SelectedCoin.ShortName != null  && SelectedCoin.ShortName != string.Empty && Coins.Any(c => c.ShortName == _selectedCoin.ShortName) == false
 				);
 
 			//	//Полное удаление монеты
 			DeleteCoin = new LambdaCommand(async execute =>
 			{
-				//await _context.CoinsTableBL.Delete(Mappers.UIMapper.MapCoinUIToCoinBLL(_selectedCoin));
-				_context.CoinsTableBL.Delete(Mappers.UIMapper.MapCoinUIToCoinBLL(_selectedCoin));
+				var result = MessageBox.Show("Подтвердите удаление монеты", "Удаление монеты", MessageBoxButton.YesNo, MessageBoxImage.Warning);
 
-				IEnumerable<CoinUIModel>? TempDeletedCoin = Coins.Where(c => c.Id == _selectedCoin.Id);
-
-				Coins.Remove(TempDeletedCoin.First());
-				_selectedCoin.Id = 0;
-				_selectedCoin.ShortName = null;
-				_selectedCoin.FullName = null;
-				_selectedCoin.CoinNotes = null;
-				UpdateCoinsEvent();
+				if (result == MessageBoxResult.Yes)
+				{
+					_context.CoinsTableBL.Delete(Mappers.UIMapper.MapCoinUIToCoinBLL(_selectedCoin));
+					IEnumerable<CoinUIModel>? TempDeletedCoin = Coins.Where(c => c.Id == _selectedCoin.Id);
+					Coins.Remove(TempDeletedCoin.First());
+					_selectedCoin.Id = 0;
+					_selectedCoin.ShortName = null;
+					_selectedCoin.FullName = null;
+					_selectedCoin.CoinNotes = null;
+					UpdateCoinsEvent();
+				}
 			},
 			canExecute => SelectedCoin is not null && SelectedCoin.ShortName != null && _selectedCoin.Id != 0 && _selectedCoin.RefNumber == 0);
 
 			//	//Редактирование монеты
 			UpdateCoin = new LambdaCommand(async execute =>
 			{
-				//await _context.CoinsTableBL.Update(Mappers.UIMapper.MapCoinUIToCoinBLL(_selectedCoin));
 				_context.CoinsTableBL.Update(Mappers.UIMapper.MapCoinUIToCoinBLL(_selectedCoin));
 
-				var t = Coins.Where(c => c.Id == _selectedCoin.Id);
-				Coins.Remove(t.First());
-				var temp = _selectedCoin.Clone();
-				Coins.Add((CoinUIModel)temp);
+				foreach (CoinUIModel coin in Coins)
+				{
+					if (coin.Id == _selectedCoin.Id)
+					{
+						coin.ShortName = _selectedCoin.ShortName;
+						coin.FullName = _selectedCoin.FullName;
+						coin.CoinNotes = _selectedCoin.CoinNotes;
+					}
+				}
 				UpdateCoinsEvent();
 			},
-			canExecute => SelectedCoin is not null && _selectedCoin.ShortName != null && SelectedCoin.Id != 0 &&
+			canExecute => SelectedCoin is not null && SelectedCoin.ShortName is not null && SelectedCoin.FullName is not null && SelectedCoin.Id != 0 &&
 			(
-				Coins.Any(c => c.ShortName == _selectedCoin.ShortName) == false) ||
-				Coins.Any(c => c.FullName == _selectedCoin.FullName) == false ||
-				Coins.Any(c => c.CoinNotes == _selectedCoin.CoinNotes) == false
+				Coins.Any(c => c.ShortName == SelectedCoin.ShortName && c.Id != SelectedCoin.Id) == false
+				&& Coins.Any(c => c.FullName == SelectedCoin.FullName && c.Id != SelectedCoin.Id && SelectedCoin.FullName != string.Empty) == false
+				&& SelectedCoin.ShortName != string.Empty)
 			);
 		}
 

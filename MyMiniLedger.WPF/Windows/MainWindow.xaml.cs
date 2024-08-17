@@ -585,12 +585,22 @@ namespace MyMiniLedger.WPF
 		private void TabItem_GotFocus(object sender, RoutedEventArgs e)
 		{
 			ComplexPositionBalanceCalculator calculator = new ComplexPositionBalanceCalculator();
-			ObservableCollection<TotalBalance> balances = new ObservableCollection<TotalBalance>();
+			ObservableCollection<TotalBalance> fiatBalances = new ObservableCollection<TotalBalance>();
+			ObservableCollection<TotalBalance> cryptoBalances = new ObservableCollection<TotalBalance>();
 			foreach (var item in (DataContext as MainWindowModel).Coins)
 			{
-				var t = calculator.GetTotalBalanceByCoin((DataContext as MainWindowModel).Positions, item.ShortName);
-				balances.Add(t);
+				var t = calculator.GetTotalBalanceByCoin((DataContext as MainWindowModel).Positions, item.ShortName, item.CoinNotes);
+				if (!t.Cointype.Contains("crypto"))
+				{
+					fiatBalances.Add(t);
+				}
+				else
+				{
+					cryptoBalances.Add(t);
+				}
+
 			}
+			//Создание datagrid в code-behind
 			//var summaryDataGrid = new DataGrid()
 			//{
 			//	Columns = { new DataGridTextColumn() { Header = "Монета/Валюта", Binding = new Binding("CoinName") },
@@ -603,10 +613,12 @@ namespace MyMiniLedger.WPF
 			//	CanUserDeleteRows = false		
 			//};
 
-			summaryDataGrid.ItemsSource = balances;
+			////Форматирование в code-behind
+			//summaryBalance.Binding.StringFormat = "{0:N2}";
 
-			BalancesTab.Content = summaryDataGrid;
-
+			summaryFiatDataGrid.ItemsSource = fiatBalances;
+			summaryCryptoDataGrid.ItemsSource= cryptoBalances;
+			//BalancesTab.Content = summaryFiatDataGrid;
 		}
 	}
 

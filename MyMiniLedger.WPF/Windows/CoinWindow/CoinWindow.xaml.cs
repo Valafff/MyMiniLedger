@@ -34,6 +34,7 @@ namespace MyMiniLedger.WPF.Windows.CoinWindow
 		{
 			if (((CoinUIModel)CoinsList.SelectedItem) != null)
 			{
+				rb_Other.IsChecked = true;
 				tb_EditCoinName.Text = ((CoinUIModel)CoinsList.SelectedItem).ShortName;
 				tb_EditCoinFullName.Text = ((CoinUIModel)CoinsList.SelectedItem).FullName;
 				tb_EditCoinNotes.Text = ((CoinUIModel)CoinsList.SelectedItem).CoinNotes;
@@ -53,7 +54,7 @@ namespace MyMiniLedger.WPF.Windows.CoinWindow
 			{
 				tb_EditCoinNotes.Text = tb_EditCoinNotes.Text.Replace("crypto", "fiat");
 			}
-			else
+			else if (!tb_EditCoinNotes.Text.Contains("fiat"))
 			{
 				tb_EditCoinNotes.Text = tb_EditCoinNotes.Text.Insert(0, "fiat");
 			}
@@ -65,7 +66,7 @@ namespace MyMiniLedger.WPF.Windows.CoinWindow
 			{
 				tb_EditCoinNotes.Text = tb_EditCoinNotes.Text.Replace("fiat", "crypto");
 			}
-			else
+			else if(!tb_EditCoinNotes.Text.Contains("crypto"))
 			{
 				tb_EditCoinNotes.Text = tb_EditCoinNotes.Text.Insert(0, "crypto");
 			}

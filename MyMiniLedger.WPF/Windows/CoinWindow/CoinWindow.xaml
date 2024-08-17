@@ -75,16 +75,18 @@
             <Button Grid.Column="3" Content="Выход" Margin="2,2,2,2" Click="ButtonExit_Click"/>
         </Grid>
         <Grid Grid.Row="2">
+
             <StackPanel Orientation="Horizontal">
-                <RadioButton IsChecked="True" Margin="10,2,5,5" Name="rb_Crypto" Checked="rb_Crypto_Checked">
+                <RadioButton Margin="5,2,5,2" Name="rb_Other" Checked="rb_Other_Checked" IsChecked="True" >
+                    Не задано
+                </RadioButton>
+                <RadioButton Margin="10,2,5,5" Name="rb_Crypto" Checked="rb_Crypto_Checked">
                     Крипта
                 </RadioButton>
                 <RadioButton Margin="5,2,5,5" Name="rb_Fiat" Checked="rb_Fiat_Checked">
                     Фиат
                 </RadioButton>
-                <RadioButton Margin="5,2,5,2" Name="rb_Other" Checked="rb_Other_Checked">
-                    Не задано
-                </RadioButton>
+
             </StackPanel>
         </Grid>
         

@@ -115,7 +115,7 @@ namespace MyMiniLedger.WPF.ViewTools
 		}
 
 		//Для монеты
-		public TotalBalance GetTotalBalanceByCoin(ObservableCollection<PositionUIModel> _selectedPositions, string _shortCoinName)
+		public TotalBalance GetTotalBalanceByCoin(ObservableCollection<PositionUIModel> _selectedPositions, string _shortCoinName, string? _coinNotes)
 		{
 			try
 			{
@@ -129,6 +129,7 @@ namespace MyMiniLedger.WPF.ViewTools
 					}
 				}
 				temp.Balance = temp.TotalIncome - temp.TotalExpense;
+				if (_coinNotes != null) { temp.Cointype = _coinNotes; }
 				return temp;
 			}
 			catch (Exception)
