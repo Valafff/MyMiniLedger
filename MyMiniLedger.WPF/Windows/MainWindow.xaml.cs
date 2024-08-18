@@ -695,8 +695,6 @@ namespace MyMiniLedger.WPF
 		{
 			if (((ComboBox)sender).Name == "catFilter")
 			{
-				//Console.WriteLine(((ComboBox)sender).Name);
-				//Console.WriteLine(((ComboBox)sender).SelectedValue.ToString());
 				(DataContext as MainWindowModel).categoryFilter = ((ComboBox)sender).SelectedValue.ToString();
 				(DataContext as MainWindowModel).kindFilter = string.Empty;
 				(DataContext as MainWindowModel).coinFilter = string.Empty;
@@ -704,23 +702,18 @@ namespace MyMiniLedger.WPF
 			}
 			if (((ComboBox)sender).Name == "kindFilter")
 			{
-				//Console.WriteLine(((ComboBox)sender).Name);
-				//Console.WriteLine(((ComboBox)sender).SelectedValue.ToString());
 				(DataContext as MainWindowModel).categoryFilter = string.Empty;
 				(DataContext as MainWindowModel).kindFilter = ((ComboBox)sender).SelectedValue.ToString();
 				(DataContext as MainWindowModel).coinFilter = string.Empty;
 			}
 			if (((ComboBox)sender).Name == "coinFilter")
 			{
-				//Console.WriteLine(((ComboBox)sender).Name);
-				//Console.WriteLine(((ComboBox)sender).SelectedValue.ToString());
 				(DataContext as MainWindowModel).categoryFilter = string.Empty;
 				(DataContext as MainWindowModel).kindFilter = string.Empty;
 				(DataContext as MainWindowModel).coinFilter = ((ComboBox)sender).SelectedValue.ToString();
 			}
 			if (((ComboBox)sender).Name == "timeFilterOnly")
 			{
-				//Console.WriteLine(((ComboBox)sender).Name);
 				(DataContext as MainWindowModel).categoryFilter = string.Empty;
 				(DataContext as MainWindowModel).kindFilter = string.Empty;
 				(DataContext as MainWindowModel).coinFilter = string.Empty;

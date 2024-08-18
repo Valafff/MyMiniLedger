@@ -491,7 +491,6 @@ namespace MyMiniLedger.WPF.WindowsModels
 			Positions.Clear();
 			foreach (var item in updatedPos)
 			{
-
 				DateTime openDate = DateTime.ParseExact(item.OpenDate, "dd.MM.yyyy H:mm:ss", CultureInfo.InvariantCulture);
 				int i = 0;
 				if (item.Status.StatusName != "Deleted" && openDate >= StartDate && openDate <= EndDate)
