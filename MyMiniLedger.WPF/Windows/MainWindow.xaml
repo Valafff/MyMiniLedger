@@ -74,6 +74,16 @@
             <DatePicker Name="datePiker_Start" SelectedDate="{Binding Path=StartDate, UpdateSourceTrigger=PropertyChanged}"/>
             <Label Content="по:"/>
             <DatePicker Name="datePiker_End" SelectedDate="{Binding Path=EndDate, UpdateSourceTrigger=PropertyChanged}"/>
+            <Label Content="Фильтр:"/>
+            <StackPanel x:Name="searchTypeStackPanel" Orientation="Horizontal">
+                <ComboBox x:Name="searchTypeSearchCombo" Width="120" SelectedIndex="0" SelectionChanged="searchTypeSearchCombo_SelectionChanged" >
+                    <ComboBoxItem Content="Только по дате"/>
+                    <ComboBoxItem Content="По категории"/>
+                    <ComboBoxItem Content="По виду"/>
+                    <ComboBoxItem Content="По валюте"/>
+                </ComboBox>
+            </StackPanel>
+
             <Button Content="Показать" x:Name="bt_updatePositionsList" Width="150" Command="{Binding Path= SearchByDateRange}"/>
             <Button Content="Вернуть полный список" x:Name="bt_returnPositionsList" Width="150" Command="{Binding Path=RefreshPositions}"/>
 

@@ -625,6 +625,108 @@ namespace MyMiniLedger.WPF
 			summaryCryptoDataGrid.ItemsSource= cryptoBalances;
 			//BalancesTab.Content = summaryFiatDataGrid;
 		}
+
+		//Настройка фильтра поиска
+		private void searchTypeSearchCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			ComboBox typeCombo = new ComboBox();
+			if (searchTypeStackPanel.Children.Count == 1 && searchTypeSearchCombo.SelectedIndex != 0)
+			{		
+				ComboBoxFilterInicialization(searchTypeSearchCombo.SelectedValue.ToString(), ref typeCombo);
+				searchTypeStackPanel.Children.Add(typeCombo);
+				typeCombo.SelectionChanged += new SelectionChangedEventHandler(searchTempFilter);
+				searchTempFilter(typeCombo, null);
+
+			}
+			else if (searchTypeStackPanel.Children.Count > 1 && searchTypeSearchCombo.SelectedIndex == 0)
+			{
+				typeCombo.Name = "timeFilterOnly";
+				searchTempFilter(typeCombo, null);
+				typeCombo.SelectionChanged -= new SelectionChangedEventHandler(searchTempFilter);
+				searchTypeStackPanel.Children.RemoveAt(1);
+			}
+			else if(searchTypeStackPanel.Children.Count > 1 && searchTypeSearchCombo.SelectedIndex != 0)
+			{
+				typeCombo.SelectionChanged -= new SelectionChangedEventHandler(searchTempFilter);
+				searchTypeStackPanel.Children.RemoveAt(1);
+				typeCombo = new ComboBox();
+				ComboBoxFilterInicialization(searchTypeSearchCombo.SelectedValue.ToString(), ref typeCombo);
+				searchTypeStackPanel.Children.Add(typeCombo);
+				typeCombo.SelectionChanged += new SelectionChangedEventHandler(searchTempFilter);
+				searchTempFilter(typeCombo, null);
+			}
+
+
+		}
+
+		private void ComboBoxFilterInicialization(string _datatype, ref ComboBox _combo)
+		{
+			if (_datatype.Contains("По категории"))
+			{
+				_combo.ItemsSource = (DataContext as MainWindowModel).StringCategories;
+				_combo.Name = "catFilter";
+				_combo.SelectedIndex = 0;
+			}
+			if (_datatype.Contains("По виду"))
+			{
+				List<string> tempKinds = new List<string>();
+				foreach (var kind in (DataContext as MainWindowModel).Kinds)
+				{
+					tempKinds.Add(kind.Kind);
+				}
+				_combo.ItemsSource = tempKinds;
+				_combo.Name = "kindFilter";
+				_combo.SelectedIndex = 0;
+			}
+			if (_datatype.Contains("По валюте"))
+			{
+				List<string> tempCoins = new List<string>();
+				foreach (var coin in (DataContext as MainWindowModel).Coins)
+				{
+					tempCoins.Add(coin.ShortName);
+				}
+				_combo.ItemsSource = tempCoins;
+				_combo.Name = "coinFilter";
+				_combo.SelectedIndex = 0;
+			}
+		}
+
+		private void searchTempFilter(object sender, SelectionChangedEventArgs e)
+		{
+			if (((ComboBox)sender).Name == "catFilter")
+			{
+				//Console.WriteLine(((ComboBox)sender).Name);
+				//Console.WriteLine(((ComboBox)sender).SelectedValue.ToString());
+				(DataContext as MainWindowModel).categoryFilter = ((ComboBox)sender).SelectedValue.ToString();
+				(DataContext as MainWindowModel).kindFilter = string.Empty;
+				(DataContext as MainWindowModel).coinFilter = string.Empty;
+
+			}
+			if (((ComboBox)sender).Name == "kindFilter")
+			{
+				//Console.WriteLine(((ComboBox)sender).Name);
+				//Console.WriteLine(((ComboBox)sender).SelectedValue.ToString());
+				(DataContext as MainWindowModel).categoryFilter = string.Empty;
+				(DataContext as MainWindowModel).kindFilter = ((ComboBox)sender).SelectedValue.ToString();
+				(DataContext as MainWindowModel).coinFilter = string.Empty;
+			}
+			if (((ComboBox)sender).Name == "coinFilter")
+			{
+				//Console.WriteLine(((ComboBox)sender).Name);
+				//Console.WriteLine(((ComboBox)sender).SelectedValue.ToString());
+				(DataContext as MainWindowModel).categoryFilter = string.Empty;
+				(DataContext as MainWindowModel).kindFilter = string.Empty;
+				(DataContext as MainWindowModel).coinFilter = ((ComboBox)sender).SelectedValue.ToString();
+			}
+			if (((ComboBox)sender).Name == "timeFilterOnly")
+			{
+				//Console.WriteLine(((ComboBox)sender).Name);
+				(DataContext as MainWindowModel).categoryFilter = string.Empty;
+				(DataContext as MainWindowModel).kindFilter = string.Empty;
+				(DataContext as MainWindowModel).coinFilter = string.Empty;
+			}
+        }
+
 	}
 
 }

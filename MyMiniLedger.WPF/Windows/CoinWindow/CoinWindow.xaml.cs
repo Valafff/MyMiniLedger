@@ -41,6 +41,14 @@ namespace MyMiniLedger.WPF.Windows.CoinWindow
 				tb_EditCoinNotes.Text = ((CoinUIModel)CoinsList.SelectedItem).CoinNotes;
 				(DataContext as CoinWindowModel).SelectedCoin.Id = ((CoinUIModel)CoinsList.SelectedItem).Id;
 				(DataContext as CoinWindowModel).SelectedCoin.RefNumber = ((CoinUIModel)CoinsList.SelectedItem).RefNumber;
+				if (tb_EditCoinNotes.Text.Contains("defaultcoin"))
+				{
+					checkBoxDefaultCoin.IsChecked = true;
+				}
+				else
+				{
+					checkBoxDefaultCoin.IsChecked = false;
+				}
 			}
 		}
 
@@ -86,6 +94,18 @@ namespace MyMiniLedger.WPF.Windows.CoinWindow
 			else
 			{
 				tb_EditCoinNotes.Text = tb_EditCoinNotes.Text.Insert(0, "");
+			}
+		}
+
+		private void checkBoxDefaultCoin_Click(object sender, RoutedEventArgs e)
+		{
+			if (tb_EditCoinNotes.Text.Contains("defaultcoin"))
+			{
+				tb_EditCoinNotes.Text = tb_EditCoinNotes.Text.Replace("defaultcoin", "");
+			}
+			else if (checkBoxDefaultCoin.IsChecked == true)
+			{
+				tb_EditCoinNotes.Text = tb_EditCoinNotes.Text.Insert(0, "defaultcoin");
 			}
 		}
 	}

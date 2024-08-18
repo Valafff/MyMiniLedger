@@ -2,7 +2,7 @@
 namespace MyMiniLedger.WPF.Models
 {
 	// BaseNotify реализует интерфейс INotifyPropertyChanged
-	public class CoinUIModel: BaseNotify, ICloneable
+	public class CoinUIModel: BaseNotify, ICloneable, IComparable<CoinUIModel>
     {
 		private int _id;
 		public int Id 
@@ -41,5 +41,10 @@ namespace MyMiniLedger.WPF.Models
 		}
 
 		public object Clone() => MemberwiseClone();
+
+		public int CompareTo(CoinUIModel? other)
+		{
+			return string.Compare(this.ShortName, other.ShortName);
+		}
 	}
 }

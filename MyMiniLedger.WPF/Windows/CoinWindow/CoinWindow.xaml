@@ -86,7 +86,8 @@
                 <RadioButton Margin="5,2,5,5" Name="rb_Fiat" Checked="rb_Fiat_Checked">
                     Фиат
                 </RadioButton>
-
+                <TextBlock Text="           Валюта по умолчанию     " VerticalAlignment="Center"/>
+                <CheckBox x:Name="checkBoxDefaultCoin" VerticalAlignment="Center" IsChecked="False" Click="checkBoxDefaultCoin_Click" />
             </StackPanel>
         </Grid>
         
