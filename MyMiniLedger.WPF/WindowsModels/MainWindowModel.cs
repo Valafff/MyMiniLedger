@@ -424,8 +424,11 @@ namespace MyMiniLedger.WPF.WindowsModels
 					}
 				}
 			}
-			tempCoins.RemoveAt(tempCoins.FindIndex(c => c.CoinNotes == defaultCoin.CoinNotes));
-			tempCoins.Insert(0, defaultCoin);
+			if (defaultCoin.ShortName != null)
+			{
+				tempCoins.RemoveAt(tempCoins.FindIndex(c => c.CoinNotes == defaultCoin.CoinNotes));
+				tempCoins.Insert(0, defaultCoin);
+			}
 			return new ObservableCollection<CoinUIModel>(tempCoins);
 		}
 
