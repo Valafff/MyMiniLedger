@@ -68,101 +68,146 @@ namespace MyMiniLedger.WPF.Windows.NewPositionWindow
 			}
 		}
 
+		private void textBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+		{
+			string str = ((TextBox)sender).Text + e.Text;
+
+			if ((str.IndexOf('0') == 0 && str.IndexOf(',') != 1 && Char.IsDigit(e.Text, 0) && str != "0")
+				|| (((TextBox)sender).SelectionStart == 0 && e.Text == "0" && ((TextBox)sender).Text.Length != 0)
+				|| (((TextBox)sender).SelectionStart == 0 && !Char.IsDigit(e.Text, 0)))
+			{
+				if (((TextBox)sender).Text == "0" && e.Text != "0" && Char.IsDigit(e.Text, 0))
+				{
+					((TextBox)sender).Text = e.Text;
+					((TextBox)sender).SelectionStart = ((TextBox)sender).Text.Length;
+				}
+				e.Handled = true;
+				return;
+			}
+			e.Handled = !double.TryParse(str, System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.CultureInfo.CurrentUICulture, out double i);
+		}
+		private void textBox_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			if (((TextBox)sender).Text == string.Empty)
+			{
+				((TextBox)sender).Text = "0";
+				((TextBox)sender).SelectionStart = ((TextBox)sender).Text.Length;
+			}
+		}
 		//Работа с заполнением полей income
-		//Обработка ввода корректных символов и проверка на правильность написания десятичной дроби
-		private void tb_Income_PreviewTextInput(object sender, TextCompositionEventArgs e)
+		private void tb_Income_PreviewTextInput_New(object sender, TextCompositionEventArgs e)
 		{
-			if (!Char.IsDigit(e.Text, 0) && !((e.Text == ",") && (tb_Income.Text.IndexOf(',') == -1) && (tb_Income.Text.Length != 0)))
-			{
-				e.Handled = true;
-			}
-			else if (tb_Income.Text.IndexOf('0') == 0 && tb_Income.Text.IndexOf(',') != 1 && Char.IsDigit(e.Text, 0))
-			{
-				tb_Income.Text = e.Text;
-				tb_Income.SelectionStart = 1;
-				e.Handled = true;
-			}
-			else if (tb_Income.SelectionStart == 0 && e.Text == ",")
-			{
-				e.Handled = true;
-			}
-			else if (tb_Income.SelectionStart == 0 && e.Text == "0" && tb_Income.Text.Length != 0)
-			{
-				e.Handled = true;
-			}
+			textBox_PreviewTextInput(sender, e);
 		}
-		//Отлов space
-		private void tb_Income_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+		private void tb_Income_TextChanged_New(object sender, TextChangedEventArgs e)
 		{
-			if (e.Key == Key.Space)
-			{
-				e.Handled = true;
-			}
+			textBox_TextChanged(sender, e);
 		}
-		//Перевод 59,960.17 -> 59960,17
-		private void tb_Income_TextChanged(object sender, TextChangedEventArgs e)
+		////Работа с заполнением полей expense
+		private void tb_Expense_PreviewTextInput_New(object sender, TextCompositionEventArgs e)
 		{
-			if (tb_Income.Text.IndexOf(',') != -1 && tb_Income.Text.IndexOf('.') != -1)
-			{
-				tb_Income.Text = tb_Income.Text.Remove(tb_Income.Text.IndexOf(','), 1);
-			}
-			if (tb_Income.Text.IndexOf(',') == -1 && tb_Income.Text.IndexOf('.') != -1)
-			{
-				tb_Income.Text = tb_Income.Text.Replace(".", ",");
-			}
-			if (tb_Income.Text == "")
-			{
-				tb_Income.Text = "0";
-				tb_Income.SelectionStart = 1;
-			}
+			textBox_PreviewTextInput(sender, e);
 		}
-		//Работа с заполнением полей expense
-		private void tb_Expense_PreviewTextInput(object sender, TextCompositionEventArgs e)
+		private void tb_Expense_TextChanged_New(object sender, TextChangedEventArgs e)
 		{
-			if (!Char.IsDigit(e.Text, 0) && !((e.Text == ",") && (tb_Expense.Text.IndexOf(',') == -1) && (tb_Expense.Text.Length != 0)))
-			{
-				e.Handled = true;
-			}
-			else if (tb_Expense.Text.IndexOf('0') == 0 && tb_Expense.Text.IndexOf(',') != 1 && Char.IsDigit(e.Text, 0))
-			{
-				tb_Expense.Text = e.Text;
-				tb_Expense.SelectionStart = 1;
-				e.Handled = true;
-			}
-			else if (tb_Expense.SelectionStart == 0 && e.Text == ",")
-			{
-				e.Handled = true;
-			}
-			else if (tb_Expense.SelectionStart == 0 && e.Text == "0" && tb_Expense.Text.Length != 0)
-			{
-				e.Handled = true;
-			}
+			textBox_TextChanged(sender, e);
 		}
 
-		private void tb_Expense_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
-		{
-			if (e.Key == Key.Space)
-			{
-				e.Handled = true;
-			}
-		}
+		////Работа с заполнением полей income
+		////Обработка ввода корректных символов и проверка на правильность написания десятичной дроби
+		//private void tb_Income_PreviewTextInput(object sender, TextCompositionEventArgs e)
+		//{
+		//	if (!Char.IsDigit(e.Text, 0) && !((e.Text == ",") && (tb_Income.Text.IndexOf(',') == -1) && (tb_Income.Text.Length != 0)))
+		//	{
+		//		e.Handled = true;
+		//	}
+		//	else if (tb_Income.Text.IndexOf('0') == 0 && tb_Income.Text.IndexOf(',') != 1 && Char.IsDigit(e.Text, 0))
+		//	{
+		//		tb_Income.Text = e.Text;
+		//		tb_Income.SelectionStart = 1;
+		//		e.Handled = true;
+		//	}
+		//	else if (tb_Income.SelectionStart == 0 && e.Text == ",")
+		//	{
+		//		e.Handled = true;
+		//	}
+		//	else if (tb_Income.SelectionStart == 0 && e.Text == "0" && tb_Income.Text.Length != 0)
+		//	{
+		//		e.Handled = true;
+		//	}
+		//}
+		////Отлов space
+		//private void tb_Income_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+		//{
+		//	if (e.Key == Key.Space)
+		//	{
+		//		e.Handled = true;
+		//	}
+		//}
+		////Перевод 59,960.17 -> 59960,17
+		//private void tb_Income_TextChanged(object sender, TextChangedEventArgs e)
+		//{
+		//	if (tb_Income.Text.IndexOf(',') != -1 && tb_Income.Text.IndexOf('.') != -1)
+		//	{
+		//		tb_Income.Text = tb_Income.Text.Remove(tb_Income.Text.IndexOf(','), 1);
+		//	}
+		//	if (tb_Income.Text.IndexOf(',') == -1 && tb_Income.Text.IndexOf('.') != -1)
+		//	{
+		//		tb_Income.Text = tb_Income.Text.Replace(".", ",");
+		//	}
+		//	if (tb_Income.Text == "")
+		//	{
+		//		tb_Income.Text = "0";
+		//		tb_Income.SelectionStart = 1;
+		//	}
+		//}
+		////Работа с заполнением полей expense
+		//private void tb_Expense_PreviewTextInput(object sender, TextCompositionEventArgs e)
+		//{
+		//	if (!Char.IsDigit(e.Text, 0) && !((e.Text == ",") && (tb_Expense.Text.IndexOf(',') == -1) && (tb_Expense.Text.Length != 0)))
+		//	{
+		//		e.Handled = true;
+		//	}
+		//	else if (tb_Expense.Text.IndexOf('0') == 0 && tb_Expense.Text.IndexOf(',') != 1 && Char.IsDigit(e.Text, 0))
+		//	{
+		//		tb_Expense.Text = e.Text;
+		//		tb_Expense.SelectionStart = 1;
+		//		e.Handled = true;
+		//	}
+		//	else if (tb_Expense.SelectionStart == 0 && e.Text == ",")
+		//	{
+		//		e.Handled = true;
+		//	}
+		//	else if (tb_Expense.SelectionStart == 0 && e.Text == "0" && tb_Expense.Text.Length != 0)
+		//	{
+		//		e.Handled = true;
+		//	}
+		//}
 
-		private void tb_Expense_TextChanged(object sender, TextChangedEventArgs e)
-		{
-			if (tb_Expense.Text.IndexOf(',') != -1 && tb_Expense.Text.IndexOf('.') != -1)
-			{
-				tb_Expense.Text = tb_Expense.Text.Remove(tb_Expense.Text.IndexOf(','), 1);
-			}
-			if (tb_Expense.Text.IndexOf(',') == -1 && tb_Expense.Text.IndexOf('.') != -1)
-			{
-				tb_Expense.Text = tb_Expense.Text.Replace(".", ",");
-			}
-			if (tb_Expense.Text == "")
-			{
-				tb_Expense.Text = "0";
-				tb_Expense.SelectionStart = 1;
-			}
-		}
+		//private void tb_Expense_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+		//{
+		//	if (e.Key == Key.Space)
+		//	{
+		//		e.Handled = true;
+		//	}
+		//}
+
+		//private void tb_Expense_TextChanged(object sender, TextChangedEventArgs e)
+		//{
+		//	if (tb_Expense.Text.IndexOf(',') != -1 && tb_Expense.Text.IndexOf('.') != -1)
+		//	{
+		//		tb_Expense.Text = tb_Expense.Text.Remove(tb_Expense.Text.IndexOf(','), 1);
+		//	}
+		//	if (tb_Expense.Text.IndexOf(',') == -1 && tb_Expense.Text.IndexOf('.') != -1)
+		//	{
+		//		tb_Expense.Text = tb_Expense.Text.Replace(".", ",");
+		//	}
+		//	if (tb_Expense.Text == "")
+		//	{
+		//		tb_Expense.Text = "0";
+		//		tb_Expense.SelectionStart = 1;
+		//	}
+		//}
 
 		void UpdateDatePicker()
 		{

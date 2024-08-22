@@ -1,3 +1,6 @@
-﻿{
-  "DataSource" : "MyMiniLedger.db"
+{
+"DataSource":"E:\\Nextcloud\\_My\\test.db",
+"DefaultFee":0.02,
+"DefaultKindToBuy":"Прочее Крипта",
+"DefaultKindToSell":"Крипто: Трейдинг"
 }

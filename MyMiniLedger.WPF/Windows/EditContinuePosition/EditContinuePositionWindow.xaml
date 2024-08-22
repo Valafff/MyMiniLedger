@@ -156,14 +156,12 @@
                 x:Name="tb_Income" 
                 Text="{Binding Path=SelectedPosition.Income, UpdateSourceTrigger=PropertyChanged}"
                 PreviewTextInput="tb_Income_PreviewTextInput_EditContinueWindow"
-                PreviewKeyDown="tb_Income_PreviewKeyDown_EditContinueWindow"
                 TextChanged="tb_Income_TextChanged_EditContinueWindow"/>
 
                 <TextBox Grid.Row="1" Grid.Column="4" 
                 x:Name="tb_Expense"  
                 Text="{Binding Path=SelectedPosition.Expense, UpdateSourceTrigger=PropertyChanged}"
                 PreviewTextInput="tb_Expense_PreviewTextInput_EditContinueWindow"
-                PreviewKeyDown="tb_Expense_PreviewKeyDown_EditContinueWindow"
                 TextChanged="tb_Expense_TextChanged_EditContinueWindow"/>
 
                 <ComboBox Grid.Row="1" Grid.Column="5" x:Name="cb_Coin" ItemsSource="{Binding Path=StringCoins, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"

@@ -19,37 +19,14 @@
 
     <Window.InputBindings>
         <KeyBinding Key="N" Modifiers="Ctrl" Command="{Binding OpenNewPositionWindow}" />
+        <KeyBinding Key="B" Modifiers="Ctrl" Command="{Binding PairDealCreationEditWindow}" />
     </Window.InputBindings>
-
-    <!--<Window.Resources>
-        <DataTemplate x:Key="HeaderTemplate">
-            <TextBlock Text="{Binding}" TextWrapping="Wrap"  TextAlignment="Center"/>
-            -->
-    <!--Обозначаем наличие привязки в ячеке(шапке?) таблицы, выравниванием текст в ячейках по центру и задаем перенос текста-->
-    <!--
-        </DataTemplate>
-        <Style TargetType="DataGridCell">
-            -->
-    <!--Ограничиваем применение стиля (только для шапки DataGridColumnHeader)-->
-    <!--<Setter Property="HorizontalContentAlignment" Value="Center"/>
-            -->
-    <!--Задаем выравнивание по центру ячейки-->
-    <!--
-            <Setter Property="Padding" Value="2"/>-->
-    <!--Задаем отступ в ячейке-->
-    <!--
-            <Setter Property="TextWrapping" Value="NoWrap"/>
-            <Setter Property="Foreground" Value="Red"/>
-            -->
-    <!--Применяем в стиле шаблон отображения текстовых данных HeaderTemplate-->
-    <!--
-        </Style>
-    </Window.Resources>-->
 
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="Файл">
                 <MenuItem Header="Записать новую позицию CTRL+N" Command="{Binding Path=OpenNewPositionWindow}"/>
+                <MenuItem Header="Создать/продолжить парную сделку CTRL+B" Command="{Binding Path=PairDealCreationEditWindow}"/>
                 <Separator/>
                 <MenuItem Header="Редактировать/добавить валюту" Command="{Binding Path=OpenCoinWindow}"/>
                 <MenuItem Header="Редактировать/добавить категорию" Command="{Binding Path=OpenCategoryWindow}"/>
@@ -211,14 +188,12 @@
                 x:Name="tb_Income" 
                 Text="{Binding Path=PositionConstruct.Income, UpdateSourceTrigger=PropertyChanged}"
                 PreviewTextInput="tb_Income_PreviewTextInput_MainWindow"
-                PreviewKeyDown="tb_Income_PreviewKeyDown_MainWindow"
                 TextChanged="tb_Income_TextChanged_MainWindow"/>
 
                             <TextBox Grid.Row="1" Grid.Column="4" 
                 x:Name="tb_Expense"  
                 Text="{Binding Path=PositionConstruct.Expense, UpdateSourceTrigger=PropertyChanged}"
                 PreviewTextInput="tb_Expense_PreviewTextInput_MainWindow"
-                PreviewKeyDown="tb_Expense_PreviewKeyDown_MainWindow"
                 TextChanged="tb_Expense_TextChanged_MainWindow"/>
 
                             <ComboBox Grid.Row="1" Grid.Column="5" x:Name="cb_Coin" ItemsSource="{Binding Path=Coins, UpdateSourceTrigger=PropertyChanged }" SelectedIndex="0" SelectionChanged ="cb_Coin_SelectionChanged_MainWindow">

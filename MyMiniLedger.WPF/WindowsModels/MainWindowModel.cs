@@ -8,6 +8,7 @@ using MyMiniLedger.WPF.Windows.CoinWindow;
 using MyMiniLedger.WPF.Windows.EditContinuePosition;
 using MyMiniLedger.WPF.Windows.KindWindow;
 using MyMiniLedger.WPF.Windows.NewPositionWindow;
+using MyMiniLedger.WPF.Windows.PairDealCreationEdit;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -32,7 +33,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 	public class MainWindowModel : BaseNotify
 	{
 		const int CRYPTOSYMBOLSAFTERDELIMETR = 10;
-		const int FIATSYMBOLSAFTERDELIMETR = 2;
+		//const int FIATSYMBOLSAFTERDELIMETR = 2;
 		//При выполнении метода UpdateCoins() вызывается событие UpdateCoinsIndexEvent, аналогично с другими полями
 		public event UpdateCoinsIndexDelegate UpdateCoinsIndexEvent;
 		public event UpdateCategoriesIndexDelegate UpdateCategoriesIndexEvent;
@@ -140,6 +141,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 		public LambdaCommand OpenCoinWindow { get; set; }
 		public LambdaCommand OpenNewPositionWindow { get; set; }
 		public LambdaCommand OpenEditContinueWindow { get; set; }
+		public LambdaCommand PairDealCreationEditWindow { get; set; }
 
 
 		public LambdaCommand InsertNewPosition { get; set; }
@@ -204,9 +206,9 @@ namespace MyMiniLedger.WPF.WindowsModels
 
 			PositionConstruct = new PositionUIModel() { Kind = new KindUIModel() { Category = new CategoryUIModel() }, Coin = new CoinUIModel(), Status = new StatusUIModel(), Income = "0", Expense = "0" };
 
-			OpenCategoryWindow = new LambdaCommand(execute => { new CategoryWindow(this).Show(); });
-			OpenKindWindow = new LambdaCommand(execute => { new KindWindow(this).Show(); });
-			OpenCoinWindow = new LambdaCommand(execute => { new CoinWindow(this).Show(); });
+			OpenCategoryWindow = new LambdaCommand(execute => { new CategoryWindow(this).ShowDialog(); });
+			OpenKindWindow = new LambdaCommand(execute => { new KindWindow(this).ShowDialog(); });
+			OpenCoinWindow = new LambdaCommand(execute => { new CoinWindow(this).ShowDialog(); });
 			//Открывается как модальное окно
 			OpenNewPositionWindow = new LambdaCommand(execute =>
 			{
@@ -223,6 +225,15 @@ namespace MyMiniLedger.WPF.WindowsModels
 			},
 			canExecute => SelectedPosition != null
 			);
+
+			PairDealCreationEditWindow = new LambdaCommand(execute =>
+			{
+				PairDealCreationEdit pdce = new PairDealCreationEdit(Positions, Categories, Kinds, Coins, StatusesForService);		
+				(pdce.DataContext as PairDealCreationEditModel).UpdateEvent += UpdatePositionsCollection;			
+				pdce.Owner = Application.Current.MainWindow;
+				pdce.ShowDialog(); 
+			}
+			) ;
 
 			//Вставка новой позиции
 			InsertNewPosition = new LambdaCommand(

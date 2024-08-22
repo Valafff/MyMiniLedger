@@ -1,0 +1,115 @@
+﻿<Window x:Class="MyMiniLedger.WPF.Windows.PairDealCreationEdit.PairDealCreationEdit"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:wm="clr-namespace:MyMiniLedger.WPF.WindowsModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:local="clr-namespace:MyMiniLedger.WPF.Windows.PairDealCreationEdit"
+        mc:Ignorable="d"
+        Title="{Binding Path=TitelDealCreation}" Height="675" Width="1000"
+        WindowStartupLocation="CenterScreen">
+
+    <Window.DataContext>
+        <wm:PairDealCreationEditModel/>
+    </Window.DataContext>
+
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="10*"/>
+            <RowDefinition Height="19*"/>
+        </Grid.RowDefinitions>
+        <Menu>
+            <MenuItem Header="Изменить значения по умолчаеию" Command="{Binding EditDefaultData}"/>
+            <TextBlock Text="|  Расчет: "/>
+            <RadioButton x:Name="rb_valueCalcMethod" Content="Считать по количеству" IsChecked="True" Checked="RadioButton_CulcMethod_Checked"/>
+            <RadioButton x:Name="rb_courseCalcMethod" Content="Считать по курсу" Checked="RadioButton_CulcMethod_Checked"/>
+        </Menu>
+        <GroupBox Grid.Row="1" Header="Создание/продолжение парной сделки">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="7*"/>
+                    <ColumnDefinition Width="10*"/>
+                    <ColumnDefinition Width="7*"/>
+                    <ColumnDefinition Width="10*"/>
+                    <ColumnDefinition Width="6*"/>
+                    <ColumnDefinition Width="6*"/>
+                    <ColumnDefinition Width="9*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="12*"/>
+                    <RowDefinition Height="10*"/>
+                    <RowDefinition Height="10*"/>
+                    <RowDefinition Height="12*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Сделка №: " VerticalAlignment="Center" Margin="10"/>
+                <TextBlock x:Name="text_DealNameNumber" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Margin="10" Text="{Binding Path=DealNumber}"/>
+                <TextBlock Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Margin="10"> категория <LineBreak/> покупки:</TextBlock>
+                <TextBlock x:Name="text_DealDefaultKindToBuy" Grid.Row="0" Grid.Column="3" VerticalAlignment="Center" Margin="10" Text="{Binding Path=DefaultKindToBuy, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBlock Grid.Row="0" Grid.Column="4" VerticalAlignment="Center" Margin="10"> категория <LineBreak/> продажи:</TextBlock>
+                <TextBlock x:Name="text_DealDefaultKindToSell" Grid.Row="0" Grid.Column="5" VerticalAlignment="Center" Margin="10" Text="{Binding Path=DefaultKindToSell, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Что продать:" VerticalAlignment="Center" Margin="10"/>
+                <ComboBox x:Name="comboWhatSell" Grid.Row="1" Grid.Column="1" Margin="10" ItemsSource="{Binding WhatToSell, UpdateSourceTrigger=PropertyChanged}" SelectedIndex="0" SelectionChanged="comboWhatBuySell_SelectionChanged"/>
+                <TextBlock Grid.Row="1" Grid.Column="2" Text="сколько:" Margin="10" VerticalAlignment="Center"/>
+                <TextBox x:Name="tb_HowManySell" Grid.Row="1" Grid.Column="3" Margin="10" PreviewTextInput="tb_HowManySell_PreviewTextInput" TextChanged="tb_HowManySell_TextChanged" Text="{Binding SellCount, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBlock Grid.Row="1" Grid.Column="4" Text="комиссия, %:" VerticalAlignment="Center" Margin="10"/>
+                <TextBlock x:Name="tb_SellFee" Grid.Row="1" Grid.Column="5" Margin="10" Text="{Binding CurrentSellFee, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Что купить:" VerticalAlignment="Center" Margin="10"/>
+                <ComboBox x:Name="comboWhatBuy" Grid.Row="2" Grid.Column="1" Margin="10" ItemsSource="{Binding WhatToBuy, UpdateSourceTrigger=PropertyChanged}" SelectedIndex="0" SelectionChanged="comboWhatBuySell_SelectionChanged"/>
+                <TextBlock Grid.Row="2" Grid.Column="2" Text="сколько:" Margin="10" VerticalAlignment="Center"/>
+                <TextBox x:Name="tb_HowManyBuy" Grid.Row="2" Grid.Column="3" Margin="10" TextChanged="tb_HowManyBuy_TextChanged" PreviewTextInput="tb_HowManyBuy_PreviewTextInput" Text="{Binding BuyCount, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBlock Grid.Row="2" Grid.Column="4" Text="комиссия, %:" VerticalAlignment="Center" Margin="10"/>
+                <TextBlock x:Name="tb_BuyFee" Grid.Row="2" Grid.Column="5" Margin="10" Text="{Binding CurrentBuyFee, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <TextBlock Grid.Row="3" Grid.Column="0" VerticalAlignment="Center">Величина<LineBreak/>комиссии, % :</TextBlock >
+                <TextBox x:Name="tb_DefaultFee" Grid.Row="3" Grid.Column="2" VerticalAlignment="Center" Margin="10" Text="{Binding Path=DefaultFeel, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="tb_DefaultFee_PreviewTextInput" TextChanged="tb_DefaultFee_TextChanged"/>
+                <StackPanel Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Margin="10">
+                    <RadioButton x:Name="rb_toSell" Content="на продажу" IsChecked="{Binding SellCheck, UpdateSourceTrigger=PropertyChanged}" Command="{Binding ChangeRadioButton}"/>
+                    <RadioButton x:Name="rb_toBuy" Content="на покупку" IsChecked="{Binding BuyCheck, UpdateSourceTrigger=PropertyChanged}" Command="{Binding ChangeRadioButton}"/>
+                </StackPanel>
+
+                <TextBlock Grid.Row="3" Grid.Column="3" Text="Курс пары:" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <StackPanel Grid.Row="3" Grid.Column="4" VerticalAlignment="Center">
+                    <TextBlock x:Name="text_PairName"  Text="ххх/yyy" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    <CheckBox x:Name ="checBox_CourseInverter" Click="checBox_CourseInverter_Click">
+                        <TextBlock VerticalAlignment="Center"> Инвертировать<LineBreak/>курс</TextBlock>
+                    </CheckBox>
+                </StackPanel>
+                <TextBox x:Name="tb_CalculatedCourse" Grid.Row="3" Grid.Column="5" VerticalAlignment="Center" Margin="10" Text="123,456789" TextChanged="tb_CalculatedCourse_TextChanged" PreviewTextInput="tb_CalculatedCourse_PreviewTextInput"/>
+
+                <Button x:Name="bt_DoDeal" Grid.Column="6" Grid.Row="0" Margin="10" Grid.RowSpan="2" Click="bt_DoDeal_Click">
+                    <TextBlock TextAlignment="Center"> Создать/продолжить<LineBreak/>открытую сделку</TextBlock >
+                </Button>
+                <Button x:Name="bt_CloseDeal" Grid.Column="6" Grid.Row="2" Margin="10" Grid.RowSpan="2" Background="Coral">
+                    <TextBlock TextAlignment="Center"> Создать/продолжить<LineBreak/>и закрыть сделку</TextBlock >
+                </Button>
+            </Grid>
+        </GroupBox>
+        <GroupBox Grid.Row="2" Header="Открытые сделки">
+            <DataGrid x:Name="dg_ActiveDeals" ItemsSource="{Binding ActiveDeals}"
+                      AutoGenerateColumns="False"
+                      CanUserAddRows="False" 
+                      CanUserDeleteRows="False">
+
+                <!--<DataGrid.ItemContainerStyle>
+                    <Style TargetType="DataGridRow">
+                        <EventSetter x:Name="Row_DoubleClick" Event="MouseDoubleClick" Handler="Row_DoubleClick"/>
+                    </Style>
+                </DataGrid.ItemContainerStyle>-->
+
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Номер сделки" Binding="{Binding Path=DealNumber}"  IsReadOnly="True" />
+                    <DataGridTextColumn Header="Покупка" Binding="{Binding Path=BuyItem}"  IsReadOnly="True"  Foreground="Green"/>
+                    <DataGridTextColumn Header="Продажа" Binding="{Binding Path=SellItem}"  IsReadOnly="True" Foreground="Red"/>
+                    <DataGridTextColumn Header="Дата создания" Binding="{Binding Path=DealOpenTime, ConverterCulture=ru}"  IsReadOnly="True" />
+                </DataGrid.Columns>
+
+            </DataGrid>
+        </GroupBox>
+
+    </Grid>
+</Window>

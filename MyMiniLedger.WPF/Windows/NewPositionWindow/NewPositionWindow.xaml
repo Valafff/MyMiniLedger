@@ -101,16 +101,14 @@
             <TextBox Grid.Row="1" Grid.Column="3"
                      x:Name="tb_Income" 
                      Text="{Binding Path=PositionConstruct.Income, UpdateSourceTrigger=PropertyChanged}"
-                     PreviewTextInput="tb_Income_PreviewTextInput"
-                     PreviewKeyDown="tb_Income_PreviewKeyDown"
-                     TextChanged="tb_Income_TextChanged"/>
+                     PreviewTextInput="tb_Income_PreviewTextInput_New"
+                     TextChanged="tb_Income_TextChanged_New"/>
             
             <TextBox Grid.Row="1" Grid.Column="4" 
                      x:Name="tb_Expense"  
                      Text="{Binding Path=PositionConstruct.Expense, UpdateSourceTrigger=PropertyChanged}"
-                     PreviewTextInput="tb_Expense_PreviewTextInput"
-                     PreviewKeyDown="tb_Expense_PreviewKeyDown"
-                     TextChanged="tb_Expense_TextChanged"/>
+                     PreviewTextInput="tb_Expense_PreviewTextInput_New"
+                     TextChanged="tb_Expense_TextChanged_New"/>
             
             <ComboBox Grid.Row="1" Grid.Column="5" x:Name="cb_Coin" ItemsSource="{Binding Path=Coins, UpdateSourceTrigger=PropertyChanged }" SelectedIndex="0" SelectionChanged ="cb_Coin_SelectionChanged">
                 <ComboBox.ItemTemplate>

@@ -43,8 +43,8 @@ namespace MyMiniLedger.WPF.Windows
 			Password.Clear();
 			Password.Append(PassBox.Password);
 
-			////затычка для быстрого входа
-			//Password.Append("123");
+			//затычка для быстрого входа
+			Password.Append("123");
 
 			DataConfig.ResetConnection();
 			DataConfig.Init("config.json", Password.ToString());
@@ -94,7 +94,7 @@ namespace MyMiniLedger.WPF.Windows
 			{
 				try
 				{
-					Console.WriteLine(fd.FileName);
+					//Console.WriteLine(fd.FileName);
 					path = fd.FileName;
 
 					var newConfig = Config.GetFromConfig();
