@@ -27,6 +27,7 @@ namespace MyMiniLedger.WPF.Windows.EditContinuePosition
 	{
 		//Блокировка выполнения событий при инициализации
 		bool isLoaded = false;
+		NumberFilter numFilter = new NumberFilter();
 		public EditContinuePositionWindow(PositionUIModel _selectedPosition,
 			ObservableCollection<PositionUIModel> _mainPositionsSourse,
 			ObservableCollection<CategoryUIModel> _mainCategories,
@@ -66,157 +67,25 @@ namespace MyMiniLedger.WPF.Windows.EditContinuePosition
 			isLoaded = true;
 		}
 
-		private void textBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
-		{
-			string str = ((TextBox)sender).Text + e.Text;
 
-			if ((str.IndexOf('0') == 0 && str.IndexOf(',') != 1 && Char.IsDigit(e.Text, 0) && str != "0")
-				|| (((TextBox)sender).SelectionStart == 0 && e.Text == "0" && ((TextBox)sender).Text.Length != 0)
-				|| (((TextBox)sender).SelectionStart == 0 && !Char.IsDigit(e.Text, 0)))
-			{
-				if (((TextBox)sender).Text == "0" && e.Text != "0" && Char.IsDigit(e.Text, 0))
-				{
-					((TextBox)sender).Text = e.Text;
-					((TextBox)sender).SelectionStart = ((TextBox)sender).Text.Length;
-				}
-				e.Handled = true;
-				return;
-			}
-			e.Handled = !double.TryParse(str, System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.CultureInfo.CurrentUICulture, out double i);
-		}
-		private void textBox_TextChanged(object sender, TextChangedEventArgs e)
-		{
-			if (((TextBox)sender).Text == string.Empty)
-			{
-				((TextBox)sender).Text = "0";
-				((TextBox)sender).SelectionStart = ((TextBox)sender).Text.Length;
-			}
-		}
 		//Работа с заполнением полей income
 		private void tb_Income_PreviewTextInput_EditContinueWindow(object sender, TextCompositionEventArgs e)
 		{
-			textBox_PreviewTextInput(sender, e);
+			numFilter.textBoxPreviewTextInputFilter(sender, e);
 		}
 		private void tb_Income_TextChanged_EditContinueWindow(object sender, TextChangedEventArgs e)
 		{
-			textBox_TextChanged(sender, e);
+			numFilter.textBoxTextChangedFilter(sender, e);
 		}
 		////Работа с заполнением полей expense
 		private void tb_Expense_PreviewTextInput_EditContinueWindow(object sender, TextCompositionEventArgs e)
 		{
-			textBox_PreviewTextInput(sender, e);
+			numFilter.textBoxPreviewTextInputFilter(sender, e);
 		}
 		private void tb_Expense_TextChanged_EditContinueWindow(object sender, TextChangedEventArgs e)
 		{
-			textBox_TextChanged(sender, e);
+			numFilter.textBoxTextChangedFilter(sender, e);
 		}
-
-		//private void tb_Income_PreviewTextInput_EditContinueWindow(object sender, TextCompositionEventArgs e)
-		//{
-
-		//	if (!Char.IsDigit(e.Text, 0) && !((e.Text == ",") && (tb_Income.Text.IndexOf(',') == -1) && (tb_Income.Text.Length != 0)))
-		//	{
-		//		e.Handled = true;
-		//	}
-		//	else if (tb_Income.Text.IndexOf('0') == 0 && tb_Income.Text.IndexOf(',') != 1 && Char.IsDigit(e.Text, 0))
-		//	{
-		//		tb_Income.Text = e.Text;
-		//		tb_Income.SelectionStart = 1;
-		//		e.Handled = true;
-		//	}
-		//	else if (tb_Income.SelectionStart == 0 && e.Text == ",")
-		//	{
-		//		e.Handled = true;
-		//	}
-		//	else if (tb_Income.SelectionStart == 0 && e.Text == "0" && tb_Income.Text.Length != 0)
-		//	{
-		//		e.Handled = true;
-		//	}
-		//}
-
-		//private void tb_Income_PreviewKeyDown_EditContinueWindow(object sender, KeyEventArgs e)
-		//{
-		//	if (e.Key == Key.Space)
-		//	{
-		//		e.Handled = true;
-		//	}
-		//}
-		//private void tb_Income_TextChanged_EditContinueWindow(object sender, TextChangedEventArgs e)
-		//{
-		//	if (isLoaded)
-		//	{
-		//		if (tb_Income.Text.IndexOf(',') != -1 && tb_Income.Text.IndexOf('.') != -1)
-		//		{
-		//			tb_Income.Text = tb_Income.Text.Remove(tb_Income.Text.IndexOf(','), 1);
-		//		}
-		//		if (tb_Income.Text.IndexOf(',') == -1 && tb_Income.Text.IndexOf('.') != -1)
-		//		{
-		//			tb_Income.Text = tb_Income.Text.Replace(".", ",");
-		//		}
-		//		if (tb_Income.Text == "")
-		//		{
-		//			tb_Income.Text = "0";
-		//			tb_Income.SelectionStart = 1;
-		//		}
-		//		tb_Saldo.Text = SaldoCalculation();
-		//		tb_IncomeSelectedPos.Background = Brushes.Yellow;
-		//		tb_Saldo.Background = Brushes.Yellow;
-		//	}
-		//}
-
-		//private void tb_Expense_PreviewTextInput_EditContinueWindow(object sender, TextCompositionEventArgs e)
-		//{
-		//	if (!Char.IsDigit(e.Text, 0) && !((e.Text == ",") && (tb_Expense.Text.IndexOf(',') == -1) && (tb_Expense.Text.Length != 0)))
-		//	{
-		//		e.Handled = true;
-		//	}
-		//	else if (tb_Expense.Text.IndexOf('0') == 0 && tb_Expense.Text.IndexOf(',') != 1 && Char.IsDigit(e.Text, 0))
-		//	{
-		//		tb_Expense.Text = e.Text;
-		//		tb_Expense.SelectionStart = 1;
-		//		e.Handled = true;
-		//	}
-		//	else if (tb_Expense.SelectionStart == 0 && e.Text == ",")
-		//	{
-		//		e.Handled = true;
-		//	}
-		//	else if (tb_Expense.SelectionStart == 0 && e.Text == "0" && tb_Expense.Text.Length != 0)
-		//	{
-		//		e.Handled = true;
-		//	}
-		//}
-
-		//private void tb_Expense_PreviewKeyDown_EditContinueWindow(object sender, KeyEventArgs e)
-		//{
-		//	if (e.Key == Key.Space)
-		//	{
-		//		e.Handled = true;
-		//	}
-		//}
-
-		//private void tb_Expense_TextChanged_EditContinueWindow(object sender, TextChangedEventArgs e)
-		//{
-		//	if (isLoaded)
-		//	{
-		//		if (tb_Expense.Text.IndexOf(',') != -1 && tb_Expense.Text.IndexOf('.') != -1)
-		//		{
-		//			tb_Expense.Text = tb_Expense.Text.Remove(tb_Expense.Text.IndexOf(','), 1);
-		//		}
-		//		if (tb_Expense.Text.IndexOf(',') == -1 && tb_Expense.Text.IndexOf('.') != -1)
-		//		{
-		//			tb_Expense.Text = tb_Expense.Text.Replace(".", ",");
-		//		}
-		//		if (tb_Expense.Text == "")
-		//		{
-		//			tb_Expense.Text = "0";
-		//			tb_Expense.SelectionStart = 1;
-		//		}
-		//		tb_Saldo.Text = SaldoCalculation();
-		//		tb_ExpenseSelectedPos.Background = Brushes.Yellow;
-		//		tb_Saldo.Background = Brushes.Yellow;
-		//	}
-		//}
-
 
 		private void tb_inputTag_TextChanged(object sender, TextChangedEventArgs e)
 		{

@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using MyMiniLedger.WPF.Models;
+using MyMiniLedger.WPF.ViewTools;
 using MyMiniLedger.WPF.WindowsModels;
 using System;
 using System.Collections.Generic;
@@ -23,6 +24,7 @@ namespace MyMiniLedger.WPF.Windows.NewPositionWindow
 	/// </summary>
 	public partial class NewPositionWindow : Window
 	{
+		NumberFilter numFilter = new NumberFilter();
 		public NewPositionWindow(MainWindowModel _mainWindowModel)
 		{
 			InitializeComponent();
@@ -68,49 +70,23 @@ namespace MyMiniLedger.WPF.Windows.NewPositionWindow
 			}
 		}
 
-		private void textBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
-		{
-			string str = ((TextBox)sender).Text + e.Text;
-
-			if ((str.IndexOf('0') == 0 && str.IndexOf(',') != 1 && Char.IsDigit(e.Text, 0) && str != "0")
-				|| (((TextBox)sender).SelectionStart == 0 && e.Text == "0" && ((TextBox)sender).Text.Length != 0)
-				|| (((TextBox)sender).SelectionStart == 0 && !Char.IsDigit(e.Text, 0)))
-			{
-				if (((TextBox)sender).Text == "0" && e.Text != "0" && Char.IsDigit(e.Text, 0))
-				{
-					((TextBox)sender).Text = e.Text;
-					((TextBox)sender).SelectionStart = ((TextBox)sender).Text.Length;
-				}
-				e.Handled = true;
-				return;
-			}
-			e.Handled = !double.TryParse(str, System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.CultureInfo.CurrentUICulture, out double i);
-		}
-		private void textBox_TextChanged(object sender, TextChangedEventArgs e)
-		{
-			if (((TextBox)sender).Text == string.Empty)
-			{
-				((TextBox)sender).Text = "0";
-				((TextBox)sender).SelectionStart = ((TextBox)sender).Text.Length;
-			}
-		}
 		//Работа с заполнением полей income
 		private void tb_Income_PreviewTextInput_New(object sender, TextCompositionEventArgs e)
 		{
-			textBox_PreviewTextInput(sender, e);
+			numFilter.textBoxPreviewTextInputFilter(sender, e);
 		}
 		private void tb_Income_TextChanged_New(object sender, TextChangedEventArgs e)
 		{
-			textBox_TextChanged(sender, e);
+			numFilter.textBoxTextChangedFilter(sender, e);
 		}
 		////Работа с заполнением полей expense
 		private void tb_Expense_PreviewTextInput_New(object sender, TextCompositionEventArgs e)
 		{
-			textBox_PreviewTextInput(sender, e);
+			numFilter.textBoxPreviewTextInputFilter(sender, e);
 		}
 		private void tb_Expense_TextChanged_New(object sender, TextChangedEventArgs e)
 		{
-			textBox_TextChanged(sender, e);
+			numFilter.textBoxTextChangedFilter(sender, e);
 		}
 
 		////Работа с заполнением полей income

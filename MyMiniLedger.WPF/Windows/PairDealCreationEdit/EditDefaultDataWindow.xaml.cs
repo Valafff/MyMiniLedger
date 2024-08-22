@@ -19,6 +19,7 @@ using System.IO;
 using System.Text.Json;
 using System.Globalization;
 using MyMiniLedger.WPF.WindowsModels;
+using MyMiniLedger.WPF.ViewTools;
 
 namespace MyMiniLedger.WPF.Windows.PairDealCreationEdit
 {
@@ -30,6 +31,7 @@ namespace MyMiniLedger.WPF.Windows.PairDealCreationEdit
 
 		Config configData;
 		PairDealCreationEditModel Model;
+		NumberFilter numFilter = new NumberFilter();
 		public EditDefaultDataWindow(ref Config _config, PairDealCreationEditModel _model)
 		{
 			configData = _config;
@@ -100,30 +102,12 @@ namespace MyMiniLedger.WPF.Windows.PairDealCreationEdit
 
 		private void textBox_DefaultFee_PreviewTextInput(object sender, TextCompositionEventArgs e)
 		{
-			string str = ((TextBox)sender).Text + e.Text;
-
-			if ((str.IndexOf('0') == 0 && str.IndexOf(',') != 1 && Char.IsDigit(e.Text, 0) && str != "0")
-				|| (((TextBox)sender).SelectionStart == 0 && e.Text == "0" && ((TextBox)sender).Text.Length != 0)
-				|| (((TextBox)sender).SelectionStart == 0 && !Char.IsDigit(e.Text, 0)))
-			{
-				if (((TextBox)sender).Text == "0" && e.Text != "0" && Char.IsDigit(e.Text, 0))
-				{
-					((TextBox)sender).Text = e.Text;
-					((TextBox)sender).SelectionStart = ((TextBox)sender).Text.Length;
-				}
-				e.Handled = true;
-				return;
-			}
-			e.Handled = !double.TryParse(str, System.Globalization.NumberStyles.AllowDecimalPoint, System.Globalization.CultureInfo.CurrentUICulture, out double i);
+			numFilter.textBoxPreviewTextInputFilter(sender, e);
 		}
 
 		private void textBox_DefaultFee_TextChanged(object sender, TextChangedEventArgs e)
 		{
-			if (((TextBox)sender).Text == string.Empty)
-			{
-				((TextBox)sender).Text = "0";
-				((TextBox)sender).SelectionStart = ((TextBox)sender).Text.Length;
-			}
+			numFilter.textBoxTextChangedFilter(sender, e);
 		}
 	}
 }
