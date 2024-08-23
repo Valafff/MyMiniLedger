@@ -36,8 +36,35 @@ namespace MyMiniLedger.WPF.Models
 			set => SetField(ref _dealOpenTime, value);
 		}
 
+		private string _dealName;
+		public string DealName
+		{
+			get => _dealName;
+			set => SetField(ref _dealName, value);
+		}
+
+		private string _dealNotes;
+		public string DealNotes
+		{
+			get => _dealNotes;
+			set => SetField(ref _dealNotes, value);
+		}
+
 		//Расчетные значения
-		private double _buyAmount;
+		private double _totalBuyAmount;
+		public double TotalBuyAmount
+		{
+			get => _totalBuyAmount;
+			set => SetField(ref _totalBuyAmount, value);
+		}
+
+		private double _totalSellAmount;
+		public double TotalSellAmount
+		{
+			get => _totalSellAmount;
+			set => SetField(ref _totalSellAmount, value);
+		}
+
 
 		//Служебные значения
 		public int? ParentZeroKey {get; set; }

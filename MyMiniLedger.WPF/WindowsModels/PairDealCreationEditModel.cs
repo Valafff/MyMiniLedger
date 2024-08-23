@@ -40,6 +40,20 @@ namespace MyMiniLedger.WPF.WindowsModels
 			set => SetField(ref _sellCheck, value);
 		}
 
+		private string _buyItemName;
+		public string BuyItemName
+		{
+			get => _buyItemName;
+			set => SetField(ref _buyItemName, value);
+		}
+
+		private string _sellItemName;
+		public string SellItemName
+		{
+			get => _sellItemName;
+			set => SetField(ref _sellItemName, value);
+		}
+
 		private string _buyCount = 0.ToString(CultureInfo.CurrentUICulture);
 		public string BuyCount
 		{
@@ -110,10 +124,6 @@ namespace MyMiniLedger.WPF.WindowsModels
 		public LambdaCommand ChangeRadioButton { get; set; }
 		public LambdaCommand ContinueDealExecuteTest {  get; set; }
 
-		//public LambdaCommand TakeNewDeal { get; set; }
-		//public LambdaCommand TakeNewDealAndClose { get; set; }
-		//public LambdaCommand ContinueDealAndClose { get; set; }
-
 		public PairDealCreationEditModel()
 		{
 			ConfigData = Config.GetFromConfig();
@@ -150,7 +160,9 @@ namespace MyMiniLedger.WPF.WindowsModels
 				}
 			});
 
-			ContinueDealExecuteTest = new LambdaCommand(execute => {}, canExecute => SelectedDeal.DealNumber != 0);
+			ContinueDealExecuteTest = new LambdaCommand(execute => {}, canExecute => SelectedDeal.DealNumber != 0 
+			&& ((SelectedDeal.BuyItem == BuyItemName && SelectedDeal.SellItem == SellItemName)
+			|| (SelectedDeal.BuyItem == SellItemName && SelectedDeal.SellItem == BuyItemName)));
 		}
 
 		public void ReWriteDeals(PairDealModel _tempModel, string _dealSignature)
