@@ -33,7 +33,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 		bool dateTimeWasChanged = false;
 		bool dontEditthis = false;
 
-		private readonly Context _context;
+		protected readonly Context _context;
 
 		//Название окна
 		private string _titleEditContinuePos = "Редактирование/Продолжение позиции";
@@ -375,6 +375,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 				double.TryParse(SelectedPosition.Expense.ToString(), out double r2);
 				SelectedPosition.Saldo = (r1 - r2).ToString();
 				SelectedPositionsInitialization(SelectedPositions);
+				Thread.CurrentThread.CurrentCulture = CultureInfo.CurrentUICulture;
 			},
 				canExecute => SelectedPosition.Kind is not null && SelectedPosition.Income != null && SelectedPosition.Expense != null);
 
@@ -546,7 +547,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 			}
 		}
 
-		//Инициализация выбранных позиций
+		//Инициализация выбранных позиций - без этого метода не работает добавление комплексной позиции
 		public void SelectedPositionsInitialization(ObservableCollection<PositionUIModel> _selectedPositions, int _flagSource = 0)
 		{
 			try

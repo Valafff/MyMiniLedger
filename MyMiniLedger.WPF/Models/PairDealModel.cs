@@ -37,6 +37,9 @@ namespace MyMiniLedger.WPF.Models
 		}
 
 		public int? ParentZeroKey {get; set; }
+		public bool? isOpen { get; set; } = true;
+		//Резерв
+		public string? AdditionalData { get; set; }
 
 
 

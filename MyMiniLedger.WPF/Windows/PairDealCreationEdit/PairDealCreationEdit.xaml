@@ -81,11 +81,19 @@
                 </StackPanel>
                 <TextBox x:Name="tb_CalculatedCourse" Grid.Row="3" Grid.Column="5" VerticalAlignment="Center" Margin="10" Text="123,456789" TextChanged="tb_CalculatedCourse_TextChanged" PreviewTextInput="tb_CalculatedCourse_PreviewTextInput"/>
 
-                <Button x:Name="bt_DoDeal" Grid.Column="6" Grid.Row="0" Margin="10" Grid.RowSpan="2" Click="bt_DoDeal_Click">
-                    <TextBlock TextAlignment="Center"> Создать/продолжить<LineBreak/>открытую сделку</TextBlock >
+                <Button x:Name="bt_DoNewDeal" Grid.Column="6" Grid.Row="0" Margin="10,5,10,5" Click="bt_DoNewDeal_Click">
+                    <TextBlock TextAlignment="Center"> Создать новую<LineBreak/>открытую сделку</TextBlock >
                 </Button>
-                <Button x:Name="bt_CloseDeal" Grid.Column="6" Grid.Row="2" Margin="10" Grid.RowSpan="2" Background="Coral">
-                    <TextBlock TextAlignment="Center"> Создать/продолжить<LineBreak/>и закрыть сделку</TextBlock >
+                <Button x:Name="bt_DoDeal" Grid.Column="6" Grid.Row="1" Margin="10,2,10,5" Click="bt_ContinueOpenDeal_Click" Command="{Binding ContinueDealExecuteTest}">
+                    <TextBlock TextAlignment="Center"> Продолжить<LineBreak/>открытую сделку</TextBlock >
+                </Button>
+
+                <Button x:Name="bt_NewCloseDeal" Grid.Column="6" Grid.Row="2" Margin="10,2,10,5" Background="Coral" Click="bt_DoNewDealAndClose_Click">
+                    <TextBlock TextAlignment="Center"> Создать новую сделку<LineBreak/>и закрыть её</TextBlock >
+                </Button>
+
+                <Button x:Name="bt_CloseDeal" Grid.Column="6" Grid.Row="3" Margin="10,2,10,5" Background="Coral" Click="bt_ContinueDealAndClose_Click" Command="{Binding ContinueDealExecuteTest}" >
+                    <TextBlock TextAlignment="Center"> Продолжить открытую<LineBreak/> сделку и закрыть её</TextBlock >
                 </Button>
             </Grid>
         </GroupBox>
@@ -95,11 +103,11 @@
                       CanUserAddRows="False" 
                       CanUserDeleteRows="False">
 
-                <!--<DataGrid.ItemContainerStyle>
+                <DataGrid.ItemContainerStyle>
                     <Style TargetType="DataGridRow">
-                        <EventSetter x:Name="Row_DoubleClick" Event="MouseDoubleClick" Handler="Row_DoubleClick"/>
+                        <EventSetter x:Name="Row_DealDoubleClick" Event="MouseDoubleClick"  Handler="Row_DealDoubleClick"/>
                     </Style>
-                </DataGrid.ItemContainerStyle>-->
+                </DataGrid.ItemContainerStyle>
 
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Номер сделки" Binding="{Binding Path=DealNumber}"  IsReadOnly="True" />

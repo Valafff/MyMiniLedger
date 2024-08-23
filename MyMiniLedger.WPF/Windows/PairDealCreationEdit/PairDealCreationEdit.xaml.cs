@@ -22,6 +22,10 @@ using System.Globalization;
 using System.Text.Json;
 using Dapper;
 using MyMiniLedger.WPF.ViewTools;
+using Microsoft.VisualBasic;
+using System.Runtime.Serialization;
+using System.Text.Encodings.Web;
+using static System.Windows.Forms.Design.AxImporter;
 
 namespace MyMiniLedger.WPF.Windows.PairDealCreationEdit
 {
@@ -88,7 +92,7 @@ namespace MyMiniLedger.WPF.Windows.PairDealCreationEdit
 							tempDealNumber = temp.DealNumber;
 						}
 
-						if ((position.Status.StatusName == "Open" || position.Status.StatusName == "Открыта") && !dealsList.Any(n => n.DealNumber == temp.DealNumber))
+						if ((position.Status.StatusName == "Open" || position.Status.StatusName == "Открыта") && !dealsList.Any(n => n.DealNumber == temp.DealNumber) && temp.isOpen == true)
 						{
 							dealsList.Add(temp);
 						}
@@ -108,53 +112,120 @@ namespace MyMiniLedger.WPF.Windows.PairDealCreationEdit
 
 			text_DealNameNumber.Text = (++tempDealNumber).ToString();
 		}
-
-		private void bt_DoDeal_Click(object sender, RoutedEventArgs e)
+		//Инициализация конструкта продажи
+		private string SellConstructInitialization(int _dealNumber, out DateTime dealDate, out PairDealModel tempModel, int? _zeroParenKey = -1, string _status_1 = "Open", string _status_2 ="Открыта")
 		{
-			DateTime dealDate = DateTime.Now;
+
+			dealDate = DateTime.Now;
 			int newId = model.MAINPOSITIONSCOLLECTION.Max(m => m.Id) + 1;
 			int newPosKey = model.MAINPOSITIONSCOLLECTION.Max(p => p.PositionKey) + 1;
 
-			PairDealModel tempModel = new PairDealModel()
+			tempModel = new PairDealModel()
 			{
-				DealNumber = tempDealNumber,
+				DealNumber = _dealNumber,
 				BuyItem = comboWhatBuy.SelectedValue.ToString(),
 				SellItem = comboWhatSell.SelectedValue.ToString(),
 				DealOpenTime = dealDate,
-				ParentZeroKey = newPosKey
+				//Для корректной записи данных по сделке нужно передавать номер головы комплексной позиции
+				ParentZeroKey = _zeroParenKey == -1? newPosKey : _zeroParenKey 
 			};
-			model.ActiveDeals.Add(tempModel);
-			string posData = DealSignature + JsonSerializer.Serialize(tempModel);
+			JsonSerializerOptions options = new JsonSerializerOptions
+			{
+				Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+			};
+			string posData = DealSignature + JsonSerializer.Serialize(tempModel, options);
 
-			//Продажа
 			model.SelectedPosition.Id = newId;
 			model.SelectedPosition.PositionKey = newPosKey;
 			model.SelectedPosition.OpenDate = dealDate.ToString(CultureInfo.CurrentUICulture);
-			model.SelectedPosition.CloseDate = dealDate.ToString(CultureInfo.CurrentUICulture);
 			model.SelectedPosition.Kind = model.Kinds.FirstOrDefault(k => k.Kind == model.SelectedKind);
-			model.SelectedPosition.Income = "0";
+			model.SelectedPosition.Income = 0.ToString(CultureInfo.CurrentUICulture);
 			model.SelectedPosition.Expense = tb_HowManySell.Text;
 			model.SelectedPosition.Coin = model.Coins.FirstOrDefault(c => c.ShortName == comboWhatSell.SelectedValue);
-			model.SelectedPosition.Status = model.Statuses.FirstOrDefault(s => s.StatusName == "Open" || s.StatusName == "Открыта");
+			model.SelectedPosition.Status = model.Statuses.FirstOrDefault(s => s.StatusName == _status_1 || s.StatusName == _status_2);
 			model.SelectedPosition.Tag = posData;
 			model.SelectedPosition.Notes = "Позиция создана в редакторе позиций";
-			model.InsertPosition.Execute(null);
+			return posData;
+		}
 
-			model.SelectedPositionsInitialization(model.SelectedPositions);
-
-			//Покупка
-			model.SelectedPosition.OpenDate = dealDate.ToString(CultureInfo.CurrentUICulture);
-			//model.SelectedPosition.CloseDate = DateTime.Now.ToString(CultureInfo.CurrentUICulture);
+		//Инициализация конструкта покупки
+		private void BuyConstructInitialization(DateTime _dealDate, string _posData, string _status_1 = "Open", string _status_2 = "Открыта")
+		{
+			model.SelectedPosition.OpenDate = _dealDate.ToString(CultureInfo.CurrentUICulture);
 			model.SelectedPosition.Kind = model.Kinds.FirstOrDefault(k => k.Kind == model.SelectedKind);
 			model.SelectedPosition.Income = tb_HowManyBuy.Text;
-			model.SelectedPosition.Expense = "0";
+			model.SelectedPosition.Expense = 0.ToString(CultureInfo.CurrentUICulture);
 			model.SelectedPosition.Coin = model.Coins.FirstOrDefault(c => c.ShortName == comboWhatBuy.SelectedValue);
-			model.SelectedPosition.Status = model.Statuses.FirstOrDefault(s => s.StatusName == "Open" || s.StatusName == "Открыта");
-			model.SelectedPosition.Tag = posData;
+			model.SelectedPosition.Status = model.Statuses.FirstOrDefault(s => s.StatusName == _status_1 || s.StatusName == _status_2);
+			model.SelectedPosition.Tag = _posData;
 			model.SelectedPosition.Notes = "Позиция создана в редакторе позиций";
+		}
+
+
+		//Создание новой сделки
+		private void bt_DoNewDeal_Click(object sender, RoutedEventArgs e)
+		{
+			model.SelectedPosition = new PositionUIModel();
+			string posData = SellConstructInitialization(tempDealNumber, out DateTime dealDate, out PairDealModel tempModel);
+			//Продажа
+			model.InsertPosition.Execute(null);
+			BuyConstructInitialization(dealDate, posData);
+			//Поркупка
+			model.AddComplexPosition.Execute(null);
+
+			model.ActiveDeals.Add(tempModel);
+			text_DealNameNumber.Text = (++tempDealNumber).ToString();
+			model.SelectedDeal = tempModel;
+		}
+
+		//Продолжение существующей сделки
+		private void bt_ContinueOpenDeal_Click(object sender, RoutedEventArgs e)
+		{
+			string posData = SellConstructInitialization(model.SelectedDeal.DealNumber, out DateTime dealDate, out PairDealModel tempModel, model.SelectedDeal.ParentZeroKey);
+			//Продажа
+			model.SelectedPosition.ZeroParrentKey = model.SelectedDeal.ParentZeroKey;
+			model.SelectedPositionsInitialization(model.SelectedPositions);
+			model.AddComplexPosition.Execute(null);
+
+			//Покупка
+			BuyConstructInitialization(dealDate, posData);
+			model.AddComplexPosition.Execute(null);
+		}
+
+		//Создание новой сделки и её закрытие
+		private void bt_DoNewDealAndClose_Click(object sender, RoutedEventArgs e)
+		{
+			model.SelectedPosition = new PositionUIModel();
+			string posData = SellConstructInitialization(tempDealNumber, out DateTime dealDate, out PairDealModel tempModel);
+			//Продажа
+			model.InsertPosition.Execute(null);
+			//Покупка
+			BuyConstructInitialization(dealDate, posData, "Closed", "Закрыта");
+			model.SelectedPosition.CloseDate = dealDate.ToString(CultureInfo.CurrentUICulture);
+			model.SelectedPosition.ZeroParrentKey = tempModel.ParentZeroKey;
 			model.AddComplexPosition.Execute(null);
 
 			text_DealNameNumber.Text = (++tempDealNumber).ToString();
+			model.ReWriteDeals(tempModel, DealSignature);
+		}
+
+		//Продолжение существующей сделки и её закрытие
+		private void bt_ContinueDealAndClose_Click(object sender, RoutedEventArgs e)
+		{
+			string posData = SellConstructInitialization(model.SelectedDeal.DealNumber, out DateTime dealDate, out PairDealModel tempModel, model.SelectedDeal.ParentZeroKey);
+			//Продажа
+			model.SelectedPosition.ZeroParrentKey = model.SelectedDeal.ParentZeroKey;
+			model.SelectedPositionsInitialization(model.SelectedPositions);
+			model.AddComplexPosition.Execute(null);
+
+			//Покупка
+			BuyConstructInitialization(dealDate, posData, "Closed", "Закрыта");
+			model.SelectedPosition.CloseDate = dealDate.ToString(CultureInfo.CurrentUICulture);
+			model.SelectedPosition.ZeroParrentKey = model.SelectedDeal.ParentZeroKey;
+			model.AddComplexPosition.Execute(null);
+			
+			model.ActiveDeals.RemoveAt(model.ActiveDeals.IndexOf(model.ActiveDeals.FirstOrDefault(i => i.DealNumber == model.SelectedDeal.DealNumber)));
+			model.ReWriteDeals(tempModel, DealSignature);
 		}
 
 		private void RadioButton_CulcMethod_Checked(object sender, RoutedEventArgs e)
@@ -326,6 +397,31 @@ namespace MyMiniLedger.WPF.Windows.PairDealCreationEdit
 		private void checBox_CourseInverter_Click(object sender, RoutedEventArgs e)
 		{
 			HowManyBuyCalculate();
+		}
+
+
+		//Выбор сделки
+		private void Row_DealDoubleClick(object sender, MouseButtonEventArgs e)
+		{
+			DataGridRow row = sender as DataGridRow;
+			string dealNumber = (dg_ActiveDeals.Columns[0].GetCellContent(row) as TextBlock).Text;
+			string buyItem = (dg_ActiveDeals.Columns[1].GetCellContent(row) as TextBlock).Text;
+			string sellItem = (dg_ActiveDeals.Columns[2].GetCellContent(row) as TextBlock).Text; 
+			string date = (dg_ActiveDeals.Columns[3].GetCellContent(row) as TextBlock).Text.ToString();
+
+            foreach (var item in model.MAINPOSITIONSCOLLECTION)
+			{
+				if (item.Tag.Contains(dealNumber) && item.Tag.Contains(buyItem) && item.Tag.Contains(sellItem))
+				{
+					string temp = item.Tag;
+					temp = temp.Replace(DealSignature, "");
+					var deal = JsonSerializer.Deserialize<PairDealModel>(temp);
+                    if (deal.DealOpenTime.ToString("dd.MM.yyyy HH:mm:ss") == date)
+					{
+						model.SelectedDeal = deal;
+					}
+				}
+			}
 		}
 
 	}

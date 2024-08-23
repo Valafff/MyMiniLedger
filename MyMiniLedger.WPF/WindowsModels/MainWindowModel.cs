@@ -178,6 +178,8 @@ namespace MyMiniLedger.WPF.WindowsModels
 			tempPositions = ViewTools.FormatterPositions.EditPosFromTableByStatus(tempPositions, "Closed", "Закрыта");
 			//Отбрасывание 0 после разделителя в зависимости от типа валюты fiat crypto
 			tempPositions = ViewTools.FormatterPositions.EditDecemalPosFromTableByMarker(tempPositions, "fiat", "0.00");
+			tempPositions = ViewTools.FormatterPositions.EditDecemalPosFromTableByMarker(tempPositions);
+
 
 			tempPositions.Sort();
 
@@ -229,7 +231,10 @@ namespace MyMiniLedger.WPF.WindowsModels
 			PairDealCreationEditWindow = new LambdaCommand(execute =>
 			{
 				PairDealCreationEdit pdce = new PairDealCreationEdit(Positions, Categories, Kinds, Coins, StatusesForService);		
-				(pdce.DataContext as PairDealCreationEditModel).UpdateEvent += UpdatePositionsCollection;			
+				//Подписка на события PairDealCreationEditModel
+				(pdce.DataContext as PairDealCreationEditModel).PairDealEdit_UpdateEvent += UpdatePositionsCollection;
+				//Подписка на события EditContinuePositionWindowsModel
+				(pdce.DataContext as PairDealCreationEditModel).UpdateEvent += UpdatePositionsCollection;
 				pdce.Owner = Application.Current.MainWindow;
 				pdce.ShowDialog(); 
 			}
@@ -478,6 +483,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 			updatedPos = ViewTools.FormatterPositions.EditPosFromTableByStatus(updatedPos.AsList(), "Open", "Открыта");
 			updatedPos = ViewTools.FormatterPositions.EditPosFromTableByStatus(updatedPos.AsList(), "Closed", "Закрыта");
 			updatedPos = ViewTools.FormatterPositions.EditDecemalPosFromTableByMarker(updatedPos.AsList(), "fiat", "0.00");
+			updatedPos = ViewTools.FormatterPositions.EditDecemalPosFromTableByMarker(updatedPos.AsList());
 
 			Positions.Clear();
 			foreach (var item in updatedPos)
@@ -499,6 +505,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 			updatedPos = ViewTools.FormatterPositions.EditPosFromTableByStatus(updatedPos.AsList(), "Open", "Открыта");
 			updatedPos = ViewTools.FormatterPositions.EditPosFromTableByStatus(updatedPos.AsList(), "Closed", "Закрыта");
 			updatedPos = ViewTools.FormatterPositions.EditDecemalPosFromTableByMarker(updatedPos.AsList(), "fiat", "0.00");
+			updatedPos = ViewTools.FormatterPositions.EditDecemalPosFromTableByMarker(updatedPos.AsList());
 
 			EndDate = EndDate.Add(new TimeOnly(23, 59, 59, 0).ToTimeSpan());
 
