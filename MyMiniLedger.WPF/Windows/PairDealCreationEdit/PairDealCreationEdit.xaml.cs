@@ -234,7 +234,7 @@ namespace MyMiniLedger.WPF.Windows.PairDealCreationEdit
 			{
 				if (rb_valueCalcMethod.IsChecked == true)
 				{
-					tb_HowManyBuy.IsEnabled = true;
+					tb_HowManyBuy.IsReadOnly = false;
 					rb_toBuy.IsEnabled = false;
 					rb_toSell.IsEnabled = false;
 					tb_DefaultFee.IsEnabled = false;
@@ -243,7 +243,7 @@ namespace MyMiniLedger.WPF.Windows.PairDealCreationEdit
 				}
 				else
 				{
-					tb_HowManyBuy.IsEnabled = false;
+					tb_HowManyBuy.IsReadOnly = true;
 					rb_toBuy.IsEnabled = true;
 					rb_toSell.IsEnabled = true;
 					tb_DefaultFee.IsEnabled = true;
@@ -288,27 +288,32 @@ namespace MyMiniLedger.WPF.Windows.PairDealCreationEdit
 		}
 		private void HowManyBuyCalculate()
 		{
-			bool canCalculate = Double.TryParse(tb_CalculatedCourse.Text, out double course);
-			bool canBuyCount = Double.TryParse(tb_HowManyBuy.Text, out double buyCount);
-			if (canCalculate && canBuyCount)
+			CultureInfo currCulture = CultureInfo.CurrentCulture;
+
+            bool canCalculate = Double.TryParse(tb_CalculatedCourse.Text, NumberStyles.Float, currCulture, out double course);
+            bool canBuyCount = Double.TryParse(tb_HowManyBuy.Text, NumberStyles.Float, currCulture, out double buyCount);
+
+            if (canCalculate && canBuyCount)
 			{
 				if (checBox_CourseInverter.IsChecked == true)
 				{
 					course = 1 / course;
 					courseWasInverted = true;
 					tb_CalculatedCourse.Text = course.ToString(CultureInfo.CurrentUICulture);
+					tb_CalculatedCourse.IsReadOnly = true;
 				}
 				if (checBox_CourseInverter.IsChecked == false && courseWasInverted)
 				{
 					course = 1 / course;
 					courseWasInverted = false;
 					tb_CalculatedCourse.Text = course.ToString(CultureInfo.CurrentUICulture);
+					tb_CalculatedCourse.IsReadOnly = false;
 				}
 
 				//double buyCount = Double.Parse(tb_HowManyBuy.Text, CultureInfo.InvariantCulture);
-				double sellCount = Double.Parse(tb_HowManySell.Text, CultureInfo.InvariantCulture);
-				double feeTobuy = Double.Parse(tb_BuyFee.Text, CultureInfo.InvariantCulture);
-				double feeTosell = Double.Parse(tb_SellFee.Text, CultureInfo.InvariantCulture);
+				double sellCount = Double.Parse(tb_HowManySell.Text, NumberStyles.Float, currCulture);
+				double feeTobuy = Double.Parse(tb_BuyFee.Text, NumberStyles.Float, currCulture);
+				double feeTosell = Double.Parse(tb_SellFee.Text, NumberStyles.Float, currCulture);
 				//Если комисси я берется с покупки - для целевой сумм требуется докинуть на продажу
 				if (rb_toBuy.IsChecked == true)
 				{

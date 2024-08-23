@@ -36,8 +36,13 @@ namespace MyMiniLedger.WPF.Models
 			set => SetField(ref _dealOpenTime, value);
 		}
 
+		//Расчетные значения
+		private double _buyAmount;
+
+		//Служебные значения
 		public int? ParentZeroKey {get; set; }
 		public bool? isOpen { get; set; } = true;
+		
 		//Резерв
 		public string? AdditionalData { get; set; }
 
