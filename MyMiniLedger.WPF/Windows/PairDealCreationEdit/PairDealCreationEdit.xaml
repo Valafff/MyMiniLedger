@@ -110,10 +110,15 @@
                 </DataGrid.ItemContainerStyle>
 
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Номер сделки" Binding="{Binding Path=DealNumber}"  IsReadOnly="True" />
-                    <DataGridTextColumn Header="Покупка" Binding="{Binding Path=BuyItem}"  IsReadOnly="True"  Foreground="Green"/>
-                    <DataGridTextColumn Header="Продажа" Binding="{Binding Path=SellItem}"  IsReadOnly="True" Foreground="Red"/>
-                    <DataGridTextColumn Header="Дата создания" Binding="{Binding Path=DealOpenTime, ConverterCulture=ru}"  IsReadOnly="True" />
+                    <DataGridTextColumn Header="Номер сделки" Binding="{Binding Path=DealNumber}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Дата открытия" Binding="{Binding Path=DealOpenTime, ConverterCulture=ru}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Покупка актива" Binding="{Binding Path=BuyItem}" IsReadOnly="True"  Foreground="Green"/>
+                    <DataGridTextColumn Header="Баланс" Binding="{Binding Path=TotalBuyAmount, ConverterCulture=ru}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Продажа актива" Binding="{Binding Path=SellItem}" IsReadOnly="True"  Foreground="Red"/>
+                    <DataGridTextColumn Header="Баланс" Binding="{Binding Path=TotalSellAmount, ConverterCulture=ru}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Продажи к покупкам" Binding="{Binding Path=SellToBuyCourse, ConverterCulture=ru, StringFormat={}{0:N6}}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Покупки к продажам" Binding="{Binding Path=BuyToSellCourse, ConverterCulture=ru, StringFormat={}{0:N6}}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Стандартный курс для выхода в 0" Binding="{Binding Path=StandartCourse, ConverterCulture=ru, StringFormat={}{0:N6}}" IsReadOnly="True"/>
                 </DataGrid.Columns>
 
             </DataGrid>

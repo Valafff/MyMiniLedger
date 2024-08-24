@@ -107,7 +107,7 @@ namespace MyMiniLedger.BLL.Mappers
 		// Позиция из BLL в DAL
 		public static DAL.Models.PositionModel MapPositionBLLToPositionDAL(PositionBLLModel positionBLL)
 		{
-			if (/*positionBLL.additionalPositionData != null | */positionBLL.additionalPositionDataBLL.ZeroParrentKey != null & positionBLL.additionalPositionDataBLL.PerrentKey != null)
+			if (positionBLL.additionalPositionDataBLL.ZeroParrentKey != null & positionBLL.additionalPositionDataBLL.PerrentKey != null)
 			{
 				return new DAL.Models.PositionModel()
 				{

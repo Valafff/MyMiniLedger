@@ -11,10 +11,12 @@ using System.Threading.Tasks;
 
 namespace MyMiniLedger.WPF.ViewTools
 {
-    public static class FormatterPositions
+
+	public static class FormatterPositions
     {
-        //Форматирование  по статусу
-        public static List<PositionUIModel> ErasePosFromTableByStatus(List<PositionUIModel> _ps, string _status = "Deleted")
+		static int numberMask = 8;
+		//Форматирование  по статусу
+		public static List<PositionUIModel> ErasePosFromTableByStatus(List<PositionUIModel> _ps, string _status = "Deleted")
         {
             List<PositionUIModel> ResultPositionsList = new List<PositionUIModel>();
             foreach (var item in _ps)
@@ -52,7 +54,7 @@ namespace MyMiniLedger.WPF.ViewTools
         }
 
         //Форматирование с вывода количества знаков после запятой
-        public static List<PositionUIModel> EditDecemalPosFromTableByMarker(List<PositionUIModel> _ps, string targetMarker = "crypto", string mask = "0.00000000", int n = 2)
+        public static List<PositionUIModel> EditDecemalPosFromTableByMarker(List<PositionUIModel> _ps, string targetMarker = "crypto", int mask = 8, int round = 8)
         {
             List<PositionUIModel> ResultPositionsList = new List<PositionUIModel>();
             foreach (var item in _ps)
@@ -60,36 +62,74 @@ namespace MyMiniLedger.WPF.ViewTools
                 if (item.Coin.CoinNotes.Contains(targetMarker))
                 {
                     //Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
-                    var income = Math.Round(Convert.ToDecimal(item.Income), n);
-                    var expense = Math.Round(Convert.ToDecimal(item.Expense), n);
-                    var saldo = Math.Round(Convert.ToDecimal(item.Saldo), n);
-                    Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.CurrentUICulture;
-                    item.Income = income.ToString(mask);
-                    item.Expense = expense.ToString(mask);
-                    item.Saldo = saldo.ToString(mask);
-                }
+                    var income = Math.Round(Convert.ToDecimal(item.Income), round);
+                    var expense = Math.Round(Convert.ToDecimal(item.Expense), round);
+                    var saldo = Math.Round(Convert.ToDecimal(item.Saldo), round);
+                    //Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.CurrentUICulture;
+                    item.Income = income.ToString($"N{mask}", CultureInfo.CurrentUICulture);
+					item.Expense = expense.ToString($"N{mask}", CultureInfo.CurrentUICulture);
+					item.Saldo = saldo.ToString($"N{mask}", CultureInfo.CurrentUICulture);
+				}
                 ResultPositionsList.Add(item);
             }
             return ResultPositionsList;
         }
 
-        public static PositionUIModel EditDecemalPosFromTableByMarker(PositionUIModel _ps, string targetMarker = "crypto", string mask = "0.00000000", int n = 2)
+		////Форматирование с вывода количества знаков после запятой
+		//public static List<PositionUIModel> EditDecemalPosFromTableByMarker(List<PositionUIModel> _ps, string targetMarker = "crypto", string mask = "0.00000000", int n = 10)
+		//{
+		//	List<PositionUIModel> ResultPositionsList = new List<PositionUIModel>();
+		//	foreach (var item in _ps)
+		//	{
+		//		if (item.Coin.CoinNotes.Contains(targetMarker))
+		//		{
+		//			//Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+		//			var income = Math.Round(Convert.ToDecimal(item.Income), n);
+		//			var expense = Math.Round(Convert.ToDecimal(item.Expense), n);
+		//			var saldo = Math.Round(Convert.ToDecimal(item.Saldo), n);
+		//			Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.CurrentUICulture;
+		//			item.Income = income.ToString(mask);
+		//			item.Expense = expense.ToString(mask);
+		//			item.Saldo = saldo.ToString(mask);
+		//		}
+		//		ResultPositionsList.Add(item);
+		//	}
+		//	return ResultPositionsList;
+		//}
+
+		public static PositionUIModel EditDecemalPosFromTableByMarker(PositionUIModel _ps, string targetMarker = "crypto", int mask = 8, int round = 8)
         {
             if (_ps.Coin.CoinNotes.Contains(targetMarker))
             {
                 //Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
-                var income = Math.Round(Convert.ToDecimal(_ps.Income), n);
-                var expense = Math.Round(Convert.ToDecimal(_ps.Expense), n);
-                var saldo = Math.Round(Convert.ToDecimal(_ps.Saldo), n);
-                Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.CurrentUICulture;
-                _ps.Income = income.ToString(mask);
-                _ps.Expense = expense.ToString(mask);
-                _ps.Saldo = saldo.ToString(mask);
+                var income = Math.Round(Convert.ToDecimal(_ps.Income), round);
+                var expense = Math.Round(Convert.ToDecimal(_ps.Expense), round);
+                var saldo = Math.Round(Convert.ToDecimal(_ps.Saldo), round);
+                //Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.CurrentUICulture;
+                _ps.Income = income.ToString($"N{mask}", CultureInfo.CurrentUICulture);
+                _ps.Expense = expense.ToString($"N{mask}", CultureInfo.CurrentUICulture);
+                _ps.Saldo = saldo.ToString($"N{mask}", CultureInfo.CurrentUICulture);
             }
             return _ps;
         }
 
-        public static string SetCloseDate(string _status = "Close")
+		//public static PositionUIModel EditDecemalPosFromTableByMarker(PositionUIModel _ps, string targetMarker = "crypto", string mask = "0.00000000", int n = 10)
+		//{
+		//	if (_ps.Coin.CoinNotes.Contains(targetMarker))
+		//	{
+		//		//Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+		//		var income = Math.Round(Convert.ToDecimal(_ps.Income), n);
+		//		var expense = Math.Round(Convert.ToDecimal(_ps.Expense), n);
+		//		var saldo = Math.Round(Convert.ToDecimal(_ps.Saldo), n);
+		//		Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.CurrentUICulture;
+		//		_ps.Income = income.ToString(mask);
+		//		_ps.Expense = expense.ToString(mask);
+		//		_ps.Saldo = saldo.ToString(mask);
+		//	}
+		//	return _ps;
+		//}
+
+		public static string SetCloseDate(string _status = "Close")
         {
             string temp;
             if (_status == "Закрыта" || _status == "Close")

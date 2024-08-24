@@ -18,6 +18,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 {
 	public class PairDealCreationEditModel : EditContinuePositionWindowsModel
 	{
+		const string DealSignature = "Парная сделка_";
 		public event UpdateDelegate PairDealEdit_UpdateEvent;
 		//Название окна
 		private string _titleEditContinuePos = "Создать/продолжить парную сделку";
@@ -146,8 +147,6 @@ namespace MyMiniLedger.WPF.WindowsModels
 
 			ChangeRadioButton = new LambdaCommand(execute =>
 			{
-				//Console.WriteLine(BuyCheck);
-				//Console.WriteLine(SellCheck);
 				if (!BuyCheck && SellCheck)
 				{
 					CurrentSellFee = DefaultFeel.ToString(CultureInfo.CurrentUICulture);
@@ -180,6 +179,69 @@ namespace MyMiniLedger.WPF.WindowsModels
 				Thread.CurrentThread.CurrentCulture = CultureInfo.CurrentUICulture; //Важен порядок установки до работы с БД работает некорректно. Важно вставлять после записи чтения из БД
 				PairDealEdit_UpdateEvent();
 			}
+		}
+
+		public void DealsInicialization()
+		{
+			ActiveDeals.Clear();
+			//Из всего списка нахожу только сделки
+			var PositionsWithDeals = MAINPOSITIONSCOLLECTION.Where(p => p.Tag.Contains(DealSignature));
+			var DealsStrings = PositionsWithDeals.Select(s => s.Tag);
+			List<PairDealModel> MainDealList = new List<PairDealModel>();
+			foreach (var item in DealsStrings)
+			{
+				MainDealList.Add(JsonSerializer.Deserialize<PairDealModel>(item.Replace(DealSignature, "")));
+			}
+
+			//Нахожу только уникальные номера сделок
+			var DealNumbers = MainDealList.Select(n => n.DealNumber).Distinct().Reverse();
+
+			//Конечная обработка данных
+			foreach (var item in DealNumbers)
+			{
+				var tempDealsByNumber = MainDealList.Where(d => d.DealNumber == item).ToList();
+				PairDealModel resultDeal = new PairDealModel();
+				resultDeal.DealNumber = tempDealsByNumber.First().DealNumber;
+				resultDeal.DealOpenTime = tempDealsByNumber.First().DealOpenTime;
+				resultDeal.BuyItem = tempDealsByNumber.First().BuyItem;
+				resultDeal.SellItem = tempDealsByNumber.First().SellItem;
+				resultDeal.isOpen = tempDealsByNumber.First().isOpen;
+				resultDeal.ParentZeroKey = tempDealsByNumber.First().ParentZeroKey;
+				//Расчет данных
+				resultDeal.TotalBuyAmount = Math.Round(PositionsWithDeals.Where(z => (z.ZeroParrentKey == resultDeal.ParentZeroKey || z.PositionKey == resultDeal.ParentZeroKey) && z.Coin.ShortName == resultDeal.BuyItem).Sum(p => Double.Parse(p.Saldo, CultureInfo.CurrentCulture)), 8);
+				resultDeal.TotalSellAmount = Math.Round(PositionsWithDeals.Where(z => (z.ZeroParrentKey == resultDeal.ParentZeroKey || z.PositionKey == resultDeal.ParentZeroKey) && z.Coin.ShortName == resultDeal.SellItem).Sum(p => Double.Parse(p.Saldo, CultureInfo.CurrentCulture)), 8);
+				resultDeal.SellToBuyCourse = Math.Abs(Math.Round(resultDeal.TotalSellAmount / resultDeal.TotalBuyAmount, 6));
+				resultDeal.BuyToSellCourse = Math.Abs(Math.Round(resultDeal.TotalBuyAmount / resultDeal.TotalSellAmount, 6));
+
+
+
+				//!!!ToDo Сделать список стандартных курсов, добавить их в конфигурационный файл
+				if (resultDeal.BuyItem == "USD" || resultDeal.BuyItem == "USDT" || resultDeal.BuyItem == "USDC" || resultDeal.BuyItem == "BTC")
+				{
+					resultDeal.StandartCourse = resultDeal.SellToBuyCourse.ToString();
+				}
+				else if (resultDeal.SellItem == "USD" || resultDeal.SellItem == "USDT" || resultDeal.SellItem == "USDC" || resultDeal.SellItem == "BTC")
+				{
+					resultDeal.StandartCourse = resultDeal.BuyToSellCourse.ToString();
+				}
+				else
+					resultDeal.StandartCourse = "Не определен";
+
+				if (resultDeal.TotalSellAmount >= 0 && resultDeal.TotalBuyAmount >= 0)
+				{
+					resultDeal.StandartCourse = "Выгоден любой курс";
+				}
+
+
+
+
+				//Распределение данных
+				if (resultDeal.isOpen == true)
+				{
+					ActiveDeals.Add(resultDeal);
+				}
+			}
+
 		}
 	}
 }

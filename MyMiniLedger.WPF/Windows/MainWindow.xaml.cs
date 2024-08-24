@@ -50,7 +50,7 @@ namespace MyMiniLedger.WPF
 				(DataContext as MainWindowModel).UpdateKindsIndexEvent += UpdateSelectedKind;
 				(DataContext as MainWindowModel).UpdateDatePickerEvent += UpdateDatePicker;
 			}
-
+			(DataContext as MainWindowModel).DealsInicialization();
 		}
 
 		//Удаление позиции
@@ -92,15 +92,15 @@ namespace MyMiniLedger.WPF
 				}
 				if (selectedBalance.Cointype.Contains("crypto"))
 				{
-					tb_CurrentIncome.Text = selectedBalance.TotalIncome.ToString("N10", new CultureInfo("ru-RU"));
+					tb_CurrentIncome.Text = selectedBalance.TotalIncome.ToString("N8", new CultureInfo("ru-RU"));
 					tb_CurrentIncome.Foreground = Brushes.Green;
-					tb_CurrentExpence.Text = selectedBalance.TotalExpense.ToString("N10", new CultureInfo("ru-RU"));
+					tb_CurrentExpence.Text = selectedBalance.TotalExpense.ToString("N8", new CultureInfo("ru-RU"));
 					tb_CurrentExpence.Foreground = Brushes.Red;
-					tb_CurrentBalance.Text = selectedBalance.Balance.ToString("N10", new CultureInfo("ru-RU"));
+					tb_CurrentBalance.Text = selectedBalance.Balance.ToString("N8", new CultureInfo("ru-RU"));
 
-					tb_IncomeInfo.Text = Double.Parse(tb_IncomeInfo.Text).ToString("N10", new CultureInfo("ru-RU"));
-					tb_ExpenseInfo.Text = Double.Parse(tb_ExpenseInfo.Text).ToString("N10", new CultureInfo("ru-RU"));
-					tb_SaldoInfo.Text = Double.Parse(tb_SaldoInfo.Text).ToString("N10", new CultureInfo("ru-RU"));
+					tb_IncomeInfo.Text = Double.Parse(tb_IncomeInfo.Text).ToString("N8", new CultureInfo("ru-RU"));
+					tb_ExpenseInfo.Text = Double.Parse(tb_ExpenseInfo.Text).ToString("N8", new CultureInfo("ru-RU"));
+					tb_SaldoInfo.Text = Double.Parse(tb_SaldoInfo.Text).ToString("N8", new CultureInfo("ru-RU"));
 				}
 				else
 				{
@@ -511,51 +511,12 @@ namespace MyMiniLedger.WPF
 			}
 		}
 
-		private void TabItem_GotFocus(object sender, RoutedEventArgs e)
-		{
-			ComplexPositionBalanceCalculator calculator = new ComplexPositionBalanceCalculator();
-			ObservableCollection<TotalBalance> fiatBalances = new ObservableCollection<TotalBalance>();
-			ObservableCollection<TotalBalance> cryptoBalances = new ObservableCollection<TotalBalance>();
-			foreach (var item in (DataContext as MainWindowModel).Coins)
-			{
-				var t = calculator.GetTotalBalanceByCoin((DataContext as MainWindowModel).Positions, item.ShortName, item.CoinNotes);
-				if (!t.Cointype.Contains("crypto"))
-				{
-					fiatBalances.Add(t);
-				}
-				else
-				{
-					cryptoBalances.Add(t);
-				}
-
-			}
-			//Создание datagrid в code-behind
-			//var summaryDataGrid = new DataGrid()
-			//{
-			//	Columns = { new DataGridTextColumn() { Header = "Монета/Валюта", Binding = new Binding("CoinName") },
-			//			new DataGridTextColumn() { Header = "Суммарный приход", Binding = new Binding("TotalIncome")},
-			//			new DataGridTextColumn() { Header = "Суммарный расход", Binding = new Binding("TotalExpense") },
-			//			new DataGridTextColumn() { Header = "Баланс", Binding = new Binding("Balance") }},
-			//	AutoGenerateColumns = false,
-			//	IsReadOnly = true,
-			//	CanUserAddRows = false,
-			//	CanUserDeleteRows = false		
-			//};
-
-			////Форматирование в code-behind
-			//summaryBalance.Binding.StringFormat = "{0:N2}";
-
-			summaryFiatDataGrid.ItemsSource = fiatBalances;
-			summaryCryptoDataGrid.ItemsSource= cryptoBalances;
-			//BalancesTab.Content = summaryFiatDataGrid;
-		}
-
 		//Настройка фильтра поиска
 		private void searchTypeSearchCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			ComboBox typeCombo = new ComboBox();
 			if (searchTypeStackPanel.Children.Count == 1 && searchTypeSearchCombo.SelectedIndex != 0)
-			{		
+			{
 				ComboBoxFilterInicialization(searchTypeSearchCombo.SelectedValue.ToString(), ref typeCombo);
 				searchTypeStackPanel.Children.Add(typeCombo);
 				typeCombo.SelectionChanged += new SelectionChangedEventHandler(searchTempFilter);
@@ -569,7 +530,7 @@ namespace MyMiniLedger.WPF
 				typeCombo.SelectionChanged -= new SelectionChangedEventHandler(searchTempFilter);
 				searchTypeStackPanel.Children.RemoveAt(1);
 			}
-			else if(searchTypeStackPanel.Children.Count > 1 && searchTypeSearchCombo.SelectedIndex != 0)
+			else if (searchTypeStackPanel.Children.Count > 1 && searchTypeSearchCombo.SelectedIndex != 0)
 			{
 				typeCombo.SelectionChanged -= new SelectionChangedEventHandler(searchTempFilter);
 				searchTypeStackPanel.Children.RemoveAt(1);
@@ -642,10 +603,86 @@ namespace MyMiniLedger.WPF
 				(DataContext as MainWindowModel).kindFilter = string.Empty;
 				(DataContext as MainWindowModel).coinFilter = string.Empty;
 			}
-        }
+		}
 
+		private void TabItem_GotFocusBalances(object sender, RoutedEventArgs e)
+		{
+			ComplexPositionBalanceCalculator calculator = new ComplexPositionBalanceCalculator();
+			ObservableCollection<TotalBalance> fiatBalances = new ObservableCollection<TotalBalance>();
+			ObservableCollection<TotalBalance> cryptoBalances = new ObservableCollection<TotalBalance>();
+			foreach (var item in (DataContext as MainWindowModel).Coins)
+			{
+				var t = calculator.GetTotalBalanceByCoin((DataContext as MainWindowModel).Positions, item.ShortName, item.CoinNotes);
+				if (!t.Cointype.Contains("crypto"))
+				{
+					fiatBalances.Add(t);
+				}
+				else
+				{
+					cryptoBalances.Add(t);
+				}
+
+			}
+			//Создание datagrid в code-behind
+			//var summaryDataGrid = new DataGrid()
+			//{
+			//	Columns = { new DataGridTextColumn() { Header = "Монета/Валюта", Binding = new Binding("CoinName") },
+			//			new DataGridTextColumn() { Header = "Суммарный приход", Binding = new Binding("TotalIncome")},
+			//			new DataGridTextColumn() { Header = "Суммарный расход", Binding = new Binding("TotalExpense") },
+			//			new DataGridTextColumn() { Header = "Баланс", Binding = new Binding("Balance") }},
+			//	AutoGenerateColumns = false,
+			//	IsReadOnly = true,
+			//	CanUserAddRows = false,
+			//	CanUserDeleteRows = false		
+			//};
+
+			////Форматирование в code-behind
+			//summaryBalance.Binding.StringFormat = "{0:N2}";
+
+			summaryFiatDataGrid.ItemsSource = fiatBalances;
+			summaryCryptoDataGrid.ItemsSource = cryptoBalances;
+
+		}
+
+		private void summaryActiveDealsDataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+		{
+			var deal = e.Row.Item as PairDealModel;
+			if (Double.TryParse(deal.StandartCourse, out double _standartCourse))
+			{
+				double percent = 0;
+				if (deal.CourseNow >= 0)
+				{
+					percent = Math.Round(((_standartCourse/deal.CourseNow  - 1) * 100), 4);
+					double percentToStr = percent;
+					if (percent > 0)
+					{
+						deal.PercentDifference = "+" + percentToStr.ToString("N2", CultureInfo.CurrentUICulture) + "%";
+					}
+					else
+					{
+						deal.PercentDifference = percentToStr.ToString("N2", CultureInfo.CurrentUICulture) + "%";
+					}
+				}
+
+				double possibleProfit = Math.Abs(deal.TotalSellAmount * Math.Round(( _standartCourse/ deal.CourseNow ), 4) - deal.TotalSellAmount);
+				double possibleProfitToStr = possibleProfit;
+				if (percent >= 0)
+				{
+					deal.ValueDifference = "+" + possibleProfitToStr.ToString("N8", CultureInfo.CurrentUICulture) + $" {deal.SellItem}";
+				}
+				else
+				{
+					deal.ValueDifference = (possibleProfitToStr * -1).ToString("N8", CultureInfo.CurrentUICulture) + $" {deal.SellItem}";
+				}
+
+				double totalPossibleProfit = Math.Abs(deal.TotalSellAmount * Math.Round((_standartCourse / deal.CourseNow), 4));
+				deal.TotalValueProfit = totalPossibleProfit.ToString("N8", CultureInfo.CurrentUICulture) + $" {deal.SellItem}";
+			}
+		}
+
+		private void summaryCloseDealsDataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+		{
+			var test = e.Row.Item as PairDealModel;
+		}
 	}
-
 }
-
-

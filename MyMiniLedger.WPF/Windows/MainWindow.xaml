@@ -343,10 +343,10 @@
                     </Grid>
                 </Grid>
             </TabItem>
-            <TabItem Header="Балансы" GotFocus="TabItem_GotFocus">
+            <TabItem Header="Балансы" GotFocus="TabItem_GotFocusBalances">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="2*"/>
                         <RowDefinition Height="3*"/>
                     </Grid.RowDefinitions>
                     <GridSplitter Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Bottom"  Height="6"  BorderBrush="Green" BorderThickness="6"/>
@@ -367,6 +367,53 @@
                                 <DataGridTextColumn Header="Суммарный приход" Binding="{Binding Path=TotalIncome, ConverterCulture=ru, StringFormat={}{0:N10}}" Foreground="Green"/>
                                 <DataGridTextColumn Header="Суммарный расход" Binding="{Binding Path=TotalExpense, ConverterCulture=ru, StringFormat={}{0:N10}}" Foreground="Red"/>
                                 <DataGridTextColumn Header="Баланс" Binding="{Binding Path=Balance, ConverterCulture=ru, StringFormat={}{0:N10}}" FontWeight="Bold" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </GroupBox>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Сделки">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="1*"/>
+                    </Grid.RowDefinitions>
+                    <GridSplitter Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Bottom"  Height="6"  BorderBrush="Green" BorderThickness="6"/>
+                    <GroupBox Grid.Row="0" Header="Активные сделки">
+                        <DataGrid x:Name="summaryActiveDealsDataGrid" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" ItemsSource="{Binding ActiveDealsList}" CellEditEnding="summaryActiveDealsDataGrid_CellEditEnding">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Номер сделки" Binding="{Binding Path=DealNumber}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Дата открытия" Binding="{Binding Path=DealOpenTime, ConverterCulture=ru}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Покупка актива" Binding="{Binding Path=BuyItem}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Баланс" Binding="{Binding Path=TotalBuyAmount, ConverterCulture=ru}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Продажа актива" Binding="{Binding Path=SellItem}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Баланс" Binding="{Binding Path=TotalSellAmount, ConverterCulture=ru}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Продажи к покупкам" Binding="{Binding Path=SellToBuyCourse, ConverterCulture=ru, StringFormat={}{0:N6}}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Покупки к продажам" Binding="{Binding Path=BuyToSellCourse, ConverterCulture=ru, StringFormat={}{0:N6}}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Стандартный курс для выхода в 0" Binding="{Binding Path=StandartCourse, ConverterCulture=ru, StringFormat={}{0:N6}}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Текущий курс" Binding="{Binding Path=CourseNow, ConverterCulture=ru, StringFormat={}{0:N6}, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                                <DataGridTextColumn Header="Разница, %" Binding="{Binding Path=PercentDifference, ConverterCulture=ru, StringFormat={}{0:N2}}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Возможная прибыль" Binding="{Binding Path=ValueDifference, ConverterCulture=ru, StringFormat={}{0:N6}}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Значение актива к продаже" Binding="{Binding Path=TotalValueProfit, ConverterCulture=ru, StringFormat={}{0:N6}}" IsReadOnly="True"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </GroupBox>
+                    <GroupBox Grid.Row="1" Header="Закрытые сделки">
+                        <DataGrid x:Name="summaryCloseDealsDataGrid" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" ItemsSource="{Binding ClosedDealsList}" CellEditEnding="summaryCloseDealsDataGrid_CellEditEnding">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Номер сделки" Binding="{Binding Path=DealNumber}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Дата открытия" Binding="{Binding Path=DealOpenTime, ConverterCulture=ru}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Покупка актива" Binding="{Binding Path=BuyItem}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Баланс" Binding="{Binding Path=TotalBuyAmount, ConverterCulture=ru}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Продажа актива" Binding="{Binding Path=SellItem}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Баланс" Binding="{Binding Path=TotalSellAmount, ConverterCulture=ru}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Продажи к покупкам" Binding="{Binding Path=SellToBuyCourse, ConverterCulture=ru, StringFormat={}{0:N6}}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Покупки к продажам" Binding="{Binding Path=BuyToSellCourse, ConverterCulture=ru, StringFormat={}{0:N6}}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Стандартный курс для выхода в 0" Binding="{Binding Path=StandartCourse, ConverterCulture=ru, StringFormat={}{0:N6}}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Текущий курс" Binding="{Binding Path=CourseNow, ConverterCulture=ru, StringFormat={}{0:N6}}" />
+                                <DataGridTextColumn Header="Разница, %" Binding="{Binding Path=PercentDifference, ConverterCulture=ru, StringFormat={}{0:N2}}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Возможная прибыль" Binding="{Binding Path=ValueDifference, ConverterCulture=ru, StringFormat={}{0:N6}}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Значение актива к продаже" Binding="{Binding Path=TotalValueProfit, ConverterCulture=ru, StringFormat={}{0:N6}}" IsReadOnly="True"/>
                             </DataGrid.Columns>
                         </DataGrid>
                     </GroupBox>

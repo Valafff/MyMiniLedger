@@ -16,6 +16,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
@@ -32,7 +33,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 
 	public class MainWindowModel : BaseNotify
 	{
-		const int CRYPTOSYMBOLSAFTERDELIMETR = 10;
+		const string DealSignature = "Парная сделка_";
 		//const int FIATSYMBOLSAFTERDELIMETR = 2;
 		//При выполнении метода UpdateCoins() вызывается событие UpdateCoinsIndexEvent, аналогично с другими полями
 		public event UpdateCoinsIndexDelegate UpdateCoinsIndexEvent;
@@ -135,6 +136,9 @@ namespace MyMiniLedger.WPF.WindowsModels
 		public ObservableCollection<StatusUIModel> StatusesForService { get; set; }
 		public ObservableCollection<StatusUIModel> StatusesForUser { get; set; }
 
+		public ObservableCollection<PairDealModel> ActiveDealsList { get; set; }
+		public ObservableCollection<PairDealModel> ClosedDealsList { get; set; }
+
 		//Объявление команд
 		public LambdaCommand OpenCategoryWindow { get; set; }
 		public LambdaCommand OpenKindWindow { get; set; }
@@ -169,6 +173,8 @@ namespace MyMiniLedger.WPF.WindowsModels
 			BLL.Context.ListOfPositions tempPos = new BLL.Context.ListOfPositions();
 
 			List<PositionUIModel> tempPositions = new List<PositionUIModel>();
+			ActiveDealsList = new ObservableCollection<PairDealModel>();
+			ClosedDealsList = new ObservableCollection<PairDealModel>();
 			tempPositions = tempPos.GetAll().Select(pos => Mappers.UIMapper.MapPositionBLLToPositionUI(pos)).ToList();
 
 			//Удаление Deleted позиций
@@ -177,7 +183,8 @@ namespace MyMiniLedger.WPF.WindowsModels
 			tempPositions = ViewTools.FormatterPositions.EditPosFromTableByStatus(tempPositions, "Open", "Открыта");
 			tempPositions = ViewTools.FormatterPositions.EditPosFromTableByStatus(tempPositions, "Closed", "Закрыта");
 			//Отбрасывание 0 после разделителя в зависимости от типа валюты fiat crypto
-			tempPositions = ViewTools.FormatterPositions.EditDecemalPosFromTableByMarker(tempPositions, "fiat", "0.00");
+			//tempPositions = ViewTools.FormatterPositions.EditDecemalPosFromTableByMarker(tempPositions, "fiat", "0.00");
+			tempPositions = ViewTools.FormatterPositions.EditDecemalPosFromTableByMarker(tempPositions, "fiat", 2);
 			tempPositions = ViewTools.FormatterPositions.EditDecemalPosFromTableByMarker(tempPositions);
 
 
@@ -230,15 +237,15 @@ namespace MyMiniLedger.WPF.WindowsModels
 
 			PairDealCreationEditWindow = new LambdaCommand(execute =>
 			{
-				PairDealCreationEdit pdce = new PairDealCreationEdit(Positions, Categories, Kinds, Coins, StatusesForService);		
+				PairDealCreationEdit pdce = new PairDealCreationEdit(Positions, Categories, Kinds, Coins, StatusesForService);
 				//Подписка на события PairDealCreationEditModel
 				(pdce.DataContext as PairDealCreationEditModel).PairDealEdit_UpdateEvent += UpdatePositionsCollection;
 				//Подписка на события EditContinuePositionWindowsModel
 				(pdce.DataContext as PairDealCreationEditModel).UpdateEvent += UpdatePositionsCollection;
 				pdce.Owner = Application.Current.MainWindow;
-				pdce.ShowDialog(); 
+				pdce.ShowDialog();
 			}
-			) ;
+			);
 
 			//Вставка новой позиции
 			InsertNewPosition = new LambdaCommand(
@@ -265,8 +272,10 @@ namespace MyMiniLedger.WPF.WindowsModels
 					temp = Mappers.UIMapper.MapPositionBLLToPositionUI(updatedPos);
 					temp = ViewTools.FormatterPositions.EditPosFromTableByStatus(temp, "Open", "Открыта");
 					temp = ViewTools.FormatterPositions.EditPosFromTableByStatus(temp, "Closed", "Закрыта");
-					temp = ViewTools.FormatterPositions.EditDecemalPosFromTableByMarker(temp, "fiat", "0.00");
-					temp = ViewTools.FormatterPositions.EditDecemalPosFromTableByMarker(temp, "crypto", "0.00000000", CRYPTOSYMBOLSAFTERDELIMETR);
+					//temp = ViewTools.FormatterPositions.EditDecemalPosFromTableByMarker(temp, "fiat", "0.00");
+					temp = ViewTools.FormatterPositions.EditDecemalPosFromTableByMarker(temp, "fiat", 2);
+					//temp = ViewTools.FormatterPositions.EditDecemalPosFromTableByMarker(temp, "crypto", "0.00000000", CRYPTOSYMBOLSAFTERDELIMETR);
+					temp = ViewTools.FormatterPositions.EditDecemalPosFromTableByMarker(temp, "crypto");
 					Positions.Insert(0, temp);
 
 					PositionConstruct.Income = "0";
@@ -482,7 +491,8 @@ namespace MyMiniLedger.WPF.WindowsModels
 			//Форматирование
 			updatedPos = ViewTools.FormatterPositions.EditPosFromTableByStatus(updatedPos.AsList(), "Open", "Открыта");
 			updatedPos = ViewTools.FormatterPositions.EditPosFromTableByStatus(updatedPos.AsList(), "Closed", "Закрыта");
-			updatedPos = ViewTools.FormatterPositions.EditDecemalPosFromTableByMarker(updatedPos.AsList(), "fiat", "0.00");
+			//updatedPos = ViewTools.FormatterPositions.EditDecemalPosFromTableByMarker(updatedPos.AsList(), "fiat", "0.00");
+			updatedPos = ViewTools.FormatterPositions.EditDecemalPosFromTableByMarker(updatedPos.AsList(), "fiat", 2);
 			updatedPos = ViewTools.FormatterPositions.EditDecemalPosFromTableByMarker(updatedPos.AsList());
 
 			Positions.Clear();
@@ -495,6 +505,8 @@ namespace MyMiniLedger.WPF.WindowsModels
 					i++;
 				}
 			}
+
+			DealsInicialization();
 		}
 
 		public void UpdatePositionsByFilter()
@@ -504,7 +516,8 @@ namespace MyMiniLedger.WPF.WindowsModels
 			//Форматирование
 			updatedPos = ViewTools.FormatterPositions.EditPosFromTableByStatus(updatedPos.AsList(), "Open", "Открыта");
 			updatedPos = ViewTools.FormatterPositions.EditPosFromTableByStatus(updatedPos.AsList(), "Closed", "Закрыта");
-			updatedPos = ViewTools.FormatterPositions.EditDecemalPosFromTableByMarker(updatedPos.AsList(), "fiat", "0.00");
+			//updatedPos = ViewTools.FormatterPositions.EditDecemalPosFromTableByMarker(updatedPos.AsList(), "fiat", "0.00");
+			updatedPos = ViewTools.FormatterPositions.EditDecemalPosFromTableByMarker(updatedPos.AsList(), "fiat", 2);
 			updatedPos = ViewTools.FormatterPositions.EditDecemalPosFromTableByMarker(updatedPos.AsList());
 
 			EndDate = EndDate.Add(new TimeOnly(23, 59, 59, 0).ToTimeSpan());
@@ -576,6 +589,71 @@ namespace MyMiniLedger.WPF.WindowsModels
 					_output.Add(stat.Kind);
 				}
 			}
+		}
+
+		public void DealsInicialization()
+		{
+			ActiveDealsList.Clear();
+			ClosedDealsList.Clear();
+			//Из всего списка нахожу только сделки
+			var PositionsWithDeals = Positions.Where(p => p.Tag.Contains(DealSignature));
+			var DealsStrings = PositionsWithDeals.Select(s => s.Tag);
+			List<PairDealModel> MainDealList = new List<PairDealModel>();
+			foreach (var item in DealsStrings)
+			{
+				MainDealList.Add(JsonSerializer.Deserialize<PairDealModel>(item.Replace(DealSignature, "")));
+			}
+
+			//Нахожу только уникальные номера сделок
+			var DealNumbers = MainDealList.Select(n => n.DealNumber).Distinct().Reverse();
+
+			//Конечная обработка данных
+			foreach (var item in DealNumbers)
+			{
+				var tempDealsByNumber = MainDealList.Where(d => d.DealNumber == item).ToList();
+				PairDealModel resultDeal = new PairDealModel();
+				resultDeal.DealNumber = tempDealsByNumber.First().DealNumber;
+				resultDeal.DealOpenTime = tempDealsByNumber.First().DealOpenTime;
+				resultDeal.BuyItem = tempDealsByNumber.First().BuyItem;
+				resultDeal.SellItem = tempDealsByNumber.First().SellItem;
+				resultDeal.isOpen = tempDealsByNumber.First().isOpen;
+				resultDeal.ParentZeroKey = tempDealsByNumber.First().ParentZeroKey;
+				//Расчет данных
+				resultDeal.TotalBuyAmount = Math.Round(PositionsWithDeals.Where(z => (z.ZeroParrentKey == resultDeal.ParentZeroKey || z.PositionKey == resultDeal.ParentZeroKey) && z.Coin.ShortName == resultDeal.BuyItem).Sum(p => Double.Parse(p.Saldo, CultureInfo.CurrentCulture)), 8);
+				resultDeal.TotalSellAmount = Math.Round(PositionsWithDeals.Where(z => (z.ZeroParrentKey == resultDeal.ParentZeroKey || z.PositionKey == resultDeal.ParentZeroKey) && z.Coin.ShortName == resultDeal.SellItem).Sum(p => Double.Parse(p.Saldo, CultureInfo.CurrentCulture)), 8);
+				resultDeal.SellToBuyCourse = Math.Abs(Math.Round(resultDeal.TotalSellAmount / resultDeal.TotalBuyAmount, 6));
+				resultDeal.BuyToSellCourse = Math.Abs(Math.Round(resultDeal.TotalBuyAmount / resultDeal.TotalSellAmount, 6));
+
+
+
+				//!!!ToDo Сделать список стандартных курсов, добавить их в конфигурационный файл
+				if (resultDeal.BuyItem == "USD" || resultDeal.BuyItem == "USDT" || resultDeal.BuyItem == "USDC" || resultDeal.BuyItem == "BTC")
+				{
+					resultDeal.StandartCourse = resultDeal.SellToBuyCourse.ToString();
+				}
+				else if (resultDeal.SellItem == "USD" || resultDeal.SellItem == "USDT" || resultDeal.SellItem == "USDC" || resultDeal.SellItem == "BTC")
+				{
+					resultDeal.StandartCourse = resultDeal.BuyToSellCourse.ToString();
+				}
+				else
+					resultDeal.StandartCourse = "Не определен";
+
+				if (resultDeal.TotalSellAmount >= 0 && resultDeal.TotalBuyAmount >= 0)
+				{
+					resultDeal.StandartCourse = "Выгоден любой курс";
+				}
+
+				//Распределение данных
+				if (resultDeal.isOpen == true)
+				{
+					ActiveDealsList.Add(resultDeal);
+				}
+				else
+				{
+					ClosedDealsList.Add(resultDeal);
+				}
+			}
+
 		}
 	}
 }

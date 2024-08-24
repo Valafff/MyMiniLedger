@@ -26,6 +26,7 @@ using Microsoft.VisualBasic;
 using System.Runtime.Serialization;
 using System.Text.Encodings.Web;
 using static System.Windows.Forms.Design.AxImporter;
+using Microsoft.VisualBasic.Devices;
 
 namespace MyMiniLedger.WPF.Windows.PairDealCreationEdit
 {
@@ -41,6 +42,7 @@ namespace MyMiniLedger.WPF.Windows.PairDealCreationEdit
 		NumberFilter numFilter = new NumberFilter();
 		PairDealCreationEditModel model = new PairDealCreationEditModel();
 		bool courseWasInverted = false;
+		bool flagLock = true;
 		public PairDealCreationEdit
 			(
 				ObservableCollection<PositionUIModel> _mainPositionsSourse,
@@ -72,51 +74,57 @@ namespace MyMiniLedger.WPF.Windows.PairDealCreationEdit
 			comboWhatBuySell_SelectionChanged(null, null);
 			RadioButton_CulcMethod_Checked(null, null);
 
-			NumberDealInitialization();
-		}
-
-		private void NumberDealInitialization()
-		{
-			List<PairDealModel> dealsList = new List<PairDealModel>();
-			foreach (var position in model.MAINPOSITIONSCOLLECTION)
-			{
-				if (position.Tag.Contains(DealSignature))
-				{
-					try
-					{
-						string substr = position.Tag;
-						substr = substr.Replace($"{DealSignature}", "");
-						PairDealModel temp = JsonSerializer.Deserialize<PairDealModel>(substr);
-						if (temp.DealNumber > tempDealNumber)
-						{
-							tempDealNumber = temp.DealNumber;
-						}
-
-						if ((position.Status.StatusName == "Open" || position.Status.StatusName == "Открыта") && !dealsList.Any(n => n.DealNumber == temp.DealNumber) && temp.isOpen == true)
-						{
-							dealsList.Add(temp);
-						}
-					}
-					catch (Exception)
-					{
-						Console.WriteLine("Ошибка десериализации");
-					}
-				}
-			}
-			dealsList.Sort();
-			model.ActiveDeals.Clear();
-			foreach (var deal in dealsList)
-			{
-				model.ActiveDeals.Add(deal);
-			}
-
+			//NumberDealInitialization();
+			model.DealsInicialization();
+			if (model.ActiveDeals.Count > 0)
+			tempDealNumber = model.ActiveDeals.Max(d => d.DealNumber);
 			text_DealNameNumber.Text = (++tempDealNumber).ToString();
+
 		}
+
+		//private void NumberDealInitialization()
+		//{
+		//	List<PairDealModel> dealsList = new List<PairDealModel>();
+		//	foreach (var position in model.MAINPOSITIONSCOLLECTION)
+		//	{
+		//		if (position.Tag.Contains(DealSignature))
+		//		{
+		//			try
+		//			{
+		//				string substr = position.Tag;
+		//				substr = substr.Replace($"{DealSignature}", "");
+		//				PairDealModel temp = JsonSerializer.Deserialize<PairDealModel>(substr);
+		//				if (temp.DealNumber > tempDealNumber)
+		//				{
+		//					tempDealNumber = temp.DealNumber;
+		//				}
+
+		//				if ((position.Status.StatusName == "Open" || position.Status.StatusName == "Открыта") && !dealsList.Any(n => n.DealNumber == temp.DealNumber) && temp.isOpen == true)
+		//				{
+		//					dealsList.Add(temp);
+		//				}
+		//			}
+		//			catch (Exception)
+		//			{
+		//				Console.WriteLine("Ошибка десериализации");
+		//			}
+		//		}
+		//	}
+		//	dealsList.Sort();
+		//	model.ActiveDeals.Clear();
+		//	foreach (var deal in dealsList)
+		//	{
+		//		model.ActiveDeals.Add(deal);
+		//	}
+
+		//	text_DealNameNumber.Text = (++tempDealNumber).ToString();
+		//}
+
 		//Инициализация конструкта продажи
-		private string SellConstructInitialization(int _dealNumber, out DateTime dealDate, out PairDealModel tempModel, int? _zeroParenKey = -1, string _status_1 = "Open", string _status_2 = "Открыта")
+		private string SellConstructInitialization(int _dealNumber, out DateTime dealDate, out PairDealModel tempModel, bool _staticDate = false, int? _zeroParenKey = -1, string _status_1 = "Open", string _status_2 = "Открыта")
 		{
 
-			dealDate = DateTime.Now;
+			dealDate = _staticDate == false ? DateTime.Now : model.SelectedDeal.DealOpenTime;
 			int newId = model.MAINPOSITIONSCOLLECTION.Max(m => m.Id) + 1;
 			int newPosKey = model.MAINPOSITIONSCOLLECTION.Max(p => p.PositionKey) + 1;
 
@@ -144,7 +152,7 @@ namespace MyMiniLedger.WPF.Windows.PairDealCreationEdit
 			model.SelectedPosition.Coin = model.Coins.FirstOrDefault(c => c.ShortName == comboWhatSell.SelectedValue);
 			model.SelectedPosition.Status = model.Statuses.FirstOrDefault(s => s.StatusName == _status_1 || s.StatusName == _status_2);
 			model.SelectedPosition.Tag = posData;
-			model.SelectedPosition.Notes = "Позиция создана в редакторе позиций";
+			model.SelectedPosition.Notes = $"Парная позиция №{tempModel.DealNumber} Продажа {tempModel.SellItem} Покупка {tempModel.BuyItem} Позиция создана в редакторе позиций";
 			return posData;
 		}
 
@@ -158,7 +166,7 @@ namespace MyMiniLedger.WPF.Windows.PairDealCreationEdit
 			model.SelectedPosition.Coin = model.Coins.FirstOrDefault(c => c.ShortName == comboWhatBuy.SelectedValue);
 			model.SelectedPosition.Status = model.Statuses.FirstOrDefault(s => s.StatusName == _status_1 || s.StatusName == _status_2);
 			model.SelectedPosition.Tag = _posData;
-			model.SelectedPosition.Notes = "Позиция создана в редакторе позиций";
+			model.SelectedPosition.Notes = $"Позиция создана в редакторе позиций";
 		}
 
 
@@ -181,7 +189,7 @@ namespace MyMiniLedger.WPF.Windows.PairDealCreationEdit
 		//Продолжение существующей сделки
 		private void bt_ContinueOpenDeal_Click(object sender, RoutedEventArgs e)
 		{
-			string posData = SellConstructInitialization(model.SelectedDeal.DealNumber, out DateTime dealDate, out PairDealModel tempModel, model.SelectedDeal.ParentZeroKey);
+			string posData = SellConstructInitialization(model.SelectedDeal.DealNumber, out DateTime dealDate, out PairDealModel tempModel, true, model.SelectedDeal.ParentZeroKey);
 			//Продажа
 			model.SelectedPosition.ZeroParrentKey = model.SelectedDeal.ParentZeroKey;
 			model.SelectedPositionsInitialization(model.SelectedPositions);
@@ -190,6 +198,7 @@ namespace MyMiniLedger.WPF.Windows.PairDealCreationEdit
 			//Покупка
 			BuyConstructInitialization(dealDate, posData);
 			model.AddComplexPosition.Execute(null);
+
 		}
 
 		//Создание новой сделки и её закрытие
@@ -212,7 +221,7 @@ namespace MyMiniLedger.WPF.Windows.PairDealCreationEdit
 		//Продолжение существующей сделки и её закрытие
 		private void bt_ContinueDealAndClose_Click(object sender, RoutedEventArgs e)
 		{
-			string posData = SellConstructInitialization(model.SelectedDeal.DealNumber, out DateTime dealDate, out PairDealModel tempModel, model.SelectedDeal.ParentZeroKey);
+			string posData = SellConstructInitialization(model.SelectedDeal.DealNumber, out DateTime dealDate, out PairDealModel tempModel, true, model.SelectedDeal.ParentZeroKey);
 			//Продажа
 			model.SelectedPosition.ZeroParrentKey = model.SelectedDeal.ParentZeroKey;
 			model.SelectedPositionsInitialization(model.SelectedPositions);
@@ -281,8 +290,8 @@ namespace MyMiniLedger.WPF.Windows.PairDealCreationEdit
 		private void tb_CalculatedCourse_TextChanged(object sender, TextChangedEventArgs e)
 		{
 			numFilter.textBoxTextChangedFilter(sender, e);
-			if (((TextBox)sender).IsFocused)
-			{
+			if (((TextBox)sender).IsFocused && flagLock == true)
+			{			
 				HowManyBuyCalculate();
 			}
 		}
@@ -298,19 +307,25 @@ namespace MyMiniLedger.WPF.Windows.PairDealCreationEdit
 				if (checBox_CourseInverter.IsChecked == true)
 				{
 					course = 1 / course;
+					if (course == double.PositiveInfinity) { course = 0; }
+
 					courseWasInverted = true;
-					tb_CalculatedCourse.Text = course.ToString(CultureInfo.CurrentUICulture);
-					tb_CalculatedCourse.IsReadOnly = true;
+					
+					flagLock = false;
+					var reversCourse = 1/course;
+					if (reversCourse == double.PositiveInfinity) { reversCourse = 0; }
+
+					tb_CalculatedCourse.Text = reversCourse.ToString(CultureInfo.CurrentUICulture);
+					flagLock = true;
+					
 				}
 				if (checBox_CourseInverter.IsChecked == false && courseWasInverted)
 				{
 					course = 1 / course;
 					courseWasInverted = false;
 					tb_CalculatedCourse.Text = course.ToString(CultureInfo.CurrentUICulture);
-					tb_CalculatedCourse.IsReadOnly = false;
 				}
 
-				//double buyCount = Double.Parse(tb_HowManyBuy.Text, CultureInfo.InvariantCulture);
 				double sellCount = Double.Parse(tb_HowManySell.Text, NumberStyles.Float, currCulture);
 				double feeTobuy = Double.Parse(tb_BuyFee.Text, NumberStyles.Float, currCulture);
 				double feeTosell = Double.Parse(tb_SellFee.Text, NumberStyles.Float, currCulture);
@@ -421,20 +436,26 @@ namespace MyMiniLedger.WPF.Windows.PairDealCreationEdit
 			string sellItem = (dg_ActiveDeals.Columns[2].GetCellContent(row) as TextBlock).Text;
 			string date = (dg_ActiveDeals.Columns[3].GetCellContent(row) as TextBlock).Text.ToString();
 
-			foreach (var item in model.MAINPOSITIONSCOLLECTION)
-			{
-				if (item.Tag.Contains(dealNumber) && item.Tag.Contains(buyItem) && item.Tag.Contains(sellItem))
-				{
-					string temp = item.Tag;
-					temp = temp.Replace(DealSignature, "");
-					var deal = JsonSerializer.Deserialize<PairDealModel>(temp);
-					if (deal.DealOpenTime.ToString("dd.MM.yyyy HH:mm:ss") == date)
-					{
-						model.SelectedDeal = deal;
-						text_DealNameNumber.Text = deal.DealNumber.ToString();
-					}
-				}
-			}
+			model.SelectedDeal = model.ActiveDeals.FirstOrDefault(d => d.DealNumber.ToString() == dealNumber);
+			text_DealNameNumber.Text = model.SelectedDeal.DealNumber.ToString();
+
+			comboWhatSell.SelectedValue = model.SelectedDeal.SellItem;
+			comboWhatBuy.SelectedValue = model.SelectedDeal.BuyItem;
+
+			//foreach (var item in model.MAINPOSITIONSCOLLECTION)
+			//{
+			//	if (item.Tag.Contains(dealNumber) && item.Tag.Contains(buyItem) && item.Tag.Contains(sellItem))
+			//	{
+			//		string temp = item.Tag;
+			//		temp = temp.Replace(DealSignature, "");
+			//		var deal = JsonSerializer.Deserialize<PairDealModel>(temp);
+			//		if (deal.DealOpenTime.ToString("dd.MM.yyyy HH:mm:ss") == date)
+			//		{
+			//			model.SelectedDeal = deal;
+			//			text_DealNameNumber.Text = deal.DealNumber.ToString();
+			//		}
+			//	}
+			//}
 		}
 
 	}
