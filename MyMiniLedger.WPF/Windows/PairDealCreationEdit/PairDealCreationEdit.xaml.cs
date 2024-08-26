@@ -80,7 +80,7 @@ namespace MyMiniLedger.WPF.Windows.PairDealCreationEdit
 			//tempDealNumber = model.ActiveDeals.Max(d => d.DealNumber);
 			//if(model.ActiveDeals.Count == 0)
 			//{
-				NumberDealInitialization();
+			NumberDealInitialization();
 			//}
 			//text_DealNameNumber.Text = (++tempDealNumber).ToString();
 
@@ -154,8 +154,14 @@ namespace MyMiniLedger.WPF.Windows.PairDealCreationEdit
 		{
 
 			dealDate = _staticDate == false ? DateTime.Now : model.SelectedDeal.DealOpenTime;
-			int newId = model.MAINPOSITIONSCOLLECTION.Max(m => m.Id) + 1;
-			int newPosKey = model.MAINPOSITIONSCOLLECTION.Max(p => p.PositionKey) + 1;
+			int newId = 1;
+			int newPosKey = 1;
+			if (model.MAINPOSITIONSCOLLECTION.Count > 0)
+			{
+				newId = model.MAINPOSITIONSCOLLECTION.Max(m => m.Id) + 1;
+				newPosKey = model.MAINPOSITIONSCOLLECTION.Max(p => p.PositionKey) + 1;
+			}
+
 
 			tempModel = new PairDealModel()
 			{
@@ -327,7 +333,7 @@ namespace MyMiniLedger.WPF.Windows.PairDealCreationEdit
 		{
 			numFilter.textBoxTextChangedFilter(sender, e);
 			if (((TextBox)sender).IsFocused && flagLock == true)
-			{			
+			{
 				HowManyBuyCalculate();
 			}
 		}
@@ -342,22 +348,23 @@ namespace MyMiniLedger.WPF.Windows.PairDealCreationEdit
 			{
 				if (checBox_CourseInverter.IsChecked == true)
 				{
-					course = 1 / course;
+
+					course = course == 0 ? course : 1 / course;
 					if (course == double.PositiveInfinity) { course = 0; }
 
 					courseWasInverted = true;
-					
+
 					flagLock = false;
-					var reversCourse = 1/course;
+					var reversCourse = course == 0 ? course : 1 / course;
 					if (reversCourse == double.PositiveInfinity) { reversCourse = 0; }
 
 					tb_CalculatedCourse.Text = reversCourse.ToString(CultureInfo.CurrentUICulture);
 					flagLock = true;
-					
+
 				}
 				if (checBox_CourseInverter.IsChecked == false && courseWasInverted)
 				{
-					course = 1 / course;
+					course = course == 0 ? course : 1 / course;
 					courseWasInverted = false;
 					tb_CalculatedCourse.Text = course.ToString(CultureInfo.CurrentUICulture);
 				}
@@ -371,7 +378,6 @@ namespace MyMiniLedger.WPF.Windows.PairDealCreationEdit
 					buyCount = course * sellCount;
 					var totalFee = buyCount * feeTobuy / 100;
 					buyCount = buyCount - totalFee;
-					//Console.WriteLine(buyCount);
 					tb_HowManyBuy.Text = buyCount.ToString(CultureInfo.CurrentUICulture);
 				}
 				//Если комиссия берется с продажи - конечная сумма покупки будет меньше
@@ -426,7 +432,7 @@ namespace MyMiniLedger.WPF.Windows.PairDealCreationEdit
 			if (comboWhatBuy != null & comboWhatSell != null)
 			{
 				if (comboWhatBuy.SelectedValue != null && comboWhatSell.SelectedValue != null && !tb_CalculatedCourse.IsFocused && !tb_DefaultFee.IsFocused)
-				{
+				{				
 					text_PairName.Text = $"{comboWhatBuy.SelectedValue}/{comboWhatSell.SelectedValue}";
 					tb_CalculatedCourse.Text = "none";
 					if (Double.Parse(tb_HowManySell.Text, CultureInfo.InvariantCulture) != 0)
