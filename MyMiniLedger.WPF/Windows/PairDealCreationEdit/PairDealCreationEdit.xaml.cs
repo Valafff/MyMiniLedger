@@ -220,7 +220,6 @@ namespace MyMiniLedger.WPF.Windows.PairDealCreationEdit
 			model.ActiveDeals.Add(tempModel);
 			model.DealsInicialization();
 			text_DealNameNumber.Text = (++tempDealNumber).ToString();
-			model.SelectedDeal = tempModel;
 		}
 
 		//Продолжение существующей сделки
@@ -229,17 +228,13 @@ namespace MyMiniLedger.WPF.Windows.PairDealCreationEdit
 			string posData = SellConstructInitialization(model.SelectedDeal.DealNumber, out DateTime dealDate, out PairDealModel tempModel, true, model.SelectedDeal.ParentZeroKey);
 			//Продажа
 			model.SelectedPosition.ZeroParrentKey = model.SelectedDeal.ParentZeroKey;
-			//if (model.SelectedPosition.Coin == null)
-			//{
-			//	var tempPos = model.MAINPOSITIONSCOLLECTION.First(p => p.PositionKey == model.SelectedPosition.PositionKey-1);
-			//	model.SelectedPosition.Coin = tempPos.Coin;
-			//}
 			model.SelectedPositionsInitialization(model.SelectedPositions);
 			model.AddComplexPosition.Execute(null);
 
 			//Покупка
 			BuyConstructInitialization(dealDate, posData);
 			model.AddComplexPosition.Execute(null);
+			model.SelectedDeal = tempModel;
 
 		}
 
@@ -277,6 +272,7 @@ namespace MyMiniLedger.WPF.Windows.PairDealCreationEdit
 
 			model.ActiveDeals.RemoveAt(model.ActiveDeals.IndexOf(model.ActiveDeals.FirstOrDefault(i => i.DealNumber == model.SelectedDeal.DealNumber)));
 			model.ReWriteDeals(tempModel, DealSignature);
+			model.SelectedDeal.DealNumber = 0;
 		}
 
 		private void RadioButton_CulcMethod_Checked(object sender, RoutedEventArgs e)

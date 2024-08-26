@@ -19,6 +19,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using MyMiniLedger.BLL.Models;
 using System.Windows.Data;
+using System.Diagnostics.Eventing.Reader;
 
 
 namespace MyMiniLedger.WPF
@@ -647,51 +648,79 @@ namespace MyMiniLedger.WPF
 		private void summaryActiveDealsDataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
 		{
 			var deal = e.Row.Item as PairDealModel;
-			if (Double.TryParse(deal.StandartCourse, out double _standartCourse))
+			bool testResult = true;
+			if (Double.TryParse(deal.StandartCourse, out double _standartCourse) && deal.CourseNow > 0)
 			{
 				double percent = 0;
-				if (deal.CourseNow >= 0)
-				{
-					if (deal._invertedCourse == false)
-						percent = Math.Round(((_standartCourse / deal.CourseNow - 1) * 100), 4);
-					else
-						percent = Math.Round(((deal.CourseNow / _standartCourse - 1) * 100), 4);
+				if (deal._invertedCourse == false)
+					percent = Math.Round(((_standartCourse / deal.CourseNow - 1) * 100), 4);
+				else
+					percent = Math.Round(((deal.CourseNow / _standartCourse - 1) * 100), 4);
 
+				testResult = DealTest(ref deal, ref percent);
+				if (testResult && percent > 0)
+				{
 					double percentToStr = percent;
-					if (percent > 0)
-					{
-						deal.PercentDifference = "+" + percentToStr.ToString("N2", CultureInfo.CurrentUICulture) + "%";
-					}
-					else
-					{
-						deal.PercentDifference = percentToStr.ToString("N2", CultureInfo.CurrentUICulture) + "%";
-					}
+					deal.PercentDifference = "+" + percentToStr.ToString("N2", CultureInfo.CurrentUICulture) + "%";
 				}
+				else
+				{
+					double percentToStr = percent;
+					deal.PercentDifference = percentToStr.ToString("N2", CultureInfo.CurrentUICulture) + "%";
+				}
+
 
 				double possibleProfit;
 				if (deal._invertedCourse == false)
-					possibleProfit = Math.Abs(deal.TotalSellAmount * Math.Round((_standartCourse / deal.CourseNow), 4) - deal.TotalSellAmount);
+					possibleProfit = Math.Abs(deal.TotalSellAmount * Math.Round((_standartCourse / deal.CourseNow), 12) - deal.TotalSellAmount);
 				else
-					possibleProfit = Math.Abs(deal.TotalSellAmount * Math.Round((deal.CourseNow / _standartCourse), 4) - deal.TotalSellAmount);
+					possibleProfit = Math.Abs(deal.TotalSellAmount * Math.Round((deal.CourseNow / _standartCourse), 12) - deal.TotalSellAmount);
 
-				double possibleProfitToStr = possibleProfit;
-				if (percent >= 0)
+				possibleProfit = percent > 0 ? possibleProfit : possibleProfit * -1;
+                double possibleProfitToStr = possibleProfit;
+				if (testResult && possibleProfit > 0)
 				{
 					deal.ValueDifference = "+" + possibleProfitToStr.ToString("N8", CultureInfo.CurrentUICulture) + $" {deal.SellItem}";
 				}
 				else
 				{
-					deal.ValueDifference = (possibleProfitToStr * -1).ToString("N8", CultureInfo.CurrentUICulture) + $" {deal.SellItem}";
+					deal.ValueDifference = (possibleProfitToStr).ToString("N8", CultureInfo.CurrentUICulture) + $" {deal.SellItem}";
 				}
 
-				double totalPossibleProfit;
-				if (deal._invertedCourse == false)
-					totalPossibleProfit = Math.Abs(deal.TotalSellAmount * Math.Round((_standartCourse / deal.CourseNow), 4));
-				else
-					totalPossibleProfit = Math.Abs(deal.TotalSellAmount * Math.Round((deal.CourseNow / _standartCourse), 4));
-
+				double totalPossibleProfit = Math.Abs(deal.TotalSellAmount) + possibleProfit;
 				deal.TotalValueProfit = totalPossibleProfit.ToString("N8", CultureInfo.CurrentUICulture) + $" {deal.SellItem}";
 			}
+		}
+
+		private bool DealTest(ref PairDealModel _deal, ref double _percent)
+		{
+			if (_percent >= 0 && _deal.SellToBuyCourse < 1)
+			{
+				if (Math.Abs(_deal.TotalBuyAmount) - Math.Abs(_deal.TotalSellAmount * _deal.CourseNow) >= 0)
+				{
+					return true;
+				}
+				else
+				{
+					_percent = _percent * -1;
+					return false;
+				}
+
+			}
+			else if (_percent < 0 && _deal.SellToBuyCourse < 1)
+			{
+				if (Math.Abs(_deal.TotalBuyAmount) - Math.Abs(_deal.TotalSellAmount * _deal.CourseNow) >= 0)
+				{
+					_percent = _percent * -1;
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			}
+			return true;
+
 		}
 
 		private void summaryCloseDealsDataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
