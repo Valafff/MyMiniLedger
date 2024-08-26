@@ -34,6 +34,7 @@ namespace MyMiniLedger.WPF.WindowsModels
 	public class MainWindowModel : BaseNotify
 	{
 		const string DealSignature = "Парная сделка_";
+		FamousCoins FamousCoins = new FamousCoins();
 		//const int FIATSYMBOLSAFTERDELIMETR = 2;
 		//При выполнении метода UpdateCoins() вызывается событие UpdateCoinsIndexEvent, аналогично с другими полями
 		public event UpdateCoinsIndexDelegate UpdateCoinsIndexEvent;
@@ -624,19 +625,31 @@ namespace MyMiniLedger.WPF.WindowsModels
 				resultDeal.SellToBuyCourse = Math.Abs(Math.Round(resultDeal.TotalSellAmount / resultDeal.TotalBuyAmount, 6));
 				resultDeal.BuyToSellCourse = Math.Abs(Math.Round(resultDeal.TotalBuyAmount / resultDeal.TotalSellAmount, 6));
 
-
-
-				//!!!ToDo Сделать список стандартных курсов, добавить их в конфигурационный файл
-				if (resultDeal.BuyItem == "USD" || resultDeal.BuyItem == "USDT" || resultDeal.BuyItem == "USDC" || resultDeal.BuyItem == "BTC")
+				//Приведение к стандартному курсу
+				//Просмотр главного рейтинга
+				if (FamousCoins.Rating_0.Any(c => c == resultDeal.BuyItem) || FamousCoins.Rating_0.Any(c => c == resultDeal.SellItem))
 				{
-					resultDeal.StandartCourse = resultDeal.SellToBuyCourse.ToString();
+					FamousCoins.CheckCourse(ref resultDeal);
 				}
-				else if (resultDeal.SellItem == "USD" || resultDeal.SellItem == "USDT" || resultDeal.SellItem == "USDC" || resultDeal.SellItem == "BTC")
+				else if (FamousCoins.Rating_1.Any(c => c == resultDeal.BuyItem) || FamousCoins.Rating_1.Any(c => c == resultDeal.SellItem))
 				{
-					resultDeal.StandartCourse = resultDeal.BuyToSellCourse.ToString();
+					FamousCoins.CheckCourse(ref resultDeal);
 				}
+				//Просмотр второго рейтинга
+				else if (FamousCoins.Rating_2.Any(c => c == resultDeal.BuyItem) || FamousCoins.Rating_2.Any(c => c == resultDeal.SellItem))
+				{
+					FamousCoins.CheckCourse(ref resultDeal);
+				}
+
+				//Просмотр остальных
+				else if (FamousCoins.Other.Any(c => c == resultDeal.BuyItem) || FamousCoins.Other.Any(c => c == resultDeal.SellItem))
+				{
+					FamousCoins.CheckCourse(ref resultDeal);
+				}
+				//Пара отсутствует в известных монетах
 				else
 					resultDeal.StandartCourse = "Не определен";
+
 
 				if (resultDeal.TotalSellAmount >= 0 && resultDeal.TotalBuyAmount >= 0)
 				{
@@ -655,5 +668,15 @@ namespace MyMiniLedger.WPF.WindowsModels
 			}
 
 		}
+		//private void CheckCourse(ref PairDealModel _resultDeal)
+		//{
+		//	if ( Math.Round(Math.Abs(_resultDeal.SellToBuyCourse * _resultDeal.TotalBuyAmount),6) == Math.Round((Math.Abs(_resultDeal.TotalSellAmount)), 6))
+		//	{
+		//		Console.WriteLine("!");
+		//		_resultDeal.StandartCourse = string.Format("{0:F8}", _resultDeal.SellToBuyCourse);
+		//	}
+		//	else
+		//		_resultDeal.StandartCourse = string.Format("{0:F8}", 1 / _resultDeal.SellToBuyCourse);
+		//}
 	}
 }

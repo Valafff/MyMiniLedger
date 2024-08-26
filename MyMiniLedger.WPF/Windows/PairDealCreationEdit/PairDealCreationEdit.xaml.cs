@@ -76,10 +76,39 @@ namespace MyMiniLedger.WPF.Windows.PairDealCreationEdit
 
 			//NumberDealInitialization();
 			model.DealsInicialization();
-			if (model.ActiveDeals.Count > 0)
-			tempDealNumber = model.ActiveDeals.Max(d => d.DealNumber);
-			text_DealNameNumber.Text = (++tempDealNumber).ToString();
+			//if (model.ActiveDeals.Count > 0)
+			//tempDealNumber = model.ActiveDeals.Max(d => d.DealNumber);
+			//if(model.ActiveDeals.Count == 0)
+			//{
+				NumberDealInitialization();
+			//}
+			//text_DealNameNumber.Text = (++tempDealNumber).ToString();
 
+		}
+
+		private void NumberDealInitialization()
+		{
+			foreach (var position in model.MAINPOSITIONSCOLLECTION)
+			{
+				if (position.Tag.Contains(DealSignature))
+				{
+					try
+					{
+						string substr = position.Tag;
+						substr = substr.Replace($"{DealSignature}", "");
+						PairDealModel temp = JsonSerializer.Deserialize<PairDealModel>(substr);
+						if (temp.DealNumber > tempDealNumber)
+						{
+							tempDealNumber = temp.DealNumber;
+						}
+					}
+					catch (Exception)
+					{
+						Console.WriteLine("Ошибка десериализации");
+					}
+				}
+			}
+			text_DealNameNumber.Text = (++tempDealNumber).ToString();
 		}
 
 		//private void NumberDealInitialization()
@@ -182,6 +211,7 @@ namespace MyMiniLedger.WPF.Windows.PairDealCreationEdit
 			model.AddComplexPosition.Execute(null);
 
 			model.ActiveDeals.Add(tempModel);
+			model.DealsInicialization();
 			text_DealNameNumber.Text = (++tempDealNumber).ToString();
 			model.SelectedDeal = tempModel;
 		}
@@ -395,7 +425,7 @@ namespace MyMiniLedger.WPF.Windows.PairDealCreationEdit
 					tb_CalculatedCourse.Text = "none";
 					if (Double.Parse(tb_HowManySell.Text, CultureInfo.InvariantCulture) != 0)
 					{
-						tb_CalculatedCourse.Text = (Double.Parse(tb_HowManyBuy.Text, CultureInfo.InvariantCulture) / Double.Parse(tb_HowManySell.Text, CultureInfo.InvariantCulture)).ToString("N6", CultureInfo.CurrentUICulture);
+						tb_CalculatedCourse.Text = (Double.Parse(tb_HowManyBuy.Text) / Double.Parse(tb_HowManySell.Text)).ToString("N6", CultureInfo.CurrentUICulture);
 					}
 				}
 				if (comboWhatBuy.SelectedValue != null && comboWhatSell.SelectedValue != null)
