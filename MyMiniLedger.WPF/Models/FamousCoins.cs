@@ -30,6 +30,7 @@ namespace MyMiniLedger.WPF.Models
 			}
 			else
 				_resultDeal.StandartCourse = string.Format("{0:F8}", 1 / _resultDeal.SellToBuyCourse);
+				_resultDeal._invertedCourse = true;
 		}
 	}
 }

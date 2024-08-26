@@ -652,7 +652,11 @@ namespace MyMiniLedger.WPF
 				double percent = 0;
 				if (deal.CourseNow >= 0)
 				{
-					percent = Math.Round(((_standartCourse/deal.CourseNow  - 1) * 100), 4);
+					if (deal._invertedCourse == false)
+						percent = Math.Round(((_standartCourse / deal.CourseNow - 1) * 100), 4);
+					else
+						percent = Math.Round(((deal.CourseNow / _standartCourse - 1) * 100), 4);
+
 					double percentToStr = percent;
 					if (percent > 0)
 					{
@@ -664,7 +668,12 @@ namespace MyMiniLedger.WPF
 					}
 				}
 
-				double possibleProfit = Math.Abs(deal.TotalSellAmount * Math.Round(( _standartCourse/ deal.CourseNow ), 4) - deal.TotalSellAmount);
+				double possibleProfit;
+				if (deal._invertedCourse == false)
+					possibleProfit = Math.Abs(deal.TotalSellAmount * Math.Round((_standartCourse / deal.CourseNow), 4) - deal.TotalSellAmount);
+				else
+					possibleProfit = Math.Abs(deal.TotalSellAmount * Math.Round((deal.CourseNow / _standartCourse), 4) - deal.TotalSellAmount);
+
 				double possibleProfitToStr = possibleProfit;
 				if (percent >= 0)
 				{
@@ -675,7 +684,12 @@ namespace MyMiniLedger.WPF
 					deal.ValueDifference = (possibleProfitToStr * -1).ToString("N8", CultureInfo.CurrentUICulture) + $" {deal.SellItem}";
 				}
 
-				double totalPossibleProfit = Math.Abs(deal.TotalSellAmount * Math.Round((_standartCourse / deal.CourseNow), 4));
+				double totalPossibleProfit;
+				if (deal._invertedCourse == false)
+					totalPossibleProfit = Math.Abs(deal.TotalSellAmount * Math.Round((_standartCourse / deal.CourseNow), 4));
+				else
+					totalPossibleProfit = Math.Abs(deal.TotalSellAmount * Math.Round((deal.CourseNow / _standartCourse), 4));
+
 				deal.TotalValueProfit = totalPossibleProfit.ToString("N8", CultureInfo.CurrentUICulture) + $" {deal.SellItem}";
 			}
 		}

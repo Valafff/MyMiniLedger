@@ -128,7 +128,8 @@ namespace MyMiniLedger.WPF.Models
 		//Служебные значения
 		public int? ParentZeroKey {get; set; }
 		public bool? isOpen { get; set; } = true;
-		private bool? _invertedCourse {  get; set; } = false;
+		[JsonIgnore]
+		public bool? _invertedCourse {  get; set; } = false;
 
 		//Резерв
 		public string? AdditionalData { get; set; }
