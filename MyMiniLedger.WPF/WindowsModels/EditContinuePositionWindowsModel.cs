@@ -624,6 +624,71 @@ namespace MyMiniLedger.WPF.WindowsModels
 			}
 		}
 
+		public void SelectedPositionsInitialization(ObservableCollection<PositionUIModel> _selectedPositions, PositionUIModel _selectPos)
+		{
+			try
+			{
+				ComplexPositionBalanceCalculator calculator = new ComplexPositionBalanceCalculator();
+				_selectedPositions.Clear();
+				//Если позиция простая или выбран родитель
+				if (_selectPos.ZeroParrentKey == null)
+				{
+					List<PositionUIModel> filtredList = MAINPOSITIONSCOLLECTION.AsList().FindAll(f => f.ZeroParrentKey == _selectPos.PositionKey);
+					BLL.Context.ListOfPositions tempPos = new BLL.Context.ListOfPositions();
+					//List<PositionUIModel> controlPosList = (tempPos.GetAll().Result.Select(p => Mappers.UIMapper.MapPositionBLLToPositionUI(p)).ToList());
+					List<PositionUIModel> controlPosList = (tempPos.GetAll().Select(p => Mappers.UIMapper.MapPositionBLLToPositionUI(p)).ToList());
+					List<PositionUIModel> filtredControlList = controlPosList.AsList().FindAll(f => f.ZeroParrentKey == _selectPos.PositionKey);
+					if (filtredList.Count != filtredControlList.Count)
+					{
+						dontEditthis = true;
+						MessageBox.Show("В текущей выборке отсутствует родитель комплексной позиции. Возможна потеря данных",
+							"Отсутствует родитель позиции", MessageBoxButton.OK, MessageBoxImage.Information);
+					}
+
+					_selectedPositions.Add(_selectPos);
+					filtredList = (filtredList.OrderBy(f => f.ParrentKey)).ToList();
+					foreach (var item in filtredList)
+					{
+						if (item.Status.StatusName != "Deleted")
+						{
+							_selectedPositions.Add(item);
+						}
+					}
+					TotalBalances = calculator.GetTotalBalances(_selectedPositions);
+				}
+				//Если выбрана дочерняя позиция
+				else
+				{
+					var childs = MAINPOSITIONSCOLLECTION.AsList().FindAll(f => f.ZeroParrentKey == _selectPos.ZeroParrentKey);
+					BLL.Context.ListOfPositions tempPos = new BLL.Context.ListOfPositions();
+					//List<PositionUIModel> controlPosList = (tempPos.GetAll().Result.Select(p => Mappers.UIMapper.MapPositionBLLToPositionUI(p)).ToList());
+					List<PositionUIModel> controlPosList = (tempPos.GetAll().Select(p => Mappers.UIMapper.MapPositionBLLToPositionUI(p)).ToList());
+					List<PositionUIModel> filtredControlList = controlPosList.AsList().FindAll(f => f.ZeroParrentKey == _selectPos.ZeroParrentKey);
+					if (childs.Count != filtredControlList.Count)
+					{
+						dontEditthis = true;
+						MessageBox.Show("В текущей выборке отсутствует родитель комплексной позиции. Возможна потеря данных",
+							"Отсутствует родитель позиции", MessageBoxButton.OK, MessageBoxImage.Information);
+					}
+					var zeroParent = MAINPOSITIONSCOLLECTION.AsList().Find(f => f.PositionKey == _selectPos.ZeroParrentKey);
+					if (zeroParent != null) childs.Add(zeroParent);
+					childs = (childs.OrderBy(f => f.ParrentKey)).ToList();
+					foreach (var item in childs)
+					{
+						if (item.Status.StatusName != "Deleted")
+						{
+							_selectedPositions.Add(item);
+						}
+					}
+					TotalBalances = calculator.GetTotalBalances(_selectedPositions);
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"{ex.Message} ZeroParrentKey: {_selectedPosition.ZeroParrentKey} ParrentKey: {_selectedPosition.ParrentKey}");
+			}
+		}
+
 		void ValuePositionCopy(PositionUIModel _tocopy, PositionUIModel _fromCopy)
 		{
 			try

@@ -183,6 +183,7 @@ namespace MyMiniLedger.WPF.Windows.PairDealCreationEdit
 			model.SelectedPosition.Tag = posData;
 			model.SelectedPosition.Notes = $"Парная позиция №{tempModel.DealNumber} Продажа {tempModel.SellItem} Покупка {tempModel.BuyItem} Позиция создана в редакторе позиций";
 			return posData;
+
 		}
 
 		//Инициализация конструкта покупки
@@ -222,6 +223,11 @@ namespace MyMiniLedger.WPF.Windows.PairDealCreationEdit
 			string posData = SellConstructInitialization(model.SelectedDeal.DealNumber, out DateTime dealDate, out PairDealModel tempModel, true, model.SelectedDeal.ParentZeroKey);
 			//Продажа
 			model.SelectedPosition.ZeroParrentKey = model.SelectedDeal.ParentZeroKey;
+			//if (model.SelectedPosition.Coin == null)
+			//{
+			//	var tempPos = model.MAINPOSITIONSCOLLECTION.First(p => p.PositionKey == model.SelectedPosition.PositionKey-1);
+			//	model.SelectedPosition.Coin = tempPos.Coin;
+			//}
 			model.SelectedPositionsInitialization(model.SelectedPositions);
 			model.AddComplexPosition.Execute(null);
 
@@ -469,8 +475,8 @@ namespace MyMiniLedger.WPF.Windows.PairDealCreationEdit
 			model.SelectedDeal = model.ActiveDeals.FirstOrDefault(d => d.DealNumber.ToString() == dealNumber);
 			text_DealNameNumber.Text = model.SelectedDeal.DealNumber.ToString();
 
-			comboWhatSell.SelectedValue = model.SelectedDeal.SellItem;
-			comboWhatBuy.SelectedValue = model.SelectedDeal.BuyItem;
+			comboWhatSell.SelectedIndex = comboWhatSell.Items.IndexOf(model.SelectedDeal.SellItem);
+			comboWhatBuy.SelectedIndex = comboWhatBuy.Items.IndexOf(model.SelectedDeal.BuyItem);
 
 			//foreach (var item in model.MAINPOSITIONSCOLLECTION)
 			//{
