@@ -17,7 +17,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="1*"/>
-            <RowDefinition Height="0.5*"/>
+            <RowDefinition Height="0.6*"/>
             <RowDefinition Height="12*"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" >
@@ -77,17 +77,24 @@
         <Grid Grid.Row="2">
 
             <StackPanel Orientation="Horizontal">
-                <RadioButton Margin="5,2,5,2" Name="rb_Other" Checked="rb_Other_Checked" IsChecked="True" >
+                <RadioButton Margin="5,2,5,2" Name="rb_Other" Checked="rb_Other_Checked" IsChecked="True" VerticalAlignment="Center" >
                     Не задано
                 </RadioButton>
-                <RadioButton Margin="10,2,5,5" Name="rb_Crypto" Checked="rb_Crypto_Checked">
+                <RadioButton Margin="10,2,5,5" Name="rb_Crypto" Checked="rb_Crypto_Checked" VerticalAlignment="Center">
                     Крипта
                 </RadioButton>
-                <RadioButton Margin="5,2,5,5" Name="rb_Fiat" Checked="rb_Fiat_Checked">
+                <RadioButton Margin="5,2,5,5" Name="rb_Fiat" Checked="rb_Fiat_Checked" VerticalAlignment="Center">
                     Фиат
                 </RadioButton>
-                <TextBlock Text="           Валюта по умолчанию     " VerticalAlignment="Center"/>
+                <TextBlock Text="Валюта по умолчанию:" VerticalAlignment="Center" Margin="20,3,10,3"/>
                 <CheckBox x:Name="checkBoxDefaultCoin" VerticalAlignment="Center" IsChecked="False" Click="checkBoxDefaultCoin_Click" />
+                <TextBlock Text="Категория монеты:" VerticalAlignment="Center" Margin="20,3,0,3"/>
+                <ComboBox x:Name="comboRatingChange" SelectedIndex="0" Width="110" Margin="10,3,10,3" SelectionChanged="comboRatingChange_SelectionChanged" >
+                    <TextBlock>Прочее</TextBlock>
+                    <TextBlock>Рейтинг 0</TextBlock>
+                    <TextBlock>Рейтинг 1</TextBlock>
+                    <TextBlock>Рейтинг 2</TextBlock>
+                </ComboBox>
             </StackPanel>
         </Grid>
         

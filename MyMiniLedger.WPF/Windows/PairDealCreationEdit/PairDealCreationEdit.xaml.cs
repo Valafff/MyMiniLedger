@@ -68,6 +68,9 @@ namespace MyMiniLedger.WPF.Windows.PairDealCreationEdit
 			model.SetStringCoins(model.WhatToSell, model.Coins);
 			model.SelectedCategory = model.StringCategories[0];
 			model.SelectedKind = model.Kinds.FirstOrDefault(c => c.Category.Category == model.StringCategories[0]).Kind;
+			model.FamousCoinAdditionalInicialization();
+
+
 
 			InitializeComponent();
 			DataContext = model;

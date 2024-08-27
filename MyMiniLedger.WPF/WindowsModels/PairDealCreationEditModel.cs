@@ -13,6 +13,7 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace MyMiniLedger.WPF.WindowsModels
 {
@@ -139,7 +140,6 @@ namespace MyMiniLedger.WPF.WindowsModels
 			WhatToSell = new ObservableCollection<string>();
 			ActiveDeals = new ObservableCollection<PairDealModel>();
 
-
 			EditDefaultData = new LambdaCommand(execute =>
 			{
 				EditDefaultDataWindow editWindow = new EditDefaultDataWindow(ref ConfigData, this);
@@ -184,89 +184,102 @@ namespace MyMiniLedger.WPF.WindowsModels
 
 		public void DealsInicialization()
 		{
-			ActiveDeals.Clear();
-			//Из всего списка нахожу только сделки
-			var PositionsWithDeals = MAINPOSITIONSCOLLECTION.Where(p => p.Tag.Contains(DealSignature));
-			var DealsStrings = PositionsWithDeals.Select(s => s.Tag);
-			List<PairDealModel> MainDealList = new List<PairDealModel>();
-			foreach (var item in DealsStrings)
+			try
 			{
-				MainDealList.Add(JsonSerializer.Deserialize<PairDealModel>(item.Replace(DealSignature, "")));
+				ActiveDeals.Clear();
+				//Из всего списка нахожу только сделки
+				var PositionsWithDeals = MAINPOSITIONSCOLLECTION.Where(p => p.Tag.Contains(DealSignature));
+				var DealsStrings = PositionsWithDeals.Select(s => s.Tag);
+				List<PairDealModel> MainDealList = new List<PairDealModel>();
+				foreach (var item in DealsStrings)
+				{
+					MainDealList.Add(JsonSerializer.Deserialize<PairDealModel>(item.Replace(DealSignature, "")));
+				}
+
+				//Нахожу только уникальные номера сделок
+				var DealNumbers = MainDealList.Select(n => n.DealNumber).Distinct().Reverse();
+
+				//Конечная обработка данных
+				foreach (var item in DealNumbers)
+				{
+					var tempDealsByNumber = MainDealList.Where(d => d.DealNumber == item).ToList();
+					PairDealModel resultDeal = new PairDealModel();
+					resultDeal.DealNumber = tempDealsByNumber.First().DealNumber;
+					resultDeal.DealOpenTime = tempDealsByNumber.First().DealOpenTime;
+					resultDeal.BuyItem = tempDealsByNumber.First().BuyItem;
+					resultDeal.SellItem = tempDealsByNumber.First().SellItem;
+					resultDeal.isOpen = tempDealsByNumber.First().isOpen;
+					resultDeal.ParentZeroKey = tempDealsByNumber.First().ParentZeroKey;
+					//Расчет данных
+					resultDeal.TotalBuyAmount = Math.Round(PositionsWithDeals.Where(z => (z.ZeroParrentKey == resultDeal.ParentZeroKey || z.PositionKey == resultDeal.ParentZeroKey) && z.Coin.ShortName == resultDeal.BuyItem).Sum(p => Double.Parse(p.Saldo, CultureInfo.CurrentCulture)), 8);
+					resultDeal.TotalSellAmount = Math.Round(PositionsWithDeals.Where(z => (z.ZeroParrentKey == resultDeal.ParentZeroKey || z.PositionKey == resultDeal.ParentZeroKey) && z.Coin.ShortName == resultDeal.SellItem).Sum(p => Double.Parse(p.Saldo, CultureInfo.CurrentCulture)), 8);
+					resultDeal.SellToBuyCourse = Math.Abs(Math.Round(resultDeal.TotalSellAmount / resultDeal.TotalBuyAmount, 6));
+					resultDeal.BuyToSellCourse = Math.Abs(Math.Round(resultDeal.TotalBuyAmount / resultDeal.TotalSellAmount, 6));
+
+
+
+					//Приведение к стандартному курсу
+					//Просмотр главного рейтинга
+					if (FamousCoins.Rating_0.Any(c => c == resultDeal.BuyItem))
+					{
+						FamousCoins.CheckCourse(ref resultDeal, resultDeal.BuyItem);
+					}
+					else if (FamousCoins.Rating_0.Any(c => c == resultDeal.SellItem))
+					{
+						FamousCoins.CheckCourse(ref resultDeal, resultDeal.SellItem);
+					}
+					//Просмотр первого рейтинга
+					else if (FamousCoins.Rating_1_stable.Any(c => c == resultDeal.BuyItem))
+					{
+						FamousCoins.CheckCourse(ref resultDeal, resultDeal.BuyItem);
+					}
+					else if (FamousCoins.Rating_1_stable.Any(c => c == resultDeal.SellItem))
+					{
+						FamousCoins.CheckCourse(ref resultDeal, resultDeal.SellItem);
+					}
+					//Просмотр второго рейтинга
+					else if (FamousCoins.Rating_2.Any(c => c == resultDeal.BuyItem))
+					{
+						FamousCoins.CheckCourse(ref resultDeal, resultDeal.BuyItem);
+					}
+					else if (FamousCoins.Rating_2.Any(c => c == resultDeal.SellItem))
+					{
+						FamousCoins.CheckCourse(ref resultDeal, resultDeal.SellItem);
+					}
+					//Просмотр остальных
+					else if (FamousCoins.Other.Any(c => c == resultDeal.BuyItem))
+					{
+						FamousCoins.CheckCourse(ref resultDeal, resultDeal.BuyItem);
+					}
+					else if (FamousCoins.Other.Any(c => c == resultDeal.SellItem))
+					{
+						FamousCoins.CheckCourse(ref resultDeal, resultDeal.SellItem);
+					}
+					//Пара отсутствует в известных монетах
+					else
+						resultDeal.StandartCourse = "Не определен";
+
+
+					//Распределение данных
+					if (resultDeal.isOpen == true)
+					{
+						ActiveDeals.Add(resultDeal);
+					}
+				}
 			}
-
-			//Нахожу только уникальные номера сделок
-			var DealNumbers = MainDealList.Select(n => n.DealNumber).Distinct().Reverse();
-
-			//Конечная обработка данных
-			foreach (var item in DealNumbers)
+			catch (Exception ex)
 			{
-				var tempDealsByNumber = MainDealList.Where(d => d.DealNumber == item).ToList();
-				PairDealModel resultDeal = new PairDealModel();
-				resultDeal.DealNumber = tempDealsByNumber.First().DealNumber;
-				resultDeal.DealOpenTime = tempDealsByNumber.First().DealOpenTime;
-				resultDeal.BuyItem = tempDealsByNumber.First().BuyItem;
-				resultDeal.SellItem = tempDealsByNumber.First().SellItem;
-				resultDeal.isOpen = tempDealsByNumber.First().isOpen;
-				resultDeal.ParentZeroKey = tempDealsByNumber.First().ParentZeroKey;
-				//Расчет данных
-				resultDeal.TotalBuyAmount = Math.Round(PositionsWithDeals.Where(z => (z.ZeroParrentKey == resultDeal.ParentZeroKey || z.PositionKey == resultDeal.ParentZeroKey) && z.Coin.ShortName == resultDeal.BuyItem).Sum(p => Double.Parse(p.Saldo, CultureInfo.CurrentCulture)), 8);
-				resultDeal.TotalSellAmount = Math.Round(PositionsWithDeals.Where(z => (z.ZeroParrentKey == resultDeal.ParentZeroKey || z.PositionKey == resultDeal.ParentZeroKey) && z.Coin.ShortName == resultDeal.SellItem).Sum(p => Double.Parse(p.Saldo, CultureInfo.CurrentCulture)), 8);
-				resultDeal.SellToBuyCourse = Math.Abs(Math.Round(resultDeal.TotalSellAmount / resultDeal.TotalBuyAmount, 6));
-				resultDeal.BuyToSellCourse = Math.Abs(Math.Round(resultDeal.TotalBuyAmount / resultDeal.TotalSellAmount, 6));
-
-
-
-				//Приведение к стандартному курсу
-				//Просмотр главного рейтинга
-				if (FamousCoins.Rating_0.Any(c => c == resultDeal.BuyItem))
-				{
-					FamousCoins.CheckCourse(ref resultDeal, resultDeal.BuyItem);
-				}
-				else if (FamousCoins.Rating_0.Any(c => c == resultDeal.SellItem))
-				{
-					FamousCoins.CheckCourse(ref resultDeal, resultDeal.SellItem);
-				}
-				//Просмотр первого рейтинга
-				else if (FamousCoins.Rating_1_stable.Any(c => c == resultDeal.BuyItem))
-				{
-					FamousCoins.CheckCourse(ref resultDeal, resultDeal.BuyItem);
-				}
-				else if (FamousCoins.Rating_1_stable.Any(c => c == resultDeal.SellItem))
-				{
-					FamousCoins.CheckCourse(ref resultDeal, resultDeal.SellItem);
-				}
-				//Просмотр второго рейтинга
-				else if (FamousCoins.Rating_2.Any(c => c == resultDeal.BuyItem))
-				{
-					FamousCoins.CheckCourse(ref resultDeal, resultDeal.BuyItem);
-				}
-				else if (FamousCoins.Rating_2.Any(c => c == resultDeal.SellItem))
-				{
-					FamousCoins.CheckCourse(ref resultDeal, resultDeal.SellItem);
-				}
-				//Просмотр остальных
-				else if (FamousCoins.Other.Any(c => c == resultDeal.BuyItem))
-				{
-					FamousCoins.CheckCourse(ref resultDeal, resultDeal.BuyItem);
-				}
-				else if (FamousCoins.Other.Any(c => c == resultDeal.SellItem))
-				{
-					FamousCoins.CheckCourse(ref resultDeal, resultDeal.SellItem);
-				}
-				//Пара отсутствует в известных монетах
-				else
-					resultDeal.StandartCourse = "Не определен";
-
-
-
-
-				//Распределение данных
-				if (resultDeal.isOpen == true)
-				{
-					ActiveDeals.Add(resultDeal);
-				}
+				Console.WriteLine(ex);
+				MessageBox.Show("Ошибка инициализации сделок");
+				//Console.WriteLine("Ошибка инициализации сделок");
 			}
+		}
 
+		//Для инициализации FamousCoins из code-behind
+		public void FamousCoinAdditionalInicialization()
+		{
+			if (Coins.Count > 0)
+				FamousCoins.FamousCoinsInicialization(Coins);
 		}
 	}
 }

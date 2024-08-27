@@ -75,7 +75,7 @@ namespace MyMiniLedger.WPF.Windows.CoinWindow
 			{
 				tb_EditCoinNotes.Text = tb_EditCoinNotes.Text.Replace("fiat", "crypto");
 			}
-			else if(!tb_EditCoinNotes.Text.Contains("crypto"))
+			else if (!tb_EditCoinNotes.Text.Contains("crypto"))
 			{
 				tb_EditCoinNotes.Text = tb_EditCoinNotes.Text.Insert(0, "crypto");
 			}
@@ -106,6 +106,39 @@ namespace MyMiniLedger.WPF.Windows.CoinWindow
 			else if (checkBoxDefaultCoin.IsChecked == true)
 			{
 				tb_EditCoinNotes.Text = tb_EditCoinNotes.Text.Insert(0, "defaultcoin");
+			}
+		}
+
+		private void comboRatingChange_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if (comboRatingChange.SelectedIndex == 0)//R_Other
+			{
+				tb_EditCoinNotes.Text = tb_EditCoinNotes.Text.Replace("R_0", "");
+				tb_EditCoinNotes.Text = tb_EditCoinNotes.Text.Replace("R_1", "");
+				tb_EditCoinNotes.Text = tb_EditCoinNotes.Text.Replace("R_2", "");
+				tb_EditCoinNotes.Text = tb_EditCoinNotes.Text.Insert(0, "R_Other");
+			}
+			else if (comboRatingChange.SelectedIndex == 1)//R_0
+			{
+
+				tb_EditCoinNotes.Text = tb_EditCoinNotes.Text.Replace("R_Other", "");
+				tb_EditCoinNotes.Text = tb_EditCoinNotes.Text.Replace("R_1", "");
+				tb_EditCoinNotes.Text = tb_EditCoinNotes.Text.Replace("R_2", "");
+				tb_EditCoinNotes.Text = tb_EditCoinNotes.Text.Insert(0, "R_0");
+			}
+			else if (comboRatingChange.SelectedIndex == 2)//R_1
+			{
+				tb_EditCoinNotes.Text = tb_EditCoinNotes.Text.Replace("R_Other", "");
+				tb_EditCoinNotes.Text = tb_EditCoinNotes.Text.Replace("R_0", "");
+				tb_EditCoinNotes.Text = tb_EditCoinNotes.Text.Replace("R_2", "");
+				tb_EditCoinNotes.Text = tb_EditCoinNotes.Text.Insert(0, "R_1");
+			}
+			else//R_2
+			{
+				tb_EditCoinNotes.Text = tb_EditCoinNotes.Text.Replace("R_Other", "");
+				tb_EditCoinNotes.Text = tb_EditCoinNotes.Text.Replace("R_0", "");
+				tb_EditCoinNotes.Text = tb_EditCoinNotes.Text.Replace("R_1", "");
+				tb_EditCoinNotes.Text = tb_EditCoinNotes.Text.Insert(0, "R_2");
 			}
 		}
 	}
