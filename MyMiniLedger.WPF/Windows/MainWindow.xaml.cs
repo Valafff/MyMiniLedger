@@ -654,13 +654,24 @@ namespace MyMiniLedger.WPF
 				//Расчет и отображение процента
 				double percent = 0;
 				if (deal.invertedCourse == false && deal.strongCoin == false)
-					percent = Math.Round(((1 - _standartCourse / deal.CourseNow) * 100), 4);
-				else if(deal.invertedCourse == true && deal.strongCoin == false)
+					percent = Math.Round(((deal.CourseNow / _standartCourse - 1) * 100), 4);
+				else if (deal.invertedCourse == true && deal.strongCoin == false)
 					percent = Math.Round(((1 - deal.CourseNow / _standartCourse) * 100), 4);
 				else if (deal.invertedCourse == false && deal.strongCoin == true)
-					percent = Math.Round(((1- _standartCourse / deal.CourseNow) * 100), 4);
+					percent = Math.Round(((deal.CourseNow / _standartCourse - 1) * 100), 4);
 				else
-					percent = Math.Round(((1-deal.CourseNow / _standartCourse) * 100), 4);
+					percent = Math.Round(((_standartCourse/deal.CourseNow - 1) * 100), 4);
+
+				////Расчет и отображение процента
+				//double percent = 0;
+				//if (deal.invertedCourse == false && deal.strongCoin == false)
+				//	percent = Math.Round(((1 - _standartCourse / deal.CourseNow) * 100), 4);
+				//else if(deal.invertedCourse == true && deal.strongCoin == false)
+				//	percent = Math.Round(((1 - deal.CourseNow / _standartCourse) * 100), 4);
+				//else if (deal.invertedCourse == false && deal.strongCoin == true)
+				//	percent = Math.Round(((1- _standartCourse / deal.CourseNow) * 100), 4);
+				//else
+				//	percent = Math.Round(((1-deal.CourseNow / _standartCourse) * 100), 4);
 
 				if (percent > 0)
 				{
@@ -691,7 +702,7 @@ namespace MyMiniLedger.WPF
 				else if (deal.invertedCourse == true && deal.strongCoin == false)
 					possibleProfit = Math.Abs(deal.TotalBuyAmount / deal.CourseNow) - Math.Abs(deal.TotalSellAmount);
 				else if (deal.invertedCourse == false && deal.strongCoin == true)
-					possibleProfit = Math.Abs(deal.TotalBuyAmount*deal.CourseNow) - Math.Abs(deal.TotalSellAmount);
+					possibleProfit = Math.Abs(deal.TotalBuyAmount * deal.CourseNow) - Math.Abs(deal.TotalSellAmount);
 				else
 					possibleProfit = Math.Abs(deal.TotalBuyAmount / deal.CourseNow) - Math.Abs(deal.TotalSellAmount);
 
