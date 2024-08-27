@@ -627,24 +627,40 @@ namespace MyMiniLedger.WPF.WindowsModels
 
 				//Приведение к стандартному курсу
 				//Просмотр главного рейтинга
-				if (FamousCoins.Rating_0.Any(c => c == resultDeal.BuyItem) || FamousCoins.Rating_0.Any(c => c == resultDeal.SellItem))
+				if (FamousCoins.Rating_0.Any(c => c == resultDeal.BuyItem))
 				{
-					FamousCoins.CheckCourse(ref resultDeal);
+					FamousCoins.CheckCourse(ref resultDeal, resultDeal.BuyItem);
 				}
-				else if (FamousCoins.Rating_1.Any(c => c == resultDeal.BuyItem) || FamousCoins.Rating_1.Any(c => c == resultDeal.SellItem))
+				else if (FamousCoins.Rating_0.Any(c => c == resultDeal.SellItem))
 				{
-					FamousCoins.CheckCourse(ref resultDeal);
+					FamousCoins.CheckCourse(ref resultDeal, resultDeal.SellItem);
+				}
+				//Просмотр первого рейтинга
+				else if (FamousCoins.Rating_1.Any(c => c == resultDeal.BuyItem))
+				{
+					FamousCoins.CheckCourse(ref resultDeal, resultDeal.BuyItem);
+				}
+				else if (FamousCoins.Rating_1.Any(c => c == resultDeal.SellItem))
+				{
+					FamousCoins.CheckCourse(ref resultDeal, resultDeal.SellItem);
 				}
 				//Просмотр второго рейтинга
-				else if (FamousCoins.Rating_2.Any(c => c == resultDeal.BuyItem) || FamousCoins.Rating_2.Any(c => c == resultDeal.SellItem))
+				else if (FamousCoins.Rating_2.Any(c => c == resultDeal.BuyItem))
 				{
-					FamousCoins.CheckCourse(ref resultDeal);
+					FamousCoins.CheckCourse(ref resultDeal, resultDeal.BuyItem);
 				}
-
-				//Просмотр остальных
-				else if (FamousCoins.Other.Any(c => c == resultDeal.BuyItem) || FamousCoins.Other.Any(c => c == resultDeal.SellItem))
+				else if (FamousCoins.Rating_2.Any(c => c == resultDeal.SellItem))
 				{
-					FamousCoins.CheckCourse(ref resultDeal);
+					FamousCoins.CheckCourse(ref resultDeal, resultDeal.SellItem);
+				}
+				//Просмотр остальных
+				else if (FamousCoins.Other.Any(c => c == resultDeal.BuyItem))
+				{
+					FamousCoins.CheckCourse(ref resultDeal, resultDeal.BuyItem);
+				}
+				else if (FamousCoins.Other.Any(c => c == resultDeal.SellItem))
+				{
+					FamousCoins.CheckCourse(ref resultDeal, resultDeal.SellItem);
 				}
 				//Пара отсутствует в известных монетах
 				else

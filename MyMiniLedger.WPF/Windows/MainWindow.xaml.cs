@@ -651,14 +651,18 @@ namespace MyMiniLedger.WPF
 			bool testResult = true;
 			if (Double.TryParse(deal.StandartCourse, out double _standartCourse) && deal.CourseNow > 0)
 			{
+				//Расчет и отображение процента
 				double percent = 0;
-				if (deal._invertedCourse == false)
-					percent = Math.Round(((_standartCourse / deal.CourseNow - 1) * 100), 4);
+				if (deal.invertedCourse == false && deal.strongCoin == false)
+					percent = Math.Round(((1 - _standartCourse / deal.CourseNow) * 100), 4);
+				else if(deal.invertedCourse == true && deal.strongCoin == false)
+					percent = Math.Round(((1 - deal.CourseNow / _standartCourse) * 100), 4);
+				else if (deal.invertedCourse == false && deal.strongCoin == true)
+					percent = Math.Round(((1- _standartCourse / deal.CourseNow) * 100), 4);
 				else
-					percent = Math.Round(((deal.CourseNow / _standartCourse - 1) * 100), 4);
+					percent = Math.Round(((1-deal.CourseNow / _standartCourse) * 100), 4);
 
-				testResult = DealTest(ref deal, ref percent);
-				if (testResult && percent > 0)
+				if (percent > 0)
 				{
 					double percentToStr = percent;
 					deal.PercentDifference = "+" + percentToStr.ToString("N2", CultureInfo.CurrentUICulture) + "%";
@@ -669,16 +673,31 @@ namespace MyMiniLedger.WPF
 					deal.PercentDifference = percentToStr.ToString("N2", CultureInfo.CurrentUICulture) + "%";
 				}
 
+				////Расчет и отображение возможной прибыли
+				//double possibleProfit;
+				//if (deal.invertedCourse == false && deal.strongCoin == false)
+				//	possibleProfit = Math.Abs(deal.TotalSellAmount * Math.Round((_standartCourse / deal.CourseNow), 12) - deal.TotalSellAmount);
+				//else if (deal.invertedCourse == true && deal.strongCoin == false)
+				//	possibleProfit = Math.Abs(deal.TotalSellAmount * Math.Round((deal.CourseNow / _standartCourse), 12) - deal.TotalSellAmount);
+				//else if (deal.invertedCourse == false && deal.strongCoin == true)
+				//	possibleProfit = Math.Abs(deal.TotalSellAmount * Math.Round((_standartCourse / deal.CourseNow), 12) - deal.TotalSellAmount);
+				//else
+				//	possibleProfit = Math.Abs(deal.TotalSellAmount * Math.Round((deal.CourseNow / _standartCourse), 12) - deal.TotalSellAmount);
 
+				//Расчет и отображение возможной прибыли
 				double possibleProfit;
-				if (deal._invertedCourse == false)
-					possibleProfit = Math.Abs(deal.TotalSellAmount * Math.Round((_standartCourse / deal.CourseNow), 12) - deal.TotalSellAmount);
+				if (deal.invertedCourse == false && deal.strongCoin == false)
+					possibleProfit = Math.Abs(deal.TotalBuyAmount * deal.CourseNow) - Math.Abs(deal.TotalSellAmount);
+				else if (deal.invertedCourse == true && deal.strongCoin == false)
+					possibleProfit = Math.Abs(deal.TotalBuyAmount / deal.CourseNow) - Math.Abs(deal.TotalSellAmount);
+				else if (deal.invertedCourse == false && deal.strongCoin == true)
+					possibleProfit = Math.Abs(deal.TotalBuyAmount*deal.CourseNow) - Math.Abs(deal.TotalSellAmount);
 				else
-					possibleProfit = Math.Abs(deal.TotalSellAmount * Math.Round((deal.CourseNow / _standartCourse), 12) - deal.TotalSellAmount);
+					possibleProfit = Math.Abs(deal.TotalBuyAmount / deal.CourseNow) - Math.Abs(deal.TotalSellAmount);
 
-				possibleProfit = percent > 0 ? possibleProfit : possibleProfit * -1;
-                double possibleProfitToStr = possibleProfit;
-				if (testResult && possibleProfit > 0)
+
+				double possibleProfitToStr = possibleProfit;
+				if (possibleProfit > 0)
 				{
 					deal.ValueDifference = "+" + possibleProfitToStr.ToString("N8", CultureInfo.CurrentUICulture) + $" {deal.SellItem}";
 				}
@@ -686,42 +705,12 @@ namespace MyMiniLedger.WPF
 				{
 					deal.ValueDifference = (possibleProfitToStr).ToString("N8", CultureInfo.CurrentUICulture) + $" {deal.SellItem}";
 				}
-
 				double totalPossibleProfit = Math.Abs(deal.TotalSellAmount) + possibleProfit;
 				deal.TotalValueProfit = totalPossibleProfit.ToString("N8", CultureInfo.CurrentUICulture) + $" {deal.SellItem}";
 			}
 		}
 
-		private bool DealTest(ref PairDealModel _deal, ref double _percent)
-		{
-			if (_percent >= 0 && _deal.SellToBuyCourse < 1)
-			{
-				if (Math.Abs(_deal.TotalBuyAmount) - Math.Abs(_deal.TotalSellAmount * _deal.CourseNow) >= 0)
-				{
-					return true;
-				}
-				else
-				{
-					_percent = _percent * -1;
-					return false;
-				}
 
-			}
-			else if (_percent < 0 && _deal.SellToBuyCourse < 1)
-			{
-				if (Math.Abs(_deal.TotalBuyAmount) - Math.Abs(_deal.TotalSellAmount * _deal.CourseNow) >= 0)
-				{
-					_percent = _percent * -1;
-					return true;
-				}
-				else
-				{
-					return false;
-				}
-			}
-			return true;
-
-		}
 
 		private void summaryCloseDealsDataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
 		{

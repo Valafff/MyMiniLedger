@@ -13,7 +13,6 @@ namespace MyMiniLedger.WPF.Models
 		public List<string> Rating_1 { get; init; }
 		public List<string> Rating_2 { get; init; }
 		public List<string> Other { get; init; }
-		public double dopusk {  get; init; }	 
 
 		public FamousCoins()
 		{
@@ -21,26 +20,40 @@ namespace MyMiniLedger.WPF.Models
 			Rating_1 = new List<string>() { "USDT", "USDC" };
 			Rating_2 = new List<string>() { "BTC" };
 			Other = new List<string>() { "RUB" };
-			dopusk = 0.05;
 		}
 
-		public void CheckCourse(ref PairDealModel _resultDeal)
+		public void CheckCourse(ref PairDealModel _resultDeal, string _keyCoin)
 		{
-			//if (Math.Round(Math.Abs(_resultDeal.SellToBuyCourse * _resultDeal.TotalBuyAmount), 6) >= (Math.Round((Math.Abs(_resultDeal.TotalSellAmount)), 6) * (1 - dopusk)) && Math.Round(Math.Abs(_resultDeal.SellToBuyCourse * _resultDeal.TotalBuyAmount), 6) <= (Math.Round((Math.Abs(_resultDeal.TotalSellAmount)), 6) * (1 + dopusk)))
-			//{
-			//	_resultDeal.StandartCourse = string.Format("{0:F8}", Math.Abs(_resultDeal.TotalSellAmount / _resultDeal.TotalBuyAmount));
-			//}
-			//else
-			//	_resultDeal.StandartCourse = string.Format("{0:F8}", Math.Abs(1 / (_resultDeal.TotalSellAmount / _resultDeal.TotalBuyAmount)));
-			//_resultDeal._invertedCourse = true;
+			double sellValue;
+			double buyValue;
 
-			if (Math.Round(Math.Abs(_resultDeal.SellToBuyCourse * _resultDeal.TotalBuyAmount), 6) == Math.Round((Math.Abs(_resultDeal.TotalSellAmount)), 6))
+			sellValue = _resultDeal.TotalSellAmount;
+			buyValue = _resultDeal.TotalBuyAmount;
+
+			if (Math.Abs( sellValue / buyValue) >= 1 && _resultDeal.BuyItem != _keyCoin)
 			{
 				_resultDeal.StandartCourse = string.Format("{0:F8}", Math.Abs(_resultDeal.TotalSellAmount / _resultDeal.TotalBuyAmount));
+				_resultDeal.invertedCourse = false;
+				_resultDeal.strongCoin = false;
 			}
-			else
+            else if(Math.Abs(sellValue / buyValue) < 1 && _resultDeal.BuyItem == _keyCoin)
+            {
+				_resultDeal.StandartCourse = string.Format("{0:F8}", Math.Abs(1/(_resultDeal.TotalSellAmount / _resultDeal.TotalBuyAmount)));
+				_resultDeal.invertedCourse = true;
+				_resultDeal.strongCoin = false;
+			}
+            else if (Math.Abs(sellValue / buyValue) < 1 && _resultDeal.BuyItem != _keyCoin)
+            {
 				_resultDeal.StandartCourse = string.Format("{0:F8}", Math.Abs(1 / (_resultDeal.TotalSellAmount / _resultDeal.TotalBuyAmount)));
-			_resultDeal._invertedCourse = true;
-		}
+				_resultDeal.invertedCourse = true;
+				_resultDeal.strongCoin = true;
+			}
+            else /*(Math.Abs(sellValue / buyValue) > 1 && _resultDeal.BuyItem == _keyCoin)*/
+            {
+				_resultDeal.StandartCourse = string.Format("{0:F8}", Math.Abs(_resultDeal.TotalSellAmount / _resultDeal.TotalBuyAmount));
+				_resultDeal.invertedCourse = false;
+				_resultDeal.strongCoin = true;
+			}
+        }
 	}
 }
