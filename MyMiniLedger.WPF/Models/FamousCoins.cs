@@ -10,50 +10,65 @@ namespace MyMiniLedger.WPF.Models
 	public class FamousCoins
 	{
 		public List<string> Rating_0 { get; init; }
-		public List<string> Rating_1 { get; init; }
+		public List<string> Rating_1_stable { get; init; }
 		public List<string> Rating_2 { get; init; }
 		public List<string> Other { get; init; }
+		//public List<string> Exceptions { get; init; }
 
 		public FamousCoins()
 		{
-			Rating_0 = new List<string>() { "USD" };
-			Rating_1 = new List<string>() { "USDT", "USDC" };
+			//Rating_0 - основновная валюта или монеты, которые должны определятся перед stablecoinами xxx/usdt
+			Rating_0 = new List<string>() { "KAS", "USD" };
+			//Стэйблкоины
+			Rating_1_stable = new List<string>() { "USDT", "USDC" };
+			//Монеты со стандартным курсом usd(t)/xxx
 			Rating_2 = new List<string>() { "BTC" };
+			//Прочие монеты, валюты
 			Other = new List<string>() { "RUB" };
+			//Exceptions = new List<string>() { "KAS" };
 		}
 
 		public void CheckCourse(ref PairDealModel _resultDeal, string _keyCoin)
 		{
-			double sellValue;
-			double buyValue;
-
-			sellValue = _resultDeal.TotalSellAmount;
-			buyValue = _resultDeal.TotalBuyAmount;
-
-			if (Math.Abs( sellValue / buyValue) >= 1 && _resultDeal.BuyItem != _keyCoin)
+			//Стандартный курс приводим к баксу, стэйблкоину или монете в Rating_0
+			var deal = _resultDeal;
+			if (_resultDeal.BuyItem == _keyCoin) 
 			{
-				_resultDeal.StandartCourse = string.Format("{0:F8}", Math.Abs(_resultDeal.TotalSellAmount / _resultDeal.TotalBuyAmount));
+				double ratio = Math.Abs( _resultDeal.TotalBuyAmount/_resultDeal.TotalSellAmount);
+
+				if (ratio < 1 || Rating_1_stable.Contains( _resultDeal.SellItem) /*&& !Exceptions.Contains(_resultDeal.SellItem)*/)
+				{
+					ratio = 1 / ratio;
+					_resultDeal.StandartCourse = string.Format("{0:F8}", ratio);
+					_resultDeal.invertedCourse = false;
+					_resultDeal.strongCoin = false;
+				}
+				else
+				{
+					_resultDeal.StandartCourse = string.Format("{0:F8}", ratio);
+					_resultDeal.invertedCourse = true;
+					_resultDeal.strongCoin = true;
+				}
+
+			}
+			else
+			{
+				double ratio = Math.Abs(_resultDeal.TotalSellAmount/ _resultDeal.TotalBuyAmount);
+				if (ratio < 1 || Rating_1_stable.Contains(_resultDeal.BuyItem) /*&& !Exceptions.Contains(_resultDeal.BuyItem)*/)
+				{
+					ratio = 1 / ratio;
+					_resultDeal.StandartCourse = string.Format("{0:F8}", ratio);
+					_resultDeal.invertedCourse = true;
+					_resultDeal.strongCoin = true;
+				}
+				else
+				{
+				_resultDeal.StandartCourse = string.Format("{0:F8}", ratio);
 				_resultDeal.invertedCourse = false;
 				_resultDeal.strongCoin = false;
+				}
+
 			}
-            else if(Math.Abs(sellValue / buyValue) < 1 && _resultDeal.BuyItem == _keyCoin)
-            {
-				_resultDeal.StandartCourse = string.Format("{0:F8}", Math.Abs(1/(_resultDeal.TotalSellAmount / _resultDeal.TotalBuyAmount)));
-				_resultDeal.invertedCourse = true;
-				_resultDeal.strongCoin = false;
-			}
-            else if (Math.Abs(sellValue / buyValue) < 1 && _resultDeal.BuyItem != _keyCoin)
-            {
-				_resultDeal.StandartCourse = string.Format("{0:F8}", Math.Abs(1 / (_resultDeal.TotalSellAmount / _resultDeal.TotalBuyAmount)));
-				_resultDeal.invertedCourse = true;
-				_resultDeal.strongCoin = true;
-			}
-            else /*(Math.Abs(sellValue / buyValue) > 1 && _resultDeal.BuyItem == _keyCoin)*/
-            {
-				_resultDeal.StandartCourse = string.Format("{0:F8}", Math.Abs(_resultDeal.TotalSellAmount / _resultDeal.TotalBuyAmount));
-				_resultDeal.invertedCourse = false;
-				_resultDeal.strongCoin = true;
-			}
-        }
+		}
 	}
 }

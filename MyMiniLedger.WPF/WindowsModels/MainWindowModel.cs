@@ -636,11 +636,11 @@ namespace MyMiniLedger.WPF.WindowsModels
 					FamousCoins.CheckCourse(ref resultDeal, resultDeal.SellItem);
 				}
 				//Просмотр первого рейтинга
-				else if (FamousCoins.Rating_1.Any(c => c == resultDeal.BuyItem))
+				else if (FamousCoins.Rating_1_stable.Any(c => c == resultDeal.BuyItem))
 				{
 					FamousCoins.CheckCourse(ref resultDeal, resultDeal.BuyItem);
 				}
-				else if (FamousCoins.Rating_1.Any(c => c == resultDeal.SellItem))
+				else if (FamousCoins.Rating_1_stable.Any(c => c == resultDeal.SellItem))
 				{
 					FamousCoins.CheckCourse(ref resultDeal, resultDeal.SellItem);
 				}
