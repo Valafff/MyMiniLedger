@@ -434,6 +434,10 @@ namespace MyMiniLedger.WPF.Windows.PairDealCreationEdit
 				{				
 					text_PairName.Text = $"{comboWhatBuy.SelectedValue}/{comboWhatSell.SelectedValue}";
 					tb_CalculatedCourse.Text = "none";
+
+					numFilter.textBoxTextChangedFilter((object)tb_HowManyBuy, null);
+					numFilter.textBoxTextChangedFilter((object)tb_HowManySell, null);
+
 					if (Double.Parse(tb_HowManySell.Text, CultureInfo.InvariantCulture) != 0)
 					{
 						tb_CalculatedCourse.Text = (Double.Parse(tb_HowManyBuy.Text) / Double.Parse(tb_HowManySell.Text)).ToString("N6", CultureInfo.CurrentUICulture);

@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace MyMiniLedger.WPF.Models
 {
-	//TODO Сделать инициализацию из конфига
 	public class FamousCoins
 	{
 		public List<string> Rating_0 { get; init; }

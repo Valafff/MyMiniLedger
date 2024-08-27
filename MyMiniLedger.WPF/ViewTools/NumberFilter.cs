@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -30,11 +31,29 @@ namespace MyMiniLedger.WPF.ViewTools
 		}
 		public void textBoxTextChangedFilter(object sender, TextChangedEventArgs e)
 		{
-			if (((TextBox)sender).Text == string.Empty)
+			try
 			{
-				((TextBox)sender).Text = "0";
-				((TextBox)sender).SelectionStart = ((TextBox)sender).Text.Length;
+				if (((TextBox)sender).Text.Contains(".") && ((TextBox)sender).Text.Contains(","))
+				{
+					((TextBox)sender).Text = ((TextBox)sender).Text.Replace(",", "");
+					((TextBox)sender).Text = ((TextBox)sender).Text.Replace(".", ",");
+				}
+				if (((TextBox)sender).Text.Contains("."))
+				{
+					((TextBox)sender).Text = ((TextBox)sender).Text.Replace(".", ",");
+				}
+				if (((TextBox)sender).Text == string.Empty)
+				{
+					((TextBox)sender).Text = "0";
+					((TextBox)sender).SelectionStart = ((TextBox)sender).Text.Length;
+				}
 			}
+			catch (Exception ex)
+			{
+                Console.WriteLine(ex);
+				MessageBox.Show("Ошибка фильтрации текста в число textBoxTextChangedFilter");
+			}
+
 		}
 	}
 }
